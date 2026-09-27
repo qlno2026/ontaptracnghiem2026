@@ -48,6 +48,22 @@
   /* Xanh NHẠT chỉ dùng cho CHỮ/VIỀN ở chế độ tối (chip đang bật, đồng hồ kỹ thuật số),
      nên KHÔNG hạ xuống theo --accent: chữ phải sáng để đọc được trên nền tối. */
   --accent-glow: #60a5fa;
+  /* ── MÀU ICON DÙNG CHUNG (27/9/2026 — "tôi muốn tất cả icon có màu xanh cho dễ nhìn") ──────
+     MỌI icon của app (bảng `ICONS` + `ico()` trong JS, và cả nút đổi sáng/tối) lấy màu từ đây
+     thay vì ăn theo màu chữ như trước — xem khối `.ico` bên dưới.
+     Chọn `--accent-glow` #60a5fa cho chế độ tối vì đó là nấc XANH SÁNG NHẤT của bảng màu, và nó
+     là MÀU NHẤN của app chứ không mượn màu đã mang nghĩa khác (xanh LÁ = đáp án đúng, đỏ = sai
+     — xem ghi chú "MỘT MÀU NHẤN" phía dưới). ĐO trên thẻ #202020: **~6,2:1**, tách hẳn khỏi
+     `--text` #cbd5e1 bên cạnh — đúng ý "cho dễ nhìn".
+     `body.light-mode` khai lại ĐẬM hơn (`--accent` #1d4ed8): #60a5fa trên nền sáng chỉ ~2,2:1.
+     KHÔNG phải chỗ nào cũng lấy màu này: icon mang NGHĨA MÀU (dấu ✓ của đáp án đúng, đồng hồ đỏ
+     lúc sắp hết giờ) hoặc đứng trên NỀN ĐẶC màu nhấn phải giữ `currentColor` — danh sách đầy đủ
+     nằm ngay dưới khối `.ico`. ĐỪNG "dọn" nhóm luật đó đi. */
+  --ico: var(--accent-glow);
+  /* ĐỘ SÁNG TOÀN APP (27/9/2026) — hệ số cho `filter: brightness()`, xem khối "ĐỘ SÁNG TOÀN APP"
+     cuối <style>. 1 = không đổi. JS đặt lại biến này bằng style nội tuyến trên `<html>`, và chỉ
+     đặt khi mức KHÁC 100% (lúc đó lớp `body.has-bright` mới có mặt). */
+  --bright: 1;
   /* (`--gold` #f59e0b đã bị XOÁ 27/9/2026 — "các icon và màu theo phong cách tối giản": cảnh
      báo tỷ lệ và mức điểm 50–79% giờ dùng chữ thường / màu nhấn, không còn màu vàng riêng.
      Xem ghi chú "MỘT MÀU NHẤN" cạnh `--pin-brd` bên dưới.) */
@@ -185,9 +201,10 @@
      đã đo, nên để nguyên. */
   /* (27/9/2026 — "nút chỉnh cỡ chữ nhỏ, chuẩn, lớn") Cả thang dưới đây giờ tính từ MỘT số duy
      nhất là `--fs-unit`: mọi nấc đều là `calc(n * var(--fs-unit))`. Đổi `--fs-unit` là TOÀN BỘ chữ
-     trong app to/nhỏ theo cùng một tỉ lệ — đó chính là cách hai nút "Nhỏ / Chuẩn / Lớn" hoạt
-     động (`html.fs-nho` / `html.fs-lon` ở khu vực HIỂN THỊ cuối tệp — cố ý là `html`, xem lý do ở
-     chính khu vực đó).
+     trong app to/nhỏ theo cùng một tỉ lệ — đó chính là cách thang phần trăm "Cỡ chữ" trong panel
+     CÀI ĐẶT hoạt động (`applyDisp()` đặt `--fs-unit` bằng style nội tuyến trên `<html>` — cố ý là
+     `html`, xem lý do ở chính khu vực CÀI ĐẶT cuối tệp; hai lớp `html.fs-nho` / `html.fs-lon`
+     của bản ba nút cũ đã bị xoá 27/9/2026 cùng lượt đổi sang thang phần trăm).
      GIÁ TRỊ GỐC KHÔNG ĐỔI: `--fs-unit: 1px` cho ra đúng 10/11/13/15/16/17/18px như trước, nên ở
      mức mặc định app không xê dịch một pixel nào. Vài chỗ TRƯỚC ĐÂY viết cứng px (đồng hồ 21px,
      số điểm 45px, hộp đăng nhập 36px, dòng giải thích 14px…) đã đổi sang `calc(n * var(--fs-unit))`
@@ -225,17 +242,37 @@
    (xem lịch sử nút ghim 📌) — dấu hiệu của việc dùng sai công cụ.
    Giờ icon do app TỰ VẼ bằng SVG nét, khai một chỗ trong `ICONS` (JS) và phát ra bằng `ico()`:
      - cùng một bộ 24×24 cho cả app, không còn 44 loại emoji mỗi máy một dáng;
-     - màu LUÔN ăn theo màu chữ của chỗ đặt nó (`currentColor`) — trên nút xanh icon tự trắng,
-       trên nút xám icon tự xám, hàng đang chọn tự đổi theo — nên KHÔNG cần bản màu riêng và
-       không bao giờ phải dùng `filter` để "nhuộm" icon nữa;
+     - màu lấy từ MỘT biến dùng chung là `--ico` (27/9/2026 — "tôi muốn tất cả icon có màu
+       xanh cho dễ nhìn"): xanh dương ở cả hai chế độ — xem ghi chú `--ico` trong `:root`;
+     - TRƯỚC lượt này màu ăn theo màu chữ của chỗ đặt nó (`currentColor`) — trên nút xanh icon
+       tự trắng, trên nút xám icon tự xám. Cách đó vẫn là lối đi ĐÚNG ở những chỗ icon mang
+       NGHĨA màu, nên nhóm luật ngay dưới khối `.ico` khôi phục `currentColor` cho đúng những
+       chỗ đó; nó cũng là lý do KHÔNG bao giờ phải dùng `filter` để "nhuộm" icon;
      - `stroke-width: 1.65` trong hệ 24 nên ở cỡ chữ 17px ra ~1,2px: mảnh, đúng tinh thần tối giản.
    MUỐN ĐỔI ICON: sửa bảng `ICONS` trong JS. ĐỪNG thêm emoji hay màu ic-on trở lại. */
 .ico {
   width: 1.05em; height: 1.05em; flex: none;
   vertical-align: -0.16em;
-  fill: none; stroke: currentColor; stroke-width: 1.65;
+  fill: none; stroke: var(--ico); stroke-width: 1.65;
   stroke-linecap: round; stroke-linejoin: round;
 }
+/* ── NHỮNG CHỖ ICON PHẢI GIỮ `currentColor` (không được hoá xanh theo `--ico`) ───────────────
+   Bỏ một dòng là hỏng đúng chỗ đó, nên khối này đi KÈM khối `.ico` — đừng tách ra xa.
+   Hai lý do, không phải một:
+     (a) MẤT CHỮ: icon đứng trên NỀN ĐẶC màu nhấn/đỏ mà chữ ở đó là TRẮNG hoặc SÁNG — xanh
+         trên nền xanh là tự xoá mình khỏi màn hình. Gồm `.quiz-btn.primary`, `.quiz-btn.danger`,
+         `.set-dd-item.on`, `.mix-lock.on`.
+     (b) MẤT NGHĨA: icon ở đây là DẤU HIỆU CHỨC NĂNG, không phải trang trí — `.exam-timer.low`
+         (đồng hồ phải ĐỎ khi sắp hết giờ) và `.search-hit-a` (dấu ✓ của ĐÁP ÁN ĐÚNG trên dòng
+         chữ `--green`). App đã tự đặt luật "màu chức năng không bao giờ dùng trang trí" — một
+         dấu ✓ xanh dương nằm cạnh chữ xanh lá là phá đúng luật đó.
+   Độ ưu tiên (0,2,0) > `.ico` (0,1,0) nên khai ở đâu cũng thắng. */
+.quiz-btn.primary .ico, .quiz-btn.danger .ico, .set-dd-item.on .ico,
+.mix-lock.on .ico, .exam-timer.low .ico, .search-hit-a .ico { stroke: currentColor; }
+/* Khối chữ mang MÀU CHỨC NĂNG (xanh LÁ "đáp án đúng") thì icon bên trong ăn màu của khối — y
+   như hành vi trước 27/9/2026. Gắn lớp này lên khối đó thay vì khai thêm luật cho từng chỗ
+   (các khối ấy dùng `style=` thẳng trong JS nên CSS thường không bám vào được). */
+.ico-follow .ico { stroke: currentColor; }
 
 body {
   font-family: 'Inter', sans-serif;
@@ -366,7 +403,9 @@ body {
   position: relative;
   padding: 0;
   background: transparent;
-  color: var(--text);
+  /* Nút đổi sáng/tối CŨNG là một icon nên theo đúng màu icon dùng chung (27/9/2026 — "tất cả
+     icon có màu xanh"): trước đây là `--text` (chế độ tối) / `--text-strong` (chế độ sáng). */
+  color: var(--ico);
   flex-shrink: 0;
   transition: transform 70ms ease-out;
 }
@@ -374,10 +413,10 @@ body {
    24), nên hình thật chỉ rộng ~34px và nằm giữa nút nhờ `justify-content: center`.
    `display: block` để `<svg>` không thừa khoảng trắng dưới đáy — cùng cái bẫy đã ghi ở `.home-btn`. */
 .theme-toggle svg { width: 100%; height: 100%; display: block; }
-/* Chế độ sáng: lý do y hệt `.header-title` — `--text` KHÔNG được khai lại cho chế độ sáng (vẫn là
-   #cbd5e1 của chế độ tối) nên phải đè bằng `--text-strong`, nếu không icon thành xám nhạt gần như
-   tàng hình trên nền trắng. */
-body.light-mode .theme-toggle { color: var(--text-strong); }
+/* Chế độ sáng vẫn PHẢI khai lại (0,2,1 đè `.theme-toggle` 0,1,0), nhưng giá trị giờ là `--ico`:
+   biến này tự đổi thành `--accent` #1d4ed8 ở chế độ sáng nên icon vẫn là XANH ĐẬM đọc được trên
+   nền trắng — không cần chọn màu riêng ở đây nữa (27/9/2026 — "tất cả icon có màu xanh"). */
+body.light-mode .theme-toggle { color: var(--ico); }
 /* Nhấn XUỐNG như một phím thật — cùng ngôn ngữ đã dùng cho `.home-btn`. Ở đây chỉ còn `scale`:
    bản cũ còn "bóng ngắn lại" trong cùng nhịp, mà icon giờ không có bóng nữa. */
 .theme-toggle:active { transform: scale(0.9); }
@@ -1250,6 +1289,9 @@ body.light-mode {
      `var(--text-base)` — cả 4 đều là luật chế độ sáng (`.set-dd-btn`, `.set-dd-item`, `body`, và
      `.search-clear:hover`), nên `:root` KHÔNG được khai token này. */
   --text-base: #1e293b;
+  /* Icon ở chế độ SÁNG lấy `--accent` #1d4ed8 (ĐẬM) thay cho `--accent-glow` #60a5fa của chế độ
+     tối: trên nền sáng #60a5fa chỉ ~2,2:1 nên icon sẽ tan vào nền — xem ghi chú `--ico` ở `:root`. */
+  --ico: var(--accent);
 }
 
 /* Hộp từng bộ đề trên trang chủ (📝 Chọn từng bộ đề) có nền riêng để tách khỏi thẻ
@@ -1969,8 +2011,118 @@ body.light-mode.tone-sang {
    `--fs-unit` và các nấc nằm CÙNG một phần tử, phép tính chạy lại từ đầu.
    Màu thì ngược lại: `--navy`, `--text`, `--border`… là giá trị TUYỆT ĐỐI (không tính từ biến nào)
    nên khai ở `<body>` là đủ, không cần đụng tới `<html>`. */
-html.fs-nho { --fs-unit: 0.88px; }
-html.fs-lon { --fs-unit: 1.13px; }
+/* (27/9/2026 — "tôi muốn làm icon cài đặt như thế này") Hai lớp `html.fs-nho` / `html.fs-lon` đã
+   bị XOÁ: ba nút Nhỏ/Chuẩn/Lớn đổi thành thang phần trăm có nút −/+ nên `applyDisp()` đặt thẳng
+   `--fs-unit` bằng STYLE NỘI TUYẾN trên `<html>` — VẪN là `<html>` chứ không phải `<body>`, và lý
+   do đã ghi ở khối ghi chú ngay trên còn nguyên giá trị: style nội tuyến nằm CÙNG phần tử với các
+   nấc chữ nên `calc(n * var(--fs-unit))` chạy lại từ đầu.
+   Ba mốc cũ giờ là ba nấc trên thang mới: 0,88 → **90%** · 1 → **100%** · 1,13 → **110%**
+   (bảng quy đổi nằm ở `FS_LEGACY` trong JS). */
+
+/* ── PANEL CÀI ĐẶT (27/9/2026 — "tôi muốn làm icon cài đặt như thế này") ───────────────────────
+   Thay thẻ "Hiển thị" cũ (hai hàng ba nút) bằng một panel dạng MENU đúng như ảnh người dùng gửi:
+   mỗi việc là một hàng có icon + nhãn ở bên, hai hàng chỉnh số có nút −/+ ở cuối, và KẺ NGANG chỉ
+   đặt giữa các NHÓM (dưới "Sáng / Tối", dưới "Chọn File") — không kẻ giữa từng hàng, đúng ảnh.
+   Panel vẫn nằm trong một `.quiz-card` như thẻ cũ nên nó vẫn là một tấm trên trang chủ.
+   HÀNG BẤM ĐƯỢC là `<button>`, HÀNG CHỈNH SỐ là `<div>`: hai nút −/+ nằm TRONG hàng nên hàng đó
+   KHÔNG được là `<button>` nữa — lồng button trong button là HTML sai và trình duyệt tự tách ra,
+   nút −/+ sẽ văng ra ngoài hàng.
+   `first-of-type` KHÔNG dùng được để bỏ kẻ dòng đầu (các hàng vừa là `<button>` vừa là `<div>`
+   nên "first of type" là hai phần tử khác nhau) — vì thế kẻ nằm ở NHÓM, xem `.cfg-group`. */
+.cfg-label {
+  font-size: var(--fs-sub); font-weight: 600; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--text-dim); margin: 0 0 4px 2px;
+}
+.cfg-group + .cfg-group { border-top: 1px solid var(--border); }
+.cfg-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 11px 2px; background: none; border: 0;
+  color: var(--text); font-family: 'Inter', sans-serif;
+  font-size: var(--fs-base); font-weight: 500; text-align: left;
+}
+button.cfg-row { cursor: pointer; border-radius: 8px; }
+button.cfg-row:hover { background: rgba(127, 127, 127, 0.14); }
+/* ── CHẾ ĐỘ SÁNG PHẢI KHAI LẠI MÀU CHỮ ────────────────────────────────────────────────────
+   `--text` (#cbd5e1) CHỈ tồn tại trong `:root` (bộ biến chế độ tối) và `body.light-mode` KHÔNG
+   ghi đè nó — nên dùng nguyên `var(--text)` ở đây là chữ xám nhạt trên thẻ trắng: **1,5:1**, gần
+   như không đọc được. Đây ĐÚNG cái bẫy đã làm nút dropdown mất chữ (xem `.set-dd-item`) và là lý
+   do `.quiz-btn` cũng có luật `body.light-mode` riêng. Chữ phải lấy `--text-base` (#1e293b).
+   `--text-dim` thì KHÔNG cần đổi: biến đó được khai lại cho chế độ sáng (#5b6675) nên nhãn
+   "CÀI ĐẶT" và ba nút "Dịu / Chuẩn / Sáng" đã đúng màu sẵn. */
+body.light-mode .cfg-row,
+body.light-mode .cfg-step-btn,
+body.light-mode .cfg-step-val { color: var(--text-base); }
+/* Nền hover trong suốt của chế độ tối gần như không thấy trên thẻ trắng — cùng lỗi đã gặp ở
+   `.set-dd-item:hover` và `.search-clear:hover`. */
+body.light-mode button.cfg-row:hover { background: rgba(0, 0, 0, 0.06); }
+/* Icon của hàng to hơn icon trong chữ (`1,05em`) một nấc: ở đây nó đứng MỘT MÌNH làm dấu nhận
+   diện cho cả hàng nên phải đọc được ngay, không phải "phụ hoạ cho chữ" như trong nút. */
+.cfg-ico { flex: none; display: inline-flex; align-items: center; font-size: var(--fs-head); line-height: 1; }
+.cfg-row-txt { flex: 1; min-width: 0; }
+/* Ô nhập số: hai nút 34×34 đúng ngưỡng chạm của `.search-clear`; `flex: none` để hàng dài không
+   bóp méo nút. */
+.cfg-step { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.cfg-step-btn {
+  width: 34px; height: 34px; padding: 0; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--border); border-radius: 9px;
+  color: var(--text); cursor: pointer; font-family: 'Inter', sans-serif;
+}
+.cfg-step-btn:hover { border-color: var(--accent-glow); color: var(--accent-glow); }
+body.light-mode .cfg-step-btn:hover { border-color: var(--accent); color: var(--accent); }
+.cfg-step-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+body.light-mode .cfg-step-btn:disabled { color: var(--text-dim); }
+/* `tabular-nums` để số không rung khi bấm −/+ ("100%" và "90%" khác bề ngang) — đúng lý do đã ghi
+   ở `.exam-timer`; thêm `min-width` cố định để hai nút −/+ không nhích mỗi lần đổi số. */
+.cfg-step-val {
+  min-width: 56px; text-align: center; font-size: var(--fs-sub); font-weight: var(--fw-ui);
+  color: var(--text); font-variant-numeric: tabular-nums;
+}
+/* Ô "Màu" (Dịu/Chuẩn/Sáng) — ba nút nhỏ nằm gọn trong MỘT hàng menu thay vì chiếm một hàng riêng
+   như bản cũ. Vẫn đúng quy ước "ô đang chọn" của app: nền màu nhấn + chữ trắng. */
+.cfg-seg { flex: none; display: inline-flex; gap: 6px; }
+.cfg-seg-btn {
+  padding: 6px 9px; border: 1px solid var(--border); border-radius: 8px;
+  background: none; color: var(--text-dim); cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: var(--fs-sub); font-weight: 500;
+}
+.cfg-seg-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* ── ĐỘ SÁNG TOÀN APP (27/9/2026 — cùng lượt với panel Cài đặt) ────────────────────────────────
+   `filter: brightness()` đặt trên BỐN KHỐI GỐC của giao diện, KHÔNG đặt trên `<html>`/`<body>`.
+   Lý do là một cái bẫy thật: `filter` biến phần tử mang nó thành GỐC ĐỊNH VỊ cho mọi thứ
+   `position: fixed` BÊN TRONG nó. Hộp thoại (`.modal-overlay`) và màn đăng nhập (`.login-gate`)
+   đều `fixed` — gắn `filter` lên `<body>` là hai khối đó bám vào ĐẦU TRANG thay vì ĐẦU MÀN HÌNH,
+   cuộn xuống là hộp thoại trôi khỏi tầm mắt.
+   Bốn khối dưới đây an toàn vì: `.main` KHÔNG chứa phần tử `fixed` nào (đã kiểm — cả tệp chỉ có
+   hai chỗ `fixed` là hai lớp phủ ở trên), còn hai lớp phủ kia thì CHÍNH CHÚNG là `fixed` nên gắn
+   `filter` ngay trên chúng không đổi gốc định vị của ai cả.
+   `position: sticky` (header, thanh dính của màn làm bài) KHÔNG bị ảnh hưởng: `filter` không tạo
+   vùng cuộn mới, mà sticky bám theo VÙNG CUỘN gần nhất — vùng cuộn vẫn là cả trang.
+   Chỉ gắn khi mức khác 100% (lớp `body.has-bright` do JS đóng/mở) để lúc bình thường không thêm
+   một lớp kết xuất nào cho cả app. */
+body.has-bright .header,
+body.has-bright .main,
+body.has-bright .modal-overlay,
+body.has-bright .login-gate { filter: brightness(var(--bright, 1)); }
+
+/* ── Ô GHI CHÚ (27/9/2026) ────────────────────────────────────────────────────────────────────
+   Mở bằng hàng "Ghi chú" trong panel Cài đặt, dùng lại hộp thoại `#modal` của app. */
+.notes-area {
+  width: 100%; min-height: 190px; max-height: 46vh; resize: vertical;
+  padding: 12px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: var(--navy-mid); color: var(--text); box-sizing: border-box;
+  font-family: 'Inter', sans-serif; font-size: var(--fs-base); line-height: 1.6;
+}
+.notes-area:focus { outline: none; border-color: var(--accent); }
+.notes-area::placeholder { color: var(--text-dim); }
+/* Chế độ sáng PHẢI khai LẠI CẢ BA: `--navy-mid` và `--text` đều là token của chế độ tối nên ô nhập
+   sẽ ra nền xám đậm + chữ xám nhạt — đúng cách `.search-input` đã phải khai lại ở chỗ của nó. */
+body.light-mode .notes-area {
+  background: var(--surface-card);
+  color: var(--text-strong);
+  border-color: var(--border-field);
+}
 
 #quizFileInput, #quizDirInput, #quizRestoreInput { display: none; }
 
@@ -2257,7 +2409,24 @@ const ICONS = {
   trash:   '<path d="M4.6 7.2h14.8"/><path d="M9.6 7.2V4.6h4.8v2.6"/><path d="M6.6 7.2 7.6 19.6a1.7 1.7 0 0 0 1.7 1.6h5.4a1.7 1.7 0 0 0 1.7-1.6L17.4 7.2"/><path d="M10.6 10.6v7M13.4 10.6v7"/>',
   pencil:  '<path d="M4.4 19.6l.4-4.2L15.6 4.6a1.9 1.9 0 0 1 2.7 2.7L7.6 18.1z"/><path d="M14.3 5.9 17 8.6"/>',
   home:    '<path d="M3.6 10.4 12 3.6l8.4 6.8"/><path d="M5.6 9.8V19a1.4 1.4 0 0 0 1.4 1.4h3.4V15h3.2v5.4H17a1.4 1.4 0 0 0 1.4-1.4V9.8"/>',
-  sliders: '<path d="M4 8.5h9M17.6 8.5H20M4 15.5h3.4M12 15.5H20"/><circle cx="15.1" cy="8.5" r="2.2"/><circle cx="9.6" cy="15.5" r="2.2"/>'
+  sliders: '<path d="M4 8.5h9M17.6 8.5H20M4 15.5h3.4M12 15.5H20"/><circle cx="15.1" cy="8.5" r="2.2"/><circle cx="9.6" cy="15.5" r="2.2"/>',
+  // ── SÁU ICON THÊM 27/9/2026 cho panel CÀI ĐẶT ("tôi muốn làm icon cài đặt như thế này") ─────
+  // `theme` giữ NGUYÊN hai nét của nút Sáng/Tối trên header (vành 0,96 + sao 1,3 — trong ảnh
+  // người dùng gửi hai nét đó khác nhau), nên hàng "Sáng / Tối" và nút trên header nhìn y hệt
+  // nhau. Đây là ngoại lệ DUY NHẤT về độ dày nét, và cùng lý do với ngoại lệ đã ghi ở đầu bảng:
+  // ở cỡ 24 thì một độ dày chung cho ra cái vành quá dày so với ảnh.
+  theme:   '<circle cx="12" cy="12" r="9.57" stroke-width="0.96"/><path stroke-width="1.3" d="M12 7.4C12.6 9.7 14.3 11.4 16.6 12C14.3 12.6 12.6 14.3 12 16.6C11.4 14.3 9.7 12.6 7.4 12C9.7 11.4 11.4 9.7 12 7.4Z"/>',
+  // `note` = tờ giấy có hai dòng chữ (KHÁC `fileIn` là tờ giấy có mũi tên − đừng lẫn hai cái).
+  note:    '<path d="M13.8 3.6H7a1.6 1.6 0 0 0-1.6 1.6v13.6A1.6 1.6 0 0 0 7 20.4h10a1.6 1.6 0 0 0 1.6-1.6V8.4z"/><path d="M13.8 3.6v4.8h4.8"/><path d="M8.6 12.4h6.8M8.6 16h4.4"/>',
+  // `fileOut` = thư mục + mũi tên ĐI LÊN (xuất ra), `folder` (đã có) = thư mục trơn (chọn vào).
+  fileOut: '<path d="M3.6 6.8a2 2 0 0 1 2-2h3.3l1.9 2.4h7.6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5.6a2 2 0 0 1-2-2z"/><path d="M12 17.6v-6.2M9.3 14 12 11.3l2.7 2.7"/>',
+  // `font` = chữ T có chân, dấu hiệu đã dùng ở mọi app cho "cỡ chữ" (đọc ra ngay, không phải
+  // đoán như một cái thước hay chữ "Aa").
+  font:    '<path d="M4.8 8.2V4.6h14.4v3.6"/><path d="M12 4.6v14.8"/><path d="M9 19.4h6"/>',
+  // `sun` = mặt trời có tám tia (độ sáng). CỐ Ý khác `theme` (vành + sao) dù hai hàng nằm gần
+  // nhau: một cái là "đổi cả bảng màu", một cái là "tăng giảm độ chói" — hai việc khác nhau.
+  sun:     '<circle cx="12" cy="12" r="4.3"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/>',
+  minus:   '<path d="M5.6 12h12.8"/>'
 };
 // `ico('play')` → một thẻ <svg> đã sẵn sàng chèn vào chuỗi HTML. KHÔNG bọc `esc()` cho kết quả
 // này (đây là markup do app tự sinh, không phải dữ liệu người dùng), nhưng MỌI chuỗi dữ liệu
@@ -2634,87 +2803,223 @@ function quizHomeHtml() {
   // ── Trộn đề ──
   h += quizMixHtml();
 
-  // ── Hiển thị (màu + cỡ chữ) — 27/9/2026 ──
-  h += displaySettingsHtml();
+  // ── Cài đặt (sáng/tối · ghi chú · xuất/chọn file · màu · cỡ chữ · độ sáng) — 27/9/2026 ──
+  // Thay thẻ "Hiển thị" cũ: xem khối "PANEL CÀI ĐẶT" trong <style> và `settingsPanelHtml`.
+  h += settingsPanelHtml();
   return h;
 }
 
-// ── HIỂN THỊ: MÀU (DỊU/CHUẨN/SÁNG) + CỠ CHỮ (NHỎ/CHUẨN/LỚN) — 27/9/2026 ─────────────────────
-// Hai lựa chọn này KHÔNG tự đổi màu hay cỡ chữ ở đây: chúng chỉ gắn/gỡ CLASS (màu lên `<body>`,
-// cỡ chữ lên `<html>` — lý do ở `applyDisp`), còn toàn bộ phần màu và cỡ chữ nằm ở khối
-// "HIỂN THỊ" cuối <style>. JS chỉ giữ trạng thái + nhớ máy.
-// Phân biệt với nút SÁNG/TỐI trên header: nút đó đổi CẢ HAI NỬA bảng màu (theme), còn hai mức ở
-// đây chỉnh TRONG một theme — nên chúng độc lập, nhớ riêng, và không thay thế nhau.
-const TONE_KEY = 'qlno_tone';   // 'diu' | 'chuan' | 'sang'
-const FS_KEY = 'qlno_fs';       // 'nho' | 'chuan' | 'lon'
+// ── CÀI ĐẶT: SÁNG/TỐI · GHI CHÚ · XUẤT FILE · CHỌN FILE · MÀU · CỠ CHỮ · ĐỘ SÁNG — 27/9/2026 ──
+// ("tôi muốn làm icon cài đặt như thế này") Panel này THAY thẻ "Hiển thị" cũ: ba nút Nhỏ/Chuẩn/
+// Lớn đổi thành thang phần trăm có nút −/+, và panel mọc thêm ba hàng mới (Sáng/Tối, Ghi chú,
+// Độ sáng) cùng hai hàng File lấy từ panel Thư viện. Không có kiểu nút mới nào: màu vẫn dùng
+// đúng cặp class "ô đang chọn" của app (`.cfg-seg-btn.on` lấy chính cặp màu của `.quiz-btn.primary`).
+// BỐN MỨC CHỈNH ĐỘC LẬP, nhớ riêng, KHÔNG thay thế nhau — đừng gộp lại cho "gọn":
+//   · SÁNG/TỐI (`toggleTheme`) đổi CẢ HAI NỬA bảng màu (theme). Nút trên header cũng là nó, nên
+//                hàng trong panel và nút trên header là HAI CỬA vào cùng một việc.
+//   · MÀU      (`_tone`)      chỉnh TRONG một theme: độ dịu / tương phản của nền và chữ.
+//   · CỠ CHỮ   (`_fsPct`)     đổi `--fs-unit` cho toàn app.
+//   · ĐỘ SÁNG  (`_bright`)    hệ số `filter: brightness()` cho cả màn hình.
+// MÀU và ĐỘ SÁNG CỐ Ý không gộp dù nghe na ná nhau: MÀU đổi TƯƠNG PHẢN (nền và chữ xích lại gần
+// hay đẩy ra xa nhau), ĐỘ SÁNG chỉ nhân độ chói lên/xuống mà giữ nguyên tương phản. Gộp là mất
+// một trong hai khả năng.
+const TONE_KEY = 'qlno_tone';       // 'diu' | 'chuan' | 'sang'
+const FS_KEY = 'qlno_fs';           // phần trăm dạng chuỗi ('100'); bản cũ ghi 'nho'|'chuan'|'lon'
+const BR_KEY = 'qlno_bright';       // phần trăm dạng chuỗi
+const NOTES_KEY = 'qlno_notes';     // văn bản ghi chú
 const TONE_OPTS = [['diu', 'Dịu'], ['chuan', 'Chuẩn'], ['sang', 'Sáng']];
-const FS_OPTS = [['nho', 'Nhỏ'], ['chuan', 'Chuẩn'], ['lon', 'Lớn']];
+// Thang CỠ CHỮ: 80–150%, bước 10%. `FS_DEF` phải nằm trong thang, và 100% ứng với `--fs-unit: 1px`
+// đúng bằng giá trị khai ở `:root` — mặc định không đổi một pixel nào so với bản cũ.
+const FS_MIN = 80, FS_MAX = 150, FS_STEP = 10, FS_DEF = 100;
+// Thang ĐỘ SÁNG: 60–120%, bước 10%. Trần chỉ 120 vì trên mức đó `brightness()` bắt đầu làm bệt
+// màu cả ảnh — đó là cái bẫy của `filter`: nó không phân biệt "sáng hơn" với "mất tương phản".
+const BR_MIN = 60, BR_MAX = 120, BR_STEP = 10, BR_DEF = 100;
+// Quy đổi ba nút cũ sang thang phần trăm mới: 0,88px → **90%** · 1px → **100%** · 1,13px → **110%**.
+// Bảng này CHỈ ĐỌC: máy nào còn giá trị cũ thì đọc lên đúng một lần, và từ đó về sau chỉ còn số
+// được ghi xuống (xem `stepSetting`) — nên không ai còn phát ra 'nho'/'chuan'/'lon' nữa.
+const FS_LEGACY = { nho: 90, chuan: 100, lon: 110 };
 let _tone = 'chuan';
-let _fs = 'chuan';
+let _fsPct = FS_DEF;
+let _bright = BR_DEF;
+let _notes = '';
 
+// Kẹp về thang + làm tròn về đúng bước. MỌI đường vào đều đi qua đây (bấm +/− ngay trên màn,
+// giá trị đã lưu trong máy, giá trị của bản cũ) nên không phải kiểm lại ở từng chỗ dùng.
+function clampStep(v, min, max, step) {
+  const n = Math.round(v / step) * step;
+  return Math.max(min, Math.min(max, n));
+}
+// Hệ số thật đưa vào `brightness()`. DƯỚI 100% thì đúng tỉ lệ (60% → 0,6). TRÊN 100% thì chỉ đi
+// NỬA nhịp: `1 + (mức−100)/200`, tức 110% → 1,05 và trần 120% → **1,10**.
+// Đây là số ĐO, không phải chọn cho đẹp: ở chế độ SÁNG nền vốn đã gần trắng, nên `brightness(1,2)`
+// đẩy nền lên trắng tuyệt đối VÀ làm chữ mờ hẳn đi — sáng hơn nhưng MẤT TƯƠNG PHẢN, đúng kiểu hỏng
+// mà cả tệp này đang tránh. Nửa nhịp vẫn cho cảm giác "sáng hơn" rõ mà chữ còn đọc được.
+// Nhãn trên màn vẫn là thang quen thuốc 60–120%: người dùng chỉnh theo cảm nhận, không phải theo
+// con số của `filter`.
+function brightFactor(pct) {
+  return pct <= 100 ? pct / 100 : 1 + (pct - 100) / 200;
+}
 function loadDisp() {
   try {
-    const t = localStorage.getItem(TONE_KEY); if (t) _tone = t;
-    const f = localStorage.getItem(FS_KEY); if (f) _fs = f;
+    const t = localStorage.getItem(TONE_KEY);
+    if (t && TONE_OPTS.some(o => o[0] === t)) _tone = t;
+    const f = localStorage.getItem(FS_KEY);
+    // `FS_LEGACY[f]` phải đứng TRƯỚC phép đọc số: 'chuan' cho ra NaN, nên nếu đảo thứ tự thì máy
+    // đang dùng bản cũ sẽ rơi về mặc định và cỡ chữ tự đổi ngay lần mở đầu tiên.
+    if (f != null && f !== '') {
+      const n = FS_LEGACY[f] != null ? FS_LEGACY[f] : parseInt(f, 10);
+      if (!isNaN(n)) _fsPct = clampStep(n, FS_MIN, FS_MAX, FS_STEP);
+    }
+    const b = parseInt(localStorage.getItem(BR_KEY), 10);
+    if (!isNaN(b)) _bright = clampStep(b, BR_MIN, BR_MAX, BR_STEP);
+    const nt = localStorage.getItem(NOTES_KEY);
+    if (nt != null) _notes = nt;
   } catch (e) {}
 }
-// Gắn/gỡ ĐÚNG bốn class, gọi lại bao nhiêu lần cũng vô hại — nhờ vậy dùng được ở cả lúc khởi
-// động lẫn sau mỗi cú bấm. `toggle` (không phải `add`/`remove`) là thứ giữ cho hàm này idempotent.
+// Gắn/gỡ đúng những gì cần cho cả bốn mức, gọi lại bao nhiêu lần cũng vô hại — mọi thao tác ở
+// đây đều idempotent (`toggle` chứ không phải `add`/`remove`, và đặt lại cùng một giá trị thì
+// không đổi gì). Nhờ vậy hàm này dùng được ở cả lúc khởi động lẫn sau mỗi cú bấm.
 function applyDisp() {
   // Màu: gắn lên <body> — các token màu là giá trị tuyệt đối nên ở đâu cũng đúng.
   document.body.classList.toggle('tone-diu', _tone === 'diu');
   document.body.classList.toggle('tone-sang', _tone === 'sang');
-  // Cỡ chữ: gắn lên <html>, KHÔNG phải <body>. `--fs-unit` gần như không dùng trực tiếp; các nấc
-  // chữ đều là `calc(n * var(--fs-unit))` khai ở `:root`, mà giá trị biến tùy chỉnh được tính
-  // NGAY tại phần tử khai nó rồi mới thừa kế xuống. Để `--fs-unit` ở <body> thì `:root` đã tính
-  // xong `--fs-base` = 17px và body chỉ thừa kế lại con số đã chốt — bấm "Lớn" mà chữ không đổi
-  // (đúng lỗi đã gặp và đo được ở lượt làm cơ chế này). Gắn lên <html> thì `--fs-unit` và các nấc
-  // nằm cùng một phần tử, phép tính chạy lại.
-  document.documentElement.classList.toggle('fs-nho', _fs === 'nho');
-  document.documentElement.classList.toggle('fs-lon', _fs === 'lon');
+  // Cỡ chữ: đặt thẳng `--fs-unit` bằng style nội tuyến trên `<html>`, KHÔNG phải `<body>`. Lý do
+  // đầy đủ nằm ở khối ghi chú cạnh hai luật `html.fs-…` vừa bị xoá trong <style>; tóm tắt: mọi
+  // nấc chữ đều là `calc(n * var(--fs-unit))` khai ở `:root`, mà giá trị biến được tính NGAY tại
+  // phần tử khai nó rồi mới thừa kế xuống — nên `--fs-unit` và các nấc phải nằm CÙNG một phần tử
+  // thì phép tính mới chạy lại. Style nội tuyến trên `<html>` thoả đúng điều đó.
+  document.documentElement.style.setProperty('--fs-unit', (_fsPct / 100) + 'px');
+  // Độ sáng: đặt hệ số + bật cờ `has-bright`. Ở đúng 100% thì GỠ cả cờ lẫn biến, trả app về trạng
+  // thái không có `filter` nào — vừa đúng về ý nghĩa, vừa không thêm một lớp kết xuất vô ích cho
+  // cả app chỉ vì người dùng đã từng mở thang này. Xem "ĐỘ SÁNG TOÀN APP" trong <style>.
+  if (_bright === 100) {
+    document.body.classList.remove('has-bright');
+    document.documentElement.style.removeProperty('--bright');
+  } else {
+    document.body.classList.add('has-bright');
+    document.documentElement.style.setProperty('--bright', String(brightFactor(_bright)));
+  }
 }
 // Đọc lại giá trị ĐÃ LƯU ngay từ đầu: nếu để tới `bootApp()` mới áp thì màn ĐĂNG NHẬP và khung
 // nền sẽ hiện bằng mức mặc định rồi mới "nhảy" sang mức người dùng chọn.
 function setupDisp() { loadDisp(); applyDisp(); }
-function setDisp(group, key) {
-  if (group === 'tone') {
-    if (!TONE_OPTS.some(o => o[0] === key)) return;
-    _tone = key;
-  } else {
-    if (!FS_OPTS.some(o => o[0] === key)) return;
-    _fs = key;
-  }
-  try { localStorage.setItem(group === 'tone' ? TONE_KEY : FS_KEY, key); } catch (e) {}
+function setTone(key) {
+  if (!TONE_OPTS.some(o => o[0] === key)) return;
+  _tone = key;
+  try { localStorage.setItem(TONE_KEY, key); } catch (e) {}
   applyDisp();
   // Vẽ lại để ô ĐANG CHỌN đổi màu xanh — cùng cách app đang làm với mọi lựa chọn khác (xem
-  // `useSetAct`). `renderQuiz()` đọc lại `_tone`/`_fs` nên nút mới được tô đúng.
+  // `useSetAct`). `renderQuiz()` đọc lại `_tone` nên nút mới được tô đúng.
   renderQuiz();
 }
-// Một ô trong hàng ba lựa chọn. Dùng lại `ĐÚNG` quy ước "ô đang chọn" của app (`.quiz-btn` +
-// `.primary`) nên không có kiểu nút mới nào được thêm vào tệp: ô đang chọn ăn màu NHẤN, hai ô kia
-// về kiểu viền. `aria-pressed` để trình đọc màn hình nói được ô nào đang bật.
-function dispBtn(group, key, label) {
-  const on = (group === 'tone' ? _tone : _fs) === key;
-  return '<button type="button" class="quiz-btn' + (on ? ' primary' : '') + '"'
-    + ' aria-pressed="' + (on ? 'true' : 'false') + '"'
-    + ' onclick="setDisp(\'' + group + '\',\'' + key + '\')">' + label + '</button>';
+// `kind` = 'fs' (cỡ chữ) hoặc 'bright' (độ sáng); `dir` = +1 hoặc −1.
+// Hai nút ở hai ĐẦU THANG tự khoá qua `disabled` (xem `cfgStepRow`) — nhưng hàm này vẫn kẹp lại:
+// nút khoá là chuyện của GIAO DIỆN, không phải chuyện của DỮ LIỆU. Đặt ngược lại thì một cú bấm
+// lọt qua (bàn phím, mã cũ còn trong bộ nhớ đệm) là ghi được số ngoài thang vào máy.
+function stepSetting(kind, dir) {
+  if (kind === 'fs') {
+    _fsPct = clampStep(_fsPct + dir * FS_STEP, FS_MIN, FS_MAX, FS_STEP);
+    try { localStorage.setItem(FS_KEY, String(_fsPct)); } catch (e) {}
+  } else {
+    _bright = clampStep(_bright + dir * BR_STEP, BR_MIN, BR_MAX, BR_STEP);
+    try { localStorage.setItem(BR_KEY, String(_bright)); } catch (e) {}
+  }
+  applyDisp();
+  renderQuiz();
 }
-function dispRow(group, title, opts) {
-  let h = '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text-dim);margin-bottom:4px">' + title + '</div>';
-  h += '<div class="set-acts set-acts-3" style="margin-top:0">';
-  opts.forEach(o => { h += dispBtn(group, o[0], o[1]); });
-  return h + '</div>';
+// Hàng BẤM ĐƯỢC (mở màn khác / đổi chế độ): là `<button>` nên cả hàng bấm được, và trình đọc màn
+// hình đọc ra đúng MỘT nút. `title` là chỗ để nói rõ "bấm vào thì ra cái gì" — nhãn trong hàng
+// phải ngắn đúng như ảnh người dùng gửi nên không thể nhét lời giải thích vào đó.
+function cfgMenuRow(iconName, label, onclick, title) {
+  return '<button type="button" class="cfg-row" onclick="' + onclick + '"'
+    + (title ? ' title="' + title + '"' : '') + '>'
+    + '<span class="cfg-ico">' + ico(iconName) + '</span>'
+    + '<span class="cfg-row-txt">' + label + '</span></button>';
 }
-function displaySettingsHtml() {
+// Hàng CHỈNH SỐ: là `<div>`, KHÔNG phải `<button>` — hai nút −/+ nằm TRONG hàng nên hàng không
+// được là nút nữa (lồng button trong button là HTML sai và trình duyệt tự tách ra — xem ghi chú
+// `.cfg-row` trong <style>).
+// `disabled` ở hai ĐẦU THANG là dấu hiệu NHÌN THẤY ĐƯỢC rằng đã hết mức, không phải nút hỏng:
+// giấu nút đi thì hàng nhảy qua nhảy lại mỗi lần chạm trần, còn để bấm mà không có gì xảy ra thì
+// người dùng đọc ra là app lỗi.
+// `aria-live="polite"` trên con số để trình đọc màn hình đọc lại giá trị mới sau mỗi cú bấm.
+function cfgStepRow(kind, iconName, label, pct, min, max) {
+  const downCall = "stepSetting('" + kind + "',-1)";
+  const upCall = "stepSetting('" + kind + "',1)";
+  const down = '<button type="button" class="cfg-step-btn" onclick="' + downCall + '"'
+    + ' aria-label="Giảm ' + label + '" title="Giảm"' + (pct <= min ? ' disabled' : '') + '>' + ico('minus') + '</button>';
+  const up = '<button type="button" class="cfg-step-btn" onclick="' + upCall + '"'
+    + ' aria-label="Tăng ' + label + '" title="Tăng"' + (pct >= max ? ' disabled' : '') + '>' + ico('plus') + '</button>';
+  return '<div class="cfg-row">'
+    + '<span class="cfg-ico">' + ico(iconName) + '</span>'
+    + '<span class="cfg-row-txt">' + label + '</span>'
+    + '<span class="cfg-step">' + down
+    + '<span class="cfg-step-val" aria-live="polite">' + pct + '%</span>' + up
+    + '</span></div>';
+}
+// Ba NHÓM, kẻ ngang nằm GIỮA CÁC NHÓM (xem luật `.cfg-group + .cfg-group` trong <style>) — đúng ảnh: một kẻ
+// dưới "Sáng / Tối", một kẻ dưới "Chọn File", không kẻ nào giữa các hàng trong cùng nhóm.
+// Thứ tự nhóm 3 là Màu → Cỡ chữ → Độ sáng: hai hàng chỉnh số đứng CẠNH NHAU để mắt so được hai
+// con số, còn "Màu" là lựa chọn rời rạc nên đứng riêng phía trên.
+function settingsPanelHtml() {
   let h = '<div class="quiz-card">';
-  // Dòng phụ "Chỉnh cho dễ nhìn. Lựa chọn được nhớ trên máy này." đã XOÁ (27/9/2026 — "bỏ các chữ
-  // này"): tiêu đề "Hiển thị" + các nhóm "Màu"/"Cỡ chữ" đã nói đủ. Lề dưới tiêu đề 4px → 10px để
-  // giữ khoảng thở cũ (4px + dòng phụ + 10px) chứ không để tiêu đề dính vào nhãn "Màu".
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:10px">' + ico('sliders') + ' Hiển thị</div>';
-  h += dispRow('tone', 'Màu', TONE_OPTS);
-  h += '<div style="height:10px"></div>';
-  h += dispRow('fs', 'Cỡ chữ', FS_OPTS);
+  // Nhãn mục là CHỮ HOA NHỎ màu mờ đúng như ảnh. Cố ý KHÁC kiểu tiêu đề `--fs-head` của sáu thẻ
+  // còn lại trên trang chủ: đây là tên của cả một PANEL, không phải tiêu đề một nhóm trong thẻ.
+  h += '<div class="cfg-label">Cài đặt</div>';
+  h += '<div class="cfg-group">';
+  h += cfgMenuRow('theme', 'Sáng / Tối', 'toggleTheme()', 'Đổi nền sáng hoặc tối cho cả app');
+  h += '</div>';
+  h += '<div class="cfg-group">';
+  h += cfgMenuRow('note', 'Ghi chú', 'openNotesPanel()', 'Mở ô ghi chú — tự lưu trên máy này');
+  h += cfgMenuRow('fileOut', 'Xuất File', 'exportLibrary()', 'Tải toàn bộ thư viện ra một file sao lưu');
+  h += cfgMenuRow('folder', 'Chọn File', 'pickSetFiles()', 'Nạp bộ đề từ file Excel / CSV / ZIP');
+  h += '</div>';
+  h += '<div class="cfg-group">';
+  h += '<div class="cfg-row"><span class="cfg-ico">' + ico('sliders') + '</span>';
+  h += '<span class="cfg-row-txt">Màu</span><span class="cfg-seg">';
+  TONE_OPTS.forEach(o => {
+    const on = _tone === o[0];
+    h += '<button type="button" class="cfg-seg-btn' + (on ? ' on' : '') + '"'
+      + ' aria-pressed="' + (on ? 'true' : 'false') + '"'
+      + ' onclick="setTone(\'' + o[0] + '\')">' + o[1] + '</button>';
+  });
+  h += '</span></div>';
+  h += cfgStepRow('fs', 'font', 'Cỡ chữ', _fsPct, FS_MIN, FS_MAX);
+  h += cfgStepRow('bright', 'sun', 'Độ sáng', _bright, BR_MIN, BR_MAX);
+  h += '</div>';
   return h + '</div>';
+}
+
+// ── GHI CHÚ (27/9/2026) ───────────────────────────────────────────────────────────────────────
+// Một ô văn bản tự do, lưu vào máy sau MỖI lần gõ. CỐ Ý KHÔNG có nút "Lưu": người dùng sẽ không
+// bấm nó, mà mất chữ vì quên bấm là kiểu mất mát tệ nhất của một ô ghi chú — còn ghi vào
+// `localStorage` ở đây rẻ hơn hẳn một lần vẽ lại màn hình.
+// Dùng lại hộp thoại `#modal` của app (cùng `.modal-overlay` + `#modalBody` với panel Thư viện)
+// nên không thêm lớp phủ nào mới, và nút Đóng dùng đúng mẫu nút ✕ của hai panel kia.
+function openNotesPanel() {
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderNotesPanel();
+}
+function renderNotesPanel() {
+  const body = document.getElementById('modalBody');
+  if (!body) return;
+  let h = '';
+  h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0 4px">';
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui)">' + ico('note') + ' Ghi chú</div>';
+  h += '<button class="quiz-btn" style="padding:6px 10px" onclick="closeModalDirect()" aria-label="Đóng">' + ico('cross') + '</button>';
+  h += '</div>';
+  // Nội dung đi qua `esc()` như MỌI chuỗi dữ liệu khác trong tệp: đây là chữ người dùng nhập và
+  // được ghép thẳng vào HTML nên nó KHÔNG phải chỗ ngoại lệ. (`esc()` cũng chính là thứ chặn chữ
+  // "</textarea>" người dùng gõ vào từ phá vỡ khung.)
+  h += '<textarea id="notesArea" class="notes-area" spellcheck="false" placeholder="Viết gì đó…">' + esc(_notes) + '</textarea>';
+  h += '<div style="font-size:var(--fs-sub);color:var(--text-dim);padding-top:8px;line-height:1.5">Tự lưu trên máy này sau mỗi lần gõ — đóng lại rồi mở vẫn còn.</div>';
+  body.innerHTML = h;
+  const ta = document.getElementById('notesArea');
+  if (ta) ta.addEventListener('input', function () {
+    _notes = ta.value;
+    try { localStorage.setItem(NOTES_KEY, _notes); } catch (e) {}
+  });
 }
 
 // Xem / sửa câu hỏi của một bộ đề
@@ -3991,7 +4296,9 @@ function quizResultHtml() {
     // vừa để trống 25/25 câu vì hết giờ mà được khen là xuất sắc. Nhánh này nói đúng chuyện đã xảy ra.
     h += '<div class="quiz-card" style="text-align:center;color:var(--text-dim);font-size:var(--fs-sub)">' + ico('clock') + ' Hết giờ trước khi làm hết bài — các câu còn lại tính là chưa trả lời.</div>';
   } else {
-    h += '<div class="quiz-card" style="text-align:center;color:var(--green);font-size:var(--fs-sub)">' + ico('check') + ' Không có câu nào sai. Xuất sắc!</div>';
+    // `ico-follow` để dấu ✓ ăn màu `--green` của cả dòng (xem luật `.ico-follow` trong <style>).
+    // Thiếu nó thì icon lấy màu xanh dương dùng chung và lệch với câu chữ "Xuất sắc!" bên cạnh.
+    h += '<div class="quiz-card ico-follow" style="text-align:center;color:var(--green);font-size:var(--fs-sub)">' + ico('check') + ' Không có câu nào sai. Xuất sắc!</div>';
   }
   h += '<div style="height:20px"></div>';
   return h;
@@ -4647,7 +4954,8 @@ function quizStudyHtml() {
       // Giữ lại CÂU CHỮ vì đây là chế độ HỌC — nó nói câu này đã xong và đã sai mấy lần, đúng
       // thứ mà bảng tổng kết của chế độ này đang đếm.
       fbCls += ' show plain';
-      fbTxt = '<span style="color:var(--green)">' + (it.wrongFirst
+      // `ico-follow`: dấu ✓ phải xanh LÁ theo câu chữ, xem luật `.ico-follow` trong <style>.
+      fbTxt = '<span class="ico-follow" style="color:var(--green)">' + (it.wrongFirst
         ?ico('check') + ' Đúng rồi! — câu này bạn đã chọn sai ' + it.tried.length + ' lần trước khi đúng.'
       : ico('check') + ' Chính xác ngay lần đầu!') + '</span>';
       if (it.explain) fbTxt += '<div style="margin-top:5px;color:var(--text-dim)">' + ico('bulb') + ' ' + esc(it.explain) + '</div>';
@@ -4714,7 +5022,8 @@ function studyPick(qi, oi) {
   if (fb) {
     if (it.done) {
       fb.className = 'quiz-fb show plain';
-      let s = '<span style="color:var(--green)">' + (it.wrongFirst
+      // `ico-follow`: y như nhánh vẽ lần đầu ở `renderStudy` — dấu ✓ xanh LÁ theo câu chữ.
+      let s = '<span class="ico-follow" style="color:var(--green)">' + (it.wrongFirst
         ?ico('check') + ' Đúng rồi! — câu này bạn đã chọn sai ' + it.tried.length + ' lần trước khi đúng.'
       : ico('check') + ' Chính xác ngay lần đầu!') + '</span>';
       if (it.explain) s += '<div style="margin-top:5px;color:var(--text-dim)">' + ico('bulb') + ' ' + esc(it.explain) + '</div>';
