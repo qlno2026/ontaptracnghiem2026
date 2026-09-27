@@ -110,7 +110,8 @@
      mắt không tách ra nổi nên bấm nhầm. ĐO của lượt này: ghim `rgb(59,130,246)` · ô số
      `rgba(56,189,248,0.55)` — chỉ cách nhau một nấc trên CÙNG một thang xanh.
      Chọn TÍM vì trong tệp này MỌI hệ màu đã mang nghĩa rồi, không được mượn lại:
-       xanh lá (--ok, --green)   = đáp án ĐÚNG, và viền neon của `.set-dd-btn`
+       xanh lá (--ok, --green)   = đáp án ĐÚNG (ô chọn bộ đề đã RỜI khỏi hệ xanh lá — xem
+                                    ghi chú ở `.set-dd-btn`)
        đỏ (--red, --red-text)    = đáp án SAI
        vàng (--gold)             = CẢNH BÁO / "cập nhật" / tỷ lệ 50–79% (6 chỗ)
        xanh dương + cyan         = ô nhập và nút chính (--accent, --accent-glow, --mix-cyan)
@@ -165,9 +166,11 @@
      sửa `.header` và luật chế độ sáng của nó, đúng hai chỗ đang dùng.) */
   --accent-deep: #1e40af;     /* xanh đậm làm MÀU CHỮ ở chế độ sáng (7,45:1 trên nền đã pha) */
   /* (`--ok` #4ade80 / `--ok-hover` #86efac — cặp viền XANH LÁ NEON của ô chọn bộ đề — và
-     `--mix-cyan` #7dd3fc của ô nhập tỷ lệ % đã bị XOÁ 27/9/2026 cùng lượt tối giản: ô chọn bộ đề
-     giờ dùng viền xám như mọi ô khác, ô nhập tỷ lệ % dùng đúng kiểu ô nhập chuẩn. Xanh lá trong
-     tệp CHỈ còn một nghĩa "đáp án đúng" (`--green` / `--ok-strong` ngay dưới).) */
+     `--mix-cyan` #7dd3fc của ô nhập tỷ lệ % đã bị XOÁ 27/9/2026 cùng lượt tối giản. Ô chọn bộ đề
+     đi qua HAI nấc trong cùng ngày: viền xám như mọi ô, rồi "khi chọn đề nào thì hiển thị màu
+     viền và nền" → viền + nền MÀU NHẤN (`--accent-glow`/`--accent`, xem `.set-dd-btn`), KHÔNG
+     phải xanh lá. Ô nhập tỷ lệ % dùng đúng kiểu ô nhập chuẩn. Xanh lá trong tệp CHỈ còn một
+     nghĩa "đáp án đúng" (`--green` / `--ok-strong` ngay dưới).) */
   --ok-strong: var(--green);  /* viền đáp án ĐÚNG ở chế độ tối (chế độ sáng cần #059669) */
   /* ── HỆ CỠ CHỮ (20/9/2026 — "thêm hệ cỡ chữ") ──────────────────────────────────────
      Trước lượt này app chỉ có HAI nấc thấy được: 17px/500 và 15px/400 — mà 17px/500 bị dùng
@@ -540,7 +543,8 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    bộ đề"): trước đó nút chiếm TRỌN một hàng riêng bên dưới hai dòng chữ, làm thẻ cao thêm ~53px.
    Giờ hai dòng chữ và nút nằm trong CÙNG một hàng flex: chữ bên trái, nút bên phải.
    `min-width: 0` trên khối chữ là BẮT BUỘC — thiếu nó thì cột chữ không chịu co, nó đẩy nút tràn
-   ra ngoài thẻ khi dòng "18 bộ đề · 643 câu hỏi" dài ra. */
+   ra ngoài thẻ khi chữ trong cột dài ra (dòng phụ "18 bộ đề · 643 câu hỏi" đã bỏ 27/9/2026,
+   nhưng tiêu đề vẫn phải co được ở khổ máy hẹp). */
 .lib-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .lib-head-text { min-width: 0; }
 /* Nút trong hàng này chỉ rộng bằng nội dung: `.lib-act` gốc có `flex: 1 1 auto` (để nó lấp đầy
@@ -613,19 +617,30 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
 .set-dd-btn {
   width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
   text-align: left; cursor: pointer;
-  /* Viền XÁM như mọi ô khác (27/9/2026 — trước là cặp viền XANH LÁ NEON `--ok`/`--ok-hover`
-     "đổi sang viền xanh lá neon", 20/9/2026). Viền xanh lá ở một ô CHỌN nằm sát nghĩa "đáp án
-     đúng" của app, mà đây không phải chuyện đúng/sai — đổi sang xám và để màu nhấn làm việc
-     "đang chọn" (hàng đang chọn trong danh sách xổ đã dùng `--accent` sẵn). */
-  padding: 10px; border-radius: 10px; border: 1.5px solid var(--border);
-  background: var(--navy-mid); color: var(--text);
+  /* ── VIỀN + NỀN MÀU NHẤN: NÚT NÀY Ở TRẠNG THÁI “ĐANG CHỌN” (27/9/2026 — "khi chọn đề nào thì
+     hiển thị màu viền và nền") ──
+     Trong nút LÚC NÀO CŨNG có sẵn một bộ đề đang được chọn, nên đây không phải trạng thái bật/tắt
+     mà là màu NHẬN DIỆN thường trực: viền và nền mang màu nhấn ở mọi lúc, không đợi trỏ/bấm.
+     Đây là chỗ DUY NHẤT trong tệp ghép "viền màu nhấn + nền PHA màu nhấn" — mọi ô khác hoặc
+     viền xám, hoặc nền màu ĐẶC như `.quiz-btn.primary` / hàng đang chọn trong danh sách xổ.
+     Lịch sử màu của chính nút này: 20/9/2026 mang cặp viền XANH LÁ NEON `--ok`/`--ok-hover` →
+     27/9/2026 lượt tối giản đổi sang viền XÁM `--border` (để xanh lá không lấn nghĩa "đáp án
+     đúng") → nay lấy lại đúng thứ mà ghi chú cũ đã chỉ: MÀU NHẤN xanh dương, KHÔNG quay lại
+     xanh lá. Đừng "thống nhất lại cho khớp" với --border của các ô khác.
+     Cặp màu lấy ĐÚNG như viền focus của `.quiz-btn`, và vì cùng lý do: `--accent-glow` #60a5fa ở
+     chế độ tối, `--accent` #1d4ed8 ở chế độ sáng. Không dùng thẳng `--accent` cho viền ở chế độ
+     tối: #1d4ed8 là màu dành cho NỀN ĐẶC, đem làm viền 1,5px trên nền #202020 thì chìm. */
+  padding: 10px; border-radius: 10px; border: 1.5px solid var(--accent-glow);
+  background: rgba(96, 165, 250, 0.12); color: var(--text);
   /* Cỡ 17px (19/9/2026 — "tôi muốn tất cả chữ này cỡ 17px", ảnh người dùng khoanh cả nút
      dropdown). Trước đó 15px (bản gốc) → 16px (một lượt trước trong ngày) → 17px. */
   font-family: 'Inter', sans-serif; font-size: var(--fs-base); font-weight: 500;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
+/* Trỏ/bấm chỉ ĐẬM NỀN lên (0,12 → 0,20): viền đã là màu nhấn ngay từ lúc nghỉ nên đổi viền nữa là
+   vô nghĩa. Vẫn phải có một khác biệt NHÌN THẤY được khi trỏ — quy ước của cả tệp. */
 .set-dd-btn:hover, .set-dd-btn:focus {
-  outline: none; border-color: var(--accent-glow);
+  outline: none; background: rgba(96, 165, 250, 0.2);
 }
 /* Nhóm NHÃN + ICON của nút mở (19/9/2026 — "tôi muốn có icon ở bảng này"). Bọc trong một
    flex con vì nút dùng `justify-content: space-between`: không bọc thì icon bị đẩy ra mép trái
@@ -672,15 +687,18 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    mode"). Trước đó cả hai chỗ lấy `var(--text)` = #e2e8f0 — màu chỉ tồn tại trong `:root` (chế độ
    tối), còn `body.light-mode` KHÔNG ghi đè `--text`, nên ở chế độ sáng chữ trắng-xám nằm trên nền
    sáng: nút gần như trống chữ. Đây là lỗi thật đã thấy trong ảnh người dùng gửi, không phải cảm
-   nhận. Đen là màu chữ nền của `body.light-mode` nên khớp cả app. */
+   nhận. Đen là màu chữ nền của `body.light-mode` nên khớp cả app. (`--text-base` bây giờ nằm
+   chung luật với viền/nền màu nhấn ngay dưới.) */
+/* Chế độ sáng phải khai LẠI Ở LÚC NGHỈ, không phải chỉ khi trỏ/bấm: `--accent-glow` #60a5fa là
+   màu chỉ dành cho nền tối, trên nền sáng nó tan vào nền. Viền lấy `--accent` (#1d4ed8) — đúng màu
+   nhấn mà app đã dùng cho viền focus của `.quiz-btn` ở chế độ sáng. Nền pha 8% trên `#e9ecef` cho
+   ra xanh rất nhạt: đủ thấy đây là ô đang chọn mà không phá nền sáng. */
 body.light-mode .set-dd-btn {
-  background: var(--surface-sunken); border-color: var(--border-field); color: var(--text-base);
+  background: rgba(29, 78, 216, 0.08); border-color: var(--accent); color: var(--text-base);
 }
-/* Chế độ sáng phải khai LẠI màu khi trỏ/bấm: `--accent-glow` #60a5fa là màu chỉ dành cho nền tối,
-   trên nền sáng nó gần như tan vào viền xám. Ở đây dùng `--accent` (#1d4ed8) — đúng màu nhấn mà
-   app đã dùng cho viền focus của `.quiz-btn` ở chế độ sáng. */
+/* Trỏ/bấm ở chế độ sáng: đậm nền thêm, y như luật gốc ở trên. */
 body.light-mode .set-dd-btn:hover, body.light-mode .set-dd-btn:focus {
-  border-color: var(--accent);
+  background: rgba(29, 78, 216, 0.16);
 }
 /* Bảng xổ ở CHẾ ĐỘ SÁNG dùng #e9ecef = nền trang, đúng màu bảng xổ của `<select>` cũ. */
 body.light-mode .set-dd-list { background: var(--surface-sunken); border-color: var(--border-light); }
@@ -1065,11 +1083,13 @@ body.light-mode .exam-timebar.low > i { background: var(--red-text); }
 @media (prefers-reduced-motion: reduce) { .exam-timebar > i { transition: none; } }
 /* Ô nhập số phút ở thẻ "Chọn từng bộ đề". `.time-inp` khai SAU `.quiz-input` trong tệp nên
    `flex: none` + bề ngang cố định của nó thắng bề ngang mặc định của lớp nút/ô nhập chung. */
-.time-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+/* 27/9/2026 — thêm `margin-bottom: 10px`: dòng phụ `.time-hint` bên dưới hàng này đã bị xoá ("bỏ
+   các chữ này"), mà chính nó là thứ tạo khoảng thở giữa hàng "phút" và hàng nút bên dưới (còn
+   lại đúng 3px). Lề dưới đặt Ở ĐÂY chứ không ở hàng nút: hàng nút dùng chung với hai thẻ khác. */
+.time-row { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
 .time-lbl { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: var(--fs-sub); color: var(--text-dim); }
 .time-inp { flex: none; width: 74px; text-align: center; font-size: var(--fs-sub); }
 .time-unit { flex: none; font-size: var(--fs-sub); color: var(--text-dim); }
-.time-hint { font-size: var(--fs-note); color: var(--text-dim); margin-top: 3px; line-height: 1.4; }
 
 /* ── MODAL ───────────────────────── */
 .modal-overlay {
@@ -2522,13 +2542,15 @@ function quizHomeHtml() {
 
   // ── Thư viện ──
   h += '<div class="quiz-card">';
-  // Tiêu đề + dòng phụ + nút 📦 nằm CHUNG một hàng (19/9/2026 — "tôi muốn tab thư viện nằm kế thư
-  // viện bộ đề"). Dòng phụ KHÔNG còn `margin-bottom: 9px`: lề đó vốn để tách khỏi nút nằm dưới,
-  // mà nút giờ ở bên cạnh — giữ lại chỉ làm đáy thẻ dày thêm 9px vô ích.
+  // Tiêu đề + nút 📦 nằm CHUNG một hàng (19/9/2026 — "tôi muốn tab thư viện nằm kế thư viện bộ
+  // đề"). Dòng phụ "18 bộ đề · 643 câu hỏi" đã XOÁ (27/9/2026 — "bỏ các chữ này"): con số đó đã
+  // in sẵn ngay dưới tiêu đề trang, nhắc lại ở đây chỉ là lặp. Trường hợp CHƯA có bộ đề nào thì
+  // câu "Chưa có bộ đề nào" không mất — nó nằm ở thẻ hướng dẫn bên dưới (`if (!nQ)`).
+  // Bỏ luôn `margin-bottom: 4px` của tiêu đề: lề đó vốn để tách khỏi dòng phụ, giờ giữ lại chỉ
+  // làm chữ lệch lên 2px so với tâm nút bên cạnh.
   h += '<div class="lib-head">';
   h += '<div class="lib-head-text">';
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:4px">' + ico('book') + ' Thư viện bộ đề</div>';
-  h += `<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text-dim)">${quizLib.length ? quizLib.length + ' bộ đề · ' + nQ + ' câu hỏi' : 'Chưa có bộ đề nào'}</div>`;
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui)">' + ico('book') + ' Thư viện bộ đề</div>';
   h += '</div>';
   // Trang chủ chỉ còn MỘT nút, mở bảng 📦. Nạp file, nạp cả thư mục, sao lưu và
   // phục hồi đều nằm trong bảng đó, nên hai nút “Chọn file”/“Thư mục” đã bị bỏ.
@@ -2685,8 +2707,10 @@ function dispRow(group, title, opts) {
 }
 function displaySettingsHtml() {
   let h = '<div class="quiz-card">';
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:4px">' + ico('sliders') + ' Hiển thị</div>';
-  h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text-dim);margin-bottom:10px;line-height:1.5">Chỉnh cho dễ nhìn. Lựa chọn được nhớ trên máy này.</div>';
+  // Dòng phụ "Chỉnh cho dễ nhìn. Lựa chọn được nhớ trên máy này." đã XOÁ (27/9/2026 — "bỏ các chữ
+  // này"): tiêu đề "Hiển thị" + các nhóm "Màu"/"Cỡ chữ" đã nói đủ. Lề dưới tiêu đề 4px → 10px để
+  // giữ khoảng thở cũ (4px + dòng phụ + 10px) chứ không để tiêu đề dính vào nhãn "Màu".
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:10px">' + ico('sliders') + ' Hiển thị</div>';
   h += dispRow('tone', 'Màu', TONE_OPTS);
   h += '<div style="height:10px"></div>';
   h += dispRow('fs', 'Cỡ chữ', FS_OPTS);
@@ -3072,8 +3096,10 @@ function quizMixHtml() {
   const pctSum = rows.reduce((a, r) => a + r.pct, 0);
   const ok = pctSum === 100 && rows.some(r => r.got > 0);
   let h = '<div class="quiz-card">';
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui)">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
-  h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text-dim);margin:2px 0 12px">Đặt phần trăm cho từng bộ; tổng phải đúng 100%.</div>';
+  // Dòng phụ "Đặt phần trăm cho từng bộ; tổng phải đúng 100%." đã XOÁ (27/9/2026 — "bỏ các chữ
+  // này"): dòng "Tổng tỷ lệ: …%" ngay dưới bảng đã tự báo đủ hay thiếu. Lề dưới tiêu đề 0 → 12px
+  // để giữ khoảng thở cũ (2px + dòng phụ + 12px) chứ không để tiêu đề dính vào hàng nhập.
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:12px">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
   h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">';
   h += '<div style="flex:1;font-size:var(--fs-sub);font-weight:var(--fw-body)">Tổng số câu của bài</div>';
   // Ô nhập trong bảng trộn để cỡ 15px cho BẰNG các chữ xung quanh (yêu cầu 19/9/2026).
@@ -3485,17 +3511,23 @@ function fmtMMSS(ms) {
 function timerWarnMs(totalMs) { return Math.min(TIMER_WARN_MS, Math.max(1000, Math.round(totalMs * 0.2))); }
 function vibrate(pattern) { try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {} }
 
-// Thời gian của đề TRỘN = tổng (số câu lấy ra × phút/câu của CHÍNH BỘ đó). Nhờ vậy hai bộ có
-// "độ khó dài ngắn" khác nhau vẫn cộng lại thành một con số hợp lý, và bộ nào không đặt giới hạn
-// thì đóng góp 0 — chỉ cần MỘT bộ có giới hạn là đề trộn có đồng hồ.
+// Thời gian của đề TRỘN = CỘNG SỐ PHÚT ĐÃ CHỌN của từng bộ có mặt trong đề. Bộ nào không đặt
+// giới hạn thì đóng góp 0 — chỉ cần MỘT bộ có giới hạn là đề trộn có đồng hồ.
+// 27/9/2026 — "chọn tính đúng theo phút, ví dụ chọn 60 phút là đúng 60 phút": chỗ này TRƯỚC ĐÂY
+// chia theo phút/CÂU (`min * 60000 / n * got`), nên bộ 50 câu đặt 60 phút mà đề trộn chỉ lấy 15
+// câu thì đồng hồ chạy ĐÚNG 18 phút — số người dùng gõ bị chia nhỏ theo tỷ lệ. Nay con số đã
+// chọn được dùng NGUYÊN VẸN: lấy 1 câu hay 50 câu của bộ đó cũng đúng bằng số phút đã gõ.
+// Vì sao KHÔNG quay lại cách chia: nó biến "60 phút" thành một con số khác mà người dùng không
+// gõ ở đâu cả, và không cách nào đoán được ý khi đề trộn có nhiều bộ.
+// Trần: tổng bị kẹp ở `TIME_MIN_MAX` phút (mỗi bộ cũng đã bị kẹp ở đó khi đọc, qua `setTimeMin`),
+// nên đề trộn nhiều bộ vẫn không thể dài vô hạn.
 function mixTimeLimitMs(rows) {
-  let ms = 0, any = false;
+  let min = 0;
   (rows || []).forEach(r => {
     if (r.got <= 0) return;
-    const min = setTimeMin(r.set), n = r.set.questions.length;
-    if (min > 0 && n > 0) { any = true; ms += (min * 60000 / n) * r.got; }
+    min += setTimeMin(r.set);
   });
-  return any ? Math.max(1000, Math.round(ms / 1000) * 1000) : 0;
+  return min > 0 ? Math.min(min, TIME_MIN_MAX) * 60000 : 0;
 }
 
 function startExamTimer(limitMs) {
@@ -3597,8 +3629,10 @@ function timeLimitHtml(s) {
     + `<input id="setTimeMin" class="quiz-input time-inp" type="number" min="0" max="${TIME_MIN_MAX}" step="1"`
     + ` value="${v}" inputmode="numeric" title="Số phút làm bài. 0 = không giới hạn." oninput="onTimeMinInput()" onchange="onTimeMinInput()">`
     + '<span class="time-unit">phút</span>'
-    + '</div>'
-    + '<div class="time-hint">0 = không giới hạn · áp dụng cho “Từng câu” và “Cả bộ” (không áp dụng cho “Học”)</div>';
+    // Dòng phụ "0 = không giới hạn · áp dụng cho “Từng câu” và “Cả bộ” (không áp dụng cho “Học”)"
+    // đã XOÁ (27/9/2026 — "bỏ các chữ này"). Ý "0 = không giới hạn" KHÔNG mất: nó vẫn nằm trong
+    // `title` của chính ô nhập ở trên. CSS `.time-hint` đi kèm cũng đã xoá vì hết chỗ dùng.
+    + '</div>';
 }
 
 // ── LÀM BÀI ──
