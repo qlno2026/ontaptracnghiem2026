@@ -1254,15 +1254,43 @@ body.light-mode .exam-timebar > i { background: var(--accent); }
 .exam-timebar.low > i { background: var(--red-text); }
 body.light-mode .exam-timebar.low > i { background: var(--red-text); }
 @media (prefers-reduced-motion: reduce) { .exam-timebar > i { transition: none; } }
-/* Ô nhập số phút ở thẻ "Chọn từng bộ đề". `.time-inp` khai SAU `.quiz-input` trong tệp nên
-   `flex: none` + bề ngang cố định của nó thắng bề ngang mặc định của lớp nút/ô nhập chung. */
+/* Ô nhập số phút — hàng "Tính giờ". `.time-inp` khai SAU `.quiz-input` trong tệp nên
+   `flex: none` + bề ngang cố định của nó thắng bề ngang mặc định của lớp nút/ô nhập chung.
+   28/9/2026 ("dời tab tính giờ xuống tab tổng số câu của bài"): hàng này DỜI từ thẻ
+   "Chọn từng bộ đề" xuống thẻ "Trộn đề theo tỷ lệ", ngay dưới "Tổng số câu của bài". Không luật
+   nào ở khối này phải sửa vì nó vốn không phụ thuộc thẻ chứa — chỉ có khoảng cách là khác
+   (xem mục `margin` bên dưới). */
 /* 27/9/2026 — thêm `margin-bottom: 10px`: dòng phụ `.time-hint` bên dưới hàng này đã bị xoá ("bỏ
    các chữ này"), mà chính nó là thứ tạo khoảng thở giữa hàng "phút" và hàng nút bên dưới (còn
-   lại đúng 3px). Lề dưới đặt Ở ĐÂY chứ không ở hàng nút: hàng nút dùng chung với hai thẻ khác. */
+   lại đúng 3px). Lề dưới đặt Ở ĐÂY chứ không ở hàng nút: hàng nút dùng chung với hai thẻ khác.
+   Số này vẫn đúng ở chỗ MỚI: dưới hàng "Tính giờ" bây giờ là khung `.mix-table`, và 10px là
+   khoảng thở giữa ô nhập và kẻ trên của hàng đầu tiên. Lề TRÊN `4px` thì bị lề dưới 12px của
+   hàng "Tổng số câu của bài" nuốt mất (lề dọc liền nhau gộp thành max(12,4) = 12px) — muốn
+   siết khe đó thì phải hạ số bên hàng "Tổng số câu", không phải hạ số này. */
 .time-row { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
 .time-lbl { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: var(--fs-sub); color: var(--text-dim); }
 .time-inp { flex: none; width: 74px; text-align: center; font-size: var(--fs-sub); }
 .time-unit { flex: none; font-size: var(--fs-sub); color: var(--text-dim); }
+/* Nút 📦 ở cuối hàng "phút" (28/9/2026 — "dời tab thư viện xuống kế ô phút").
+   HAI chỗ phải thắng của lớp gốc, nên selector CỐ Ý là `.time-row .time-lib-btn` (0,2,0) chứ
+   không phải một lớp đơn (0,1,0):
+     - `flex`, vì `.lib-act` gốc là `flex: 1 1 auto` — để nguyên thì trong hàng này nút nong ra
+       chiếm hết chỗ trống và đẩy ô nhập "phút" lệch sang trái;
+     - `padding`, vì `.big-upload-btn.lib-act` khai `11px 10px` ở CÙNG độ ưu tiên (0,2,0), còn
+       `.big-upload-btn` khai `12px 18px`. Ở 18px nút chiếm ~150px và bóp nhãn ô phút xuống
+       nhiều dòng.
+   `10px 8px` là số ĐO, không phải số tròn cho đẹp — cả hai chiều đều có lý do:
+     - dọc 10px → nút cao **40,2px**, BẰNG ĐÚNG ô nhập bên cạnh, nên `align-items: center`
+       không còn lệch nửa li;
+     - ngang 8px → nút rộng **100,2px**. Đây là ngưỡng cuối cùng còn cứu được nhãn "Tính giờ"
+       trên MỘT dòng ở máy 360px, và nó SÁT NÚT: đo được chữ cần **57,05px** trong khi chỗ dành
+       cho chữ là **54,7px lúc padding 10px** (hụt đúng 2,35px) và **58,7px lúc padding 8px**.
+       Nới lại về 10px là nhãn rớt xuống hai dòng ngay — đừng "cho đều" thành `10px 10px`.
+   Vì cùng (0,2,0) nên THỨ TỰ QUYẾT ĐỊNH: khối `.time-*` nằm dưới `.big-upload-btn.lib-act`
+   trong tệp là đúng, ĐỪNG dời luật này lên trên.
+   `white-space: nowrap` an toàn Ở ĐÂY (khác lời cảnh báo cho `.lib-act-row`): nút là `flex: none`
+   nên không bao giờ bị co, nhãn ngắn và cố định — không có nguy cơ tràn chữ. */
+.time-row .time-lib-btn { flex: none; padding: 10px 8px; font-size: var(--fs-sub); white-space: nowrap; }
 
 /* ── MODAL ───────────────────────── */
 .modal-overlay {
@@ -2218,12 +2246,18 @@ body.light-mode.tone-sang {
    Thay thẻ "Hiển thị" cũ (hai hàng ba nút) bằng một panel dạng MENU đúng như ảnh người dùng gửi:
    mỗi việc là một hàng có icon + nhãn ở bên, hai hàng chỉnh số có nút −/+ ở cuối, và KẺ NGANG chỉ
    đặt giữa các NHÓM (dưới "Sáng / Tối", dưới "Chọn File") — không kẻ giữa từng hàng, đúng ảnh.
-   Panel vẫn nằm trong một `.quiz-card` như thẻ cũ nên nó vẫn là một tấm trên trang chủ.
+   (28/9/2026 — "cho tất cả phần cài đặt thành 1 nút": panel RỜI trang chủ, giờ nằm trong hộp
+   thoại `#modal` như panel Thư viện / Ghi chú. Các hàng và nhóm bên dưới KHÔNG đổi một luật nào —
+   chúng vốn đã tự lo màu và nền nên chạy đúng trên nền `.modal`. Trang chủ chỉ còn nút mở panel.)
    HÀNG BẤM ĐƯỢC là `<button>`, HÀNG CHỈNH SỐ là `<div>`: hai nút −/+ nằm TRONG hàng nên hàng đó
    KHÔNG được là `<button>` nữa — lồng button trong button là HTML sai và trình duyệt tự tách ra,
    nút −/+ sẽ văng ra ngoài hàng.
    `first-of-type` KHÔNG dùng được để bỏ kẻ dòng đầu (các hàng vừa là `<button>` vừa là `<div>`
    nên "first of type" là hai phần tử khác nhau) — vì thế kẻ nằm ở NHÓM, xem `.cfg-group`. */
+/* 28/9/2026: `.cfg-label` KHÔNG còn chỗ dùng — nhãn chữ hoa "CÀI ĐẶT" chỉ có nghĩa khi panel nằm
+   lẫn giữa các thẻ trang chủ và cần tự giới thiệu. Trong hộp thoại, tiêu đề đã do
+   `renderSettingsPanel()` đặt bằng đúng khuôn `--fs-head` của hai panel kia, nên giữ thêm nhãn
+   này là hai lần cùng một chữ. Luật để lại (vô hại) vì bộ đo khoảng cách trong tệp còn nhắc tới. */
 .cfg-label {
   font-size: var(--fs-sub); font-weight: 600; letter-spacing: 0.09em;
   text-transform: uppercase; color: var(--text-dim); margin: 0 0 4px 2px;
@@ -2753,10 +2787,12 @@ function normalizeSet(s) {
     id: (s && s.id) ? String(s.id) : quizNewId('s'),
     name: String((s && s.name) || 'Bộ đề'),
     addedAt: (s && s.addedAt) || Date.now(),
-    // `timeMin` = số PHÚT của chế độ thi thử cho bộ này (0 = không giới hạn). Đặt ở đây để MỌI
-    // đường vào thư viện đều đi qua một chốt: nạp từ localStorage, phục hồi từ file sao lưu, và
-    // nạp từ Excel (đường đó không có `timeMin` → 0). Kẹp giá trị ngay tại chốt này vì dữ liệu
-    // có thể đến từ file JSON do người dùng sửa tay. Đọc lại bằng `setTimeMin()`.
+    // `timeMin` = TRƯỜNG CŨ, số PHÚT của chế độ thi thử tính riêng cho bộ này (0 = không giới
+    // hạn). 28/9/2026 giới hạn giờ đã trở thành cài đặt CHUNG (`TIME_KEY`), nên KHÔNG chỗ nào
+    // trong app đọc trường này nữa — nó được giữ lại chỉ để file sao lưu vẫn tròn với bản cũ.
+    // Vẫn giữ ở đây vì mọi đường vào thư viện đều đi qua chốt này (nạp từ localStorage, phục hồi
+    // từ file sao lưu, nạp từ Excel — đường đó không có `timeMin` → 0), nên đây là chỗ duy nhất
+    // bảo đảm nó luôn là số hợp lệ: dữ liệu có thể đến từ file JSON do người dùng sửa tay.
     timeMin: Math.max(0, Math.min(300, parseInt((s && s.timeMin) || 0, 10) || 0)),
     questions: ((s && Array.isArray(s.questions)) ? s.questions : []).map(normalizeQ).filter(Boolean)
   };
@@ -2921,31 +2957,35 @@ function quizHomeHtml() {
     h += '</div>';                     // đóng `.search-wrap`
   }
 
-  // ── Thư viện ──
-  h += '<div class="quiz-card">';
-  // Tiêu đề + nút 📦 nằm CHUNG một hàng (19/9/2026 — "tôi muốn tab thư viện nằm kế thư viện bộ
-  // đề"). Dòng phụ "18 bộ đề · 643 câu hỏi" đã XOÁ (27/9/2026 — "bỏ các chữ này"): con số đó đã
-  // in sẵn ngay dưới tiêu đề trang, nhắc lại ở đây chỉ là lặp. Trường hợp CHƯA có bộ đề nào thì
-  // câu "Chưa có bộ đề nào" không mất — nó nằm ở thẻ hướng dẫn bên dưới (`if (!nQ)`).
-  // Bỏ luôn `margin-bottom: 4px` của tiêu đề: lề đó vốn để tách khỏi dòng phụ, giờ giữ lại chỉ
-  // làm chữ lệch lên 2px so với tâm nút bên cạnh.
-  h += '<div class="lib-head">';
-  h += '<div class="lib-head-text">';
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui)">' + ico('book') + ' Thư viện bộ đề</div>';
-  h += '</div>';
-  // Trang chủ chỉ còn MỘT nút, mở bảng 📦. Nạp file, nạp cả thư mục, sao lưu và
-  // phục hồi đều nằm trong bảng đó, nên hai nút “Chọn file”/“Thư mục” đã bị bỏ.
-  h += '<button class="big-upload-btn lib-act" onclick="openLibPanel()"'
-    + ' title="Nạp file, nạp cả thư mục, đổi tên, xoá, sao lưu, phục hồi">' + ico('archive') + ' Thư viện</button>';
-  h += '</div>';
-  if (!quizLib.length) {
-    h += '<div style="display:flex;gap:8px;margin-top:8px">';
-    h += '<button class="quiz-btn" style="flex:1;min-width:0" onclick="pickRestoreFile()">' + ico('restore') + ' Phục hồi từ file sao lưu</button>';
+  // ── Thư viện ── CHỈ dựng khi CHƯA có câu hỏi nào, và bản thân thẻ giờ KHÔNG còn tiêu đề.
+  // 28/9/2026 — "bỏ chữ thư viện bộ đề, dời tab thư viện xuống kế ô phút": tiêu đề "📚 Thư viện
+  // bộ đề" đã XOÁ và nút 📦 dời xuống hàng "phút" của thẻ "Chọn từng bộ đề" (xem
+  // `timeLimitHtml`). Trước đây thẻ này chỉ còn đúng một hàng chữ + một nút — hai dòng phụ đã bỏ
+  // từ 19/9 và 27/9 — tức một dải gần trống cao ~55px; bỏ hẳn ở trạng thái thường thì màn chính
+  // gọn hơn và bớt được một khung.
+  // VÌ SAO THẺ NÀY VẪN PHẢI CÒN, và vì sao điều kiện là `!nQ` chứ KHÔNG phải `!quizLib.length`:
+  //   - khi `!nQ`, khối "Chọn từng bộ đề" ngay dưới `return` sớm nên hàng "phút" KHÔNG tồn tại;
+  //     thiếu chỗ đứng này thì nút 📦 mất hẳn, và không còn đường nào nạp bộ đề đầu tiên.
+  //   - thư viện có thể có bộ đề RỖNG (0 câu): lúc đó `nQ === 0` mà `quizLib.length > 0` — vẫn cần
+  //     nút 📦, nhưng nút "Phục hồi từ file sao lưu" thì KHÔNG (nó chỉ có nghĩa khi thư viện trắng
+  //     hoàn toàn). Đó đúng là cặp điều kiện cũ, giờ chỉ lồng vào nhau.
+  if (!nQ) {
+    h += '<div class="quiz-card">';
+    h += '<div style="display:flex;gap:8px">';
+    // Trang chủ chỉ còn MỘT nút, mở bảng 📦. Nạp file, nạp cả thư mục, sao lưu và
+    // phục hồi đều nằm trong bảng đó, nên hai nút “Chọn file”/“Thư mục” đã bị bỏ.
+    h += '<button class="big-upload-btn lib-act" onclick="openLibPanel()"'
+      + ' title="Nạp file, nạp cả thư mục, đổi tên, xoá, sao lưu, phục hồi">' + ico('archive') + ' Thư viện</button>';
+    h += '</div>';
+    if (!quizLib.length) {
+      h += '<div style="display:flex;gap:8px;margin-top:8px">';
+      h += '<button class="quiz-btn" style="flex:1;min-width:0" onclick="pickRestoreFile()">' + ico('restore') + ' Phục hồi từ file sao lưu</button>';
+      h += '</div>';
+    }
     h += '</div>';
   }
   // Hai chip "Đảo câu hỏi / Đảo đáp án" đã DỜI khỏi thẻ thư viện (19/9/2026 — "tôi muốn tab đảo câu
-  // hỏi, đảo đáp án dời xuống dưới tab học và câu hỏi") — giờ nằm ở ĐÁY thẻ "📝 Chọn từng bộ đề".
-  h += '</div>';
+  // hỏi, đảo đáp án dời xuống dưới tab học và câu hỏi") — giờ nằm ở ĐÁY thẻ "Chọn từng bộ đề".
 
   if (!nQ) {
     h += '<div class="quiz-card" style="text-align:center;color:var(--text-dim);font-size:var(--fs-sub);line-height:1.6">'
@@ -2953,14 +2993,16 @@ function quizHomeHtml() {
     return h;
   }
 
-  // ── ChỌN từng bộ đề ── (dropdown thay vì list card). Tiêu đề là "Chọn từng bộ đề" từ 19/9/2026
-  // ("đổi tên thi từng bộ đề thành Chọn từng bộ đề") — thẻ này chỉ CHỌN bộ rồi mới bấm nút làm bài,
-  // nên "Chọn" đúng hơn "Thi"; các nút bên trong vẫn là "Từng câu / Cả bộ / Học / Câu hỏi".
+  // ── ChỌN từng bộ đề ── (dropdown thay vì list card) — thẻ này chỉ CHỌN bộ rồi mới bấm nút làm
+  // bài; các nút bên trong vẫn là "Từng câu / Cả bộ / Học / Câu hỏi".
   h += '<div class="quiz-card">';
   // Dòng phụ "Chọn bộ đề trong dropdown rồi bấm nút thi bên dưới." đã XOÁ (19/9/2026 — "tôi muốn bỏ
-  // những chữ này"): chính các nút bên dưới đã nói rõ phải làm gì. Lề dưới của tiêu đề 2px → 10px
-  // để giữ nguyên khoảng thở cũ (2px + dòng phụ + 9px) chứ không để tiêu đề dính vào dropdown.
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:10px">' + ico('list') + ' Chọn từng bộ đề</div>';
+  // những chữ này"): chính các nút bên dưới đã nói rõ phải làm gì.
+  // TIÊU ĐỀ "📝 Chọn từng bộ đề" CŨNG ĐÃ XOÁ (28/9/2026 — "bỏ hàng chữ này"). Thẻ giờ mở đầu
+  // bằng chính dropdown, nên KHÔNG cần `margin-bottom` bù nào: khoảng trên của dropdown là
+  // `padding: 5px` của `.quiz-card` — đúng bằng khoảng mà tiêu đề cũ nhận được trước đây, nhịp
+  // dọc của thẻ không đổi. Tên bộ đề vẫn hiện đầy đủ trên nút dropdown (kèm icon 📚) nên bỏ
+  // tiêu đề không làm mất thông tin nào; `ico('list')` vì thế không còn chỗ dùng ở đây.
   // ── Dropdown chọn bộ đề — TỰ VẼ, không còn <select> (19/9/2026) ──
   // `<select>` gốc không nhận CSS cho bảng xổ xuống nên không thể có kẻ ngang giữa các hàng;
   // xem khối `.set-dd` ở CSS. Cấu trúc: nút mở + danh sách nút nằm đè.
@@ -2987,9 +3029,10 @@ function quizHomeHtml() {
   const selSet = libSet(_libSetId) || quizLib[0];
   if (selSet) {
     const off = selSet.questions.length ? '' : ' disabled';
-    // ── Giới hạn thời gian của bộ đang chọn (27/9/2026) — đặt NGAY TRÊN hàng nút thi vì nó chỉ
-    // có nghĩa với hai nút "Từng câu" và "Cả bộ"; chế độ "Học" cố ý không tính giờ.
-    h += timeLimitHtml(selSet);
+    // Hàng "Tính giờ" KHÔNG còn ở đây (28/9/2026 — "dời tab tính giờ xuống tab tổng số câu của
+    // bài"): nó đã xuống thẻ "Trộn đề theo tỷ lệ" và là một cài đặt CHUNG của cả app, nên đứng
+    // trong thẻ chỉ nói về MỘT bộ đề là sai chỗ. Xem `timeLimitHtml` + `quizMixHtml`.
+    // Chế độ "Học" vẫn cố ý không tính giờ, giờ do `startExam` quyết định chứ không do chỗ này.
     // Dòng "Bộ \"…\" có N câu hỏi" ở đây đã XOÁ (19/9/2026 — "tôi muốn bỏ những chữ này"): số câu
     // đã hiện ngay trên nút dropdown ("Tên (N câu)") và trên từng hàng của danh sách xổ xuống.
     h += '<div class="set-acts">';
@@ -3015,9 +3058,21 @@ function quizHomeHtml() {
   // ── Trộn đề ──
   h += quizMixHtml();
 
-  // ── Cài đặt (sáng/tối · ghi chú · xuất/chọn file · màu · cỡ chữ · độ sáng) — 27/9/2026 ──
-  // Thay thẻ "Hiển thị" cũ: xem khối "PANEL CÀI ĐẶT" trong <style> và `settingsPanelHtml`.
-  h += settingsPanelHtml();
+  // ── Cài đặt — MỘT NÚT (28/9/2026 — "cho tất cả phần cài đặt thành 1 nút") ──
+  // Trước đây chỗ này dựng cả panel CÀI ĐẶT (ba nhóm, tám hàng, cao ~330px) đứng thẳng cuối
+  // trang chủ. Giờ nó dời vào hộp thoại `#modal` như panel Thư viện và Ghi chú, còn trang chủ giữ
+  // đúng MỘT nút. NỘI DUNG không đổi một hàng nào: vẫn `settingsPanelHtml()` dựng, xem
+  // `openSettingsPanel` ngay dưới hàm này.
+  // Nút dùng `.big-upload-btn` cho đồng bộ với tab 📦 Thư viện — cả hai đều là "mở một panel",
+  // khác hẳn bốn nút làm bài (`.quiz-btn` viền xám) ở thẻ trên. `width:100%` là cách ba nút
+  // "Trộn & làm…" vẫn lấp đầy hàng của chúng.
+  // Icon `sliders` là icon duy nhất trong bảng ICONS mang nghĩa "chỉnh số" (xem ghi chú ở đó);
+  // "Cài đặt" viết đúng như nhãn cũ để người dùng không phải học lại chỗ.
+  h += '<div class="quiz-card">';
+  h += '<button type="button" class="big-upload-btn" style="width:100%" onclick="openSettingsPanel()"'
+    + ' title="Sáng/tối, ghi chú, xuất – chọn file, màu nền, cỡ chữ, độ sáng">'
+    + ico('sliders') + ' Cài đặt</button>';
+  h += '</div>';
   return h;
 }
 
@@ -3039,6 +3094,13 @@ const TONE_KEY = 'qlno_tone';       // 'diu' | 'chuan' | 'sang'
 const FS_KEY = 'qlno_fs';           // phần trăm dạng chuỗi ('100'); bản cũ ghi 'nho'|'chuan'|'lon'
 const BR_KEY = 'qlno_bright';       // phần trăm dạng chuỗi
 const NOTES_KEY = 'qlno_notes';     // văn bản ghi chú
+// 28/9/2026 — "Tính giờ" từ nay là MỘT cài đặt CHUNG của cả app, KHÔNG còn riêng từng bộ đề:
+// số phút áp cho mọi bài (kể cả đề trộn), 0 = không giới hạn. Khoá riêng, đọc trong `loadDisp()`
+// như bốn mức hiển thị kia, để mọi cửa vào đều đi qua đúng một chốt.
+// Trường `timeMin` CŨ trên từng bộ đề vẫn được giữ nguyên trong dữ liệu và trong file sao lưu
+// (xem `normalizeSet`, `exportLibrary`) — nó chỉ hết được đọc cho hành vi. Xoá nó đi là phá
+// tương thích file với bản cũ mà không đổi lấy được gì.
+const TIME_KEY = 'qlno_timemin';    // số phút dạng chuỗi ('0' = không giới hạn)
 const TONE_OPTS = [['diu', 'Dịu'], ['chuan', 'Chuẩn'], ['sang', 'Sáng']];
 // ── BIÊN NỀN ĐẬM/NHẠT (28/9/2026) — dùng với `stepBg`/`setNavyVars` (xem cạnh `setTone`) ──────
 // DELTA bù lên ba token nền của chế độ tối, ĐƠN VỊ KÊNH xám (mỗi nấc bấm = ±3 trên 0–255).
@@ -3067,6 +3129,7 @@ let _tone = 'chuan';
 let _fsPct = FS_DEF;
 let _bgAdj = BG_ADJ_DEF;   // DELTA nền đậm/nhạt (chế độ tối) — xem hằng BG_ADJ_* ở trên
 let _bright = BR_DEF;
+let _timeMin = 0;   // số phút của "Tính giờ" — 0 = không giới hạn (đọc/ghi qua `TIME_KEY`)
 let _notes = '';
 
 // Kẹp về thang + làm tròn về đúng bước. MỌI đường vào đều đi qua đây (bấm +/− ngay trên màn,
@@ -3102,6 +3165,10 @@ function loadDisp() {
     if (!isNaN(b)) _bright = clampStep(b, BR_MIN, BR_MAX, BR_STEP);
     const nt = localStorage.getItem(NOTES_KEY);
     if (nt != null) _notes = nt;
+    // Số phút "Tính giờ". Kẹp ở đây luôn (không chỉ lúc gõ) vì giá trị này đến từ máy, và
+    // `TIME_MIN_MAX` đã có sẵn — `setupDisp()` được gọi ở CUỐI tệp nên không dính vùng chết TDZ.
+    const tm = parseInt(localStorage.getItem(TIME_KEY), 10);
+    if (!isNaN(tm)) _timeMin = Math.max(0, Math.min(TIME_MIN_MAX, tm));
   } catch (e) {}
 }
 // Gắn/gỡ đúng những gì cần cho cả bốn mức, gọi lại bao nhiêu lần cũng vô hại — mọi thao tác ở
@@ -3142,6 +3209,9 @@ function setTone(key) {
   // Vẽ lại để ô ĐANG CHỌN đổi màu xanh — cùng cách app đang làm với mọi lựa chọn khác (xem
   // `useSetAct`). `renderQuiz()` đọc lại `_tone` nên nút mới được tô đúng.
   renderQuiz();
+  // `renderQuiz()` KHÔNG vẽ lại hộp thoại Cài đặt, nên khi hộp thoại đang mở phải tự vẽ lại —
+  // thiếu dòng này thì bấm "Dịu" xong ô xanh vẫn đứng ở "Chuẩn" (xem `refreshSettingsIfOpen`).
+  refreshSettingsIfOpen();
 }
 // ── NỀN ĐẬM/NHẠT (28/9/2026) ─────────────────────────────────────────────────────────────────
 // Phục vụ hàng "Nền đậm / nhạt" trên thẻ Tông nền. Nguyên tắc: KHÔNG thêm bảng màu mới — giá
@@ -3205,6 +3275,9 @@ function stepBg(dir) {
   try { localStorage.setItem(BG_ADJ_KEY, String(_bgAdj)); } catch (e) {}
   applyDisp();
   renderQuiz();
+  // Nhãn nấc ("Đậm 2 / Mặc định / Nhạt 1") và việc khoá nút ở hai đầu thang đều nằm trong hộp
+  // thoại — `renderQuiz()` không chạm tới `#modalBody` (xem `refreshSettingsIfOpen`).
+  refreshSettingsIfOpen();
 }
 // `kind` = 'fs' (cỡ chữ) hoặc 'bright' (độ sáng); `dir` = +1 hoặc −1.
 // Hai nút ở hai ĐẦU THANG tự khoá qua `disabled` (xem `cfgStepRow`) — nhưng hàm này vẫn kẹp lại:
@@ -3220,6 +3293,9 @@ function stepSetting(kind, dir) {
   }
   applyDisp();
   renderQuiz();
+  // Con số phần trăm và trạng thái `disabled` của hai nút −/+ chỉ có trong hộp thoại, mà
+  // `renderQuiz()` không đụng `#modalBody` (xem `refreshSettingsIfOpen`).
+  refreshSettingsIfOpen();
 }
 // Hàng BẤM ĐƯỢC (mở màn khác / đổi chế độ): là `<button>` nên cả hàng bấm được, và trình đọc màn
 // hình đọc ra đúng MỘT nút. `title` là chỗ để nói rõ "bấm vào thì ra cái gì" — nhãn trong hàng
@@ -3262,18 +3338,60 @@ function cfgStepRow(kind, iconName, label, pct, min, max) {
 // Thứ tự nhóm 3 (28/9/2026, sau khi thẻ Tông nền dời vào đây) là Màu → Nền đậm/nhạt → Cỡ chữ →
 // Độ sáng: hai hàng về MÀU đứng CẠNH NHAU (chúng là một cặp — tông + độ đậm nền), rồi hai hàng
 // chỉnh số còn lại.
+// ── HỘP THOẠI CÀI ĐẶT (28/9/2026 — "cho tất cả phần cài đặt thành 1 nút") ─────────────────────
+// CHỈ ĐỔI CHỖ Ở, KHÔNG ĐỔI NỘI DUNG: `settingsPanelHtml()` trước đây trả về CẢ một `.quiz-card`
+// đứng cuối trang chủ, kèm nhãn chữ hoa `.cfg-label` "CÀI ĐẶT". Giờ nó chỉ trả NỘI DUNG (ba nhóm)
+// và được `renderSettingsPanel()` đổ vào `#modalBody`; nhãn `.cfg-label` bỏ luôn vì tiêu đề đã
+// nằm ở đầu hộp thoại, giữ thêm là hai lần cùng một chữ.
+// Dùng lại ĐÚNG `#modal` của panel Thư viện và Ghi chú nên không thêm lớp phủ nào mới; tiêu đề +
+// nút ✕ lặp lại nguyên khuôn của `renderNotesPanel()`.
+function openSettingsPanel() {
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderSettingsPanel();
+}
+function renderSettingsPanel() {
+  const body = document.getElementById('modalBody');
+  if (!body) return;
+  let h = '<div id="cfgPanel">';
+  h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0 4px">';
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui)">' + ico('sliders') + ' Cài đặt</div>';
+  h += '<button class="quiz-btn" style="padding:6px 10px" onclick="closeModalDirect()" aria-label="Đóng">' + ico('cross') + '</button>';
+  h += '</div>';
+  h += settingsPanelHtml();
+  h += '</div>';
+  body.innerHTML = h;
+}
+// BẮT BUỘC gọi sau MỖI lần đổi cài đặt: `renderQuiz()` trong các hàm setter CHỈ vẽ lại `#quizPane`,
+// nó không biết gì về `#modalBody` — thiếu bước này thì bấm −/+ xong con số đứng yên và nút ở đầu
+// thang không tự khoá, còn bấm "Dịu / Chuẩn / Sáng" thì ô xanh không nhảy.
+// Nhận diện bằng CHÍNH DOM thay vì một cờ trạng thái "đang mở cái gì": không có cờ nào để lệch,
+// và hộp thoại Thư viện / Ghi chú tự động KHÔNG bị đụng tới vì chúng không có `#cfgPanel`.
+// Phải hỏi CẢ HAI điều kiện: `#cfgPanel` còn nằm lại trong `#modalBody` sau khi đóng (cùng cách
+// hai hộp thoại kia để lại nội dung), nên chỉ hỏi nó là vẽ lại một hộp thoại đang ẩn — vô ích,
+// mà lại ghi đè nội dung đang có bằng một bản dựng mới không cần thiết.
+function refreshSettingsIfOpen() {
+  const m = document.getElementById('modal');
+  if (!m || !m.classList.contains('open')) return;
+  if (!document.getElementById('cfgPanel')) return;
+  renderSettingsPanel();
+}
+
 function settingsPanelHtml() {
-  let h = '<div class="quiz-card">';
-  // Nhãn mục là CHỮ HOA NHỎ màu mờ đúng như ảnh. Cố ý KHÁC kiểu tiêu đề `--fs-head` của sáu thẻ
-  // còn lại trên trang chủ: đây là tên của cả một PANEL, không phải tiêu đề một nhóm trong thẻ.
-  h += '<div class="cfg-label">Cài đặt</div>';
+  let h = '';
   h += '<div class="cfg-group">';
   h += cfgMenuRow('theme', 'Sáng / Tối', 'toggleTheme()', 'Đổi nền sáng hoặc tối cho cả app');
   h += '</div>';
   h += '<div class="cfg-group">';
   h += cfgMenuRow('note', 'Ghi chú', 'openNotesPanel()', 'Mở ô ghi chú — tự lưu trên máy này');
   h += cfgMenuRow('fileOut', 'Xuất File', 'exportLibrary()', 'Tải toàn bộ thư viện ra một file sao lưu');
-  h += cfgMenuRow('folder', 'Chọn File', 'pickSetFiles()', 'Nạp bộ đề từ file Excel / CSV / ZIP');
+  // `closeModalDirect();` đứng TRƯỚC `pickSetFiles()` là bắt buộc, đúng như hàng "Nạp hoặc nạp
+  // lại file bộ đề" trong panel Thư viện: `pickSetFiles()` chỉ bấm hộp chọn file của hệ điều
+  // hành, nên nếu để hộp thoại Cài đặt mở thì (a) trên điện thoại bảng chọn file hiện chồng lên
+  // tấm cài đặt, và (b) chọn xong hộp thoại vẫn còn đó, che mất trang chủ. "Xuất File" thì CỐ Ý
+  // KHÔNG đóng: nó chỉ tải một file xuống, không rời trang, nên đóng panel là cắt ngang việc
+  // người dùng đang làm.
+  h += cfgMenuRow('folder', 'Chọn File', 'closeModalDirect(); pickSetFiles()', 'Nạp bộ đề từ file Excel / CSV / ZIP');
   h += '</div>';
   h += '<div class="cfg-group">';
   // Icon hàng "Màu" đổi sang `palette` (28/9/2026): icon này sinh ra cho thẻ Tông nền ở trang
@@ -3304,7 +3422,7 @@ function settingsPanelHtml() {
   h += cfgStepRow('fs', 'font', 'Cỡ chữ', _fsPct, FS_MIN, FS_MAX);
   h += cfgStepRow('bright', 'sun', 'Độ sáng', _bright, BR_MIN, BR_MAX);
   h += '</div>';
-  return h + '</div>';
+  return h;
 }
 
 // ── GHI CHÚ (27/9/2026) ───────────────────────────────────────────────────────────────────────
@@ -3729,6 +3847,11 @@ function quizMixHtml() {
   // (ô nhập tên là chữ chính, phải giữ 17px/500). Chỉ hai ô của bảng trộn hạ cỡ.
   h += `<input id="mixTotal" type="number" min="1" max="${Math.max(1, totalQuestions())}" class="quiz-input" style="width:88px;text-align:center;font-size:var(--fs-sub)" value="${mixTotalValue()}" oninput="onMixInput()">`;
   h += '</div>';
+  // Hàng "Tính giờ" đứng NGAY DƯỚI "Tổng số câu của bài" (28/9/2026 — "dời tab tính giờ xuống
+  // tab tổng số câu của bài"): hai hàng này cùng một loại — nhãn bên trái, ô số bên phải — và
+  // giờ còn CHUNG một phạm vi, cả hai đều là con số CỦA CẢ BÀI chứ không của riêng bộ nào.
+  // Nút 📦 Thư viện đi kèm trong chính hàng này.
+  h += timeLimitHtml();
   // 18 hàng nằm trong `.mix-table` — khung giữ VIỀN + BO GÓC của cả khối (xem khối .mix-table ở
   // CSS). Nhờ nó, kẻ TRÊN hàng đầu và kẻ DƯỚI hàng cuối là viền của khung nên BO THEO CUNG, còn
   // kẻ giữa các hàng vẫn do từng `.mix-row` tự vẽ ở phía trên.
@@ -4109,19 +4232,26 @@ function openBrowse(setId) {
 
 // ── THI THỬ CÓ ĐẾM NGƯỢC (27/9/2026 — "thêm chế độ thi thử có đếm ngược thời gian cho từng bộ
 //    đề, cảnh báo khi sắp hết giờ") ─────────────────────────────────────────────────────────
-// Giới hạn thời gian thuộc về TỪNG BỘ ĐỀ (`set.timeMin`, đơn vị PHÚT, 0 = không giới hạn) — nó
-// được lưu trong chính thư viện nên đi theo bộ đề qua mọi lần nạp/xuất file. Bộ nào không đặt thì
-// chạy y như cũ, không có đồng hồ nào xuất hiện.
+// Giới hạn thời gian là MỘT cài đặt CHUNG của cả app (`_timeMin`, đơn vị PHÚT, 0 = không giới
+// hạn) — 28/9/2026, người dùng chọn phương án này sau khi yêu cầu dời hàng "Tính giờ" xuống thẻ
+// "Trộn đề theo tỷ lệ": một ô nằm cạnh "Tổng số câu của bài" thì phải có nghĩa như ô kia, tức là
+// con số CỦA CẢ BÀI, chứ không phải của riêng bộ đang chọn trong dropdown.
+// Trước đó nó nằm trên TỪNG BỘ ĐỀ (`set.timeMin`) và đề trộn lấy TỔNG số phút của các bộ góp câu.
+// Đổi luật đó là CỐ Ý: hai con số cùng một hàng mà một cái là của cả bài, một cái là của một bộ
+// thì không còn cách nào nói cho người dùng biết đó là hai phạm vi khác nhau. Đặt 0 thì chạy y
+// như cũ, không có đồng hồ nào xuất hiện.
 const TIME_MIN_MAX = 300;     // trần 300 phút: đủ cho mọi bài thật, vẫn chặn được số gõ lỗ
 const TIMER_TICK_MS = 250;    // đọc 4 lần/giây để số giây không bị "giật" khi vẽ chậm
 const TIMER_WARN_MS = 60000;  // 60 giây cuối → cảnh báo
 let _examTimer = null;        // { totalMs, endAt, warned } — null = không có bài tính giờ nào
 let _examTick = null;         // id của setInterval, chỉ sống trong lúc thi
 
-// Đọc số phút của một bộ đề, đã kẹp trong khoảng hợp lệ. Hàm này là CHỐT DUY NHẤT để đọc
-// `set.timeMin`: dữ liệu thư viện có thể đến từ file JSON của người dùng nên không tin được.
-function setTimeMin(s) {
-  const v = parseInt((s && s.timeMin) || 0, 10);
+// Đọc số phút của "Tính giờ", đã kẹp trong khoảng hợp lệ. Hàm này là CHỐT DUY NHẤT đọc giới hạn
+// thời gian: ô nhập, `startSetExam` và đề trộn đều đi qua đây, nên sửa luật thời gian chỉ có một
+// chỗ. Kẹp LẠI dù `loadDisp()` và `onTimeMinInput()` đã kẹp — đây là hàng rào cuối cho một giá
+// trị có thể đến từ localStorage của máy khác (file HTML này được chép tay qua lại).
+function setTimeMin() {
+  const v = parseInt(_timeMin, 10);
   return (isFinite(v) && v > 0) ? Math.min(TIME_MIN_MAX, v) : 0;
 }
 function fmtMMSS(ms) {
@@ -4133,23 +4263,16 @@ function fmtMMSS(ms) {
 function timerWarnMs(totalMs) { return Math.min(TIMER_WARN_MS, Math.max(1000, Math.round(totalMs * 0.2))); }
 function vibrate(pattern) { try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {} }
 
-// Thời gian của đề TRỘN = CỘNG SỐ PHÚT ĐÃ CHỌN của từng bộ có mặt trong đề. Bộ nào không đặt
-// giới hạn thì đóng góp 0 — chỉ cần MỘT bộ có giới hạn là đề trộn có đồng hồ.
-// 27/9/2026 — "chọn tính đúng theo phút, ví dụ chọn 60 phút là đúng 60 phút": chỗ này TRƯỚC ĐÂY
-// chia theo phút/CÂU (`min * 60000 / n * got`), nên bộ 50 câu đặt 60 phút mà đề trộn chỉ lấy 15
-// câu thì đồng hồ chạy ĐÚNG 18 phút — số người dùng gõ bị chia nhỏ theo tỷ lệ. Nay con số đã
-// chọn được dùng NGUYÊN VẸN: lấy 1 câu hay 50 câu của bộ đó cũng đúng bằng số phút đã gõ.
-// Vì sao KHÔNG quay lại cách chia: nó biến "60 phút" thành một con số khác mà người dùng không
-// gõ ở đâu cả, và không cách nào đoán được ý khi đề trộn có nhiều bộ.
-// Trần: tổng bị kẹp ở `TIME_MIN_MAX` phút (mỗi bộ cũng đã bị kẹp ở đó khi đọc, qua `setTimeMin`),
-// nên đề trộn nhiều bộ vẫn không thể dài vô hạn.
-function mixTimeLimitMs(rows) {
-  let min = 0;
-  (rows || []).forEach(r => {
-    if (r.got <= 0) return;
-    min += setTimeMin(r.set);
-  });
-  return min > 0 ? Math.min(min, TIME_MIN_MAX) * 60000 : 0;
+// Thời gian của đề TRỘN = ĐÚNG số phút của "Tính giờ".
+// 28/9/2026 ("dời tab tính giờ xuống tab tổng số câu của bài"): chỗ này TRƯỚC ĐÂY cộng số phút
+// của từng bộ góp câu. Luật cộng đó chỉ có nghĩa khi giới hạn nằm RIÊNG trên từng bộ đề — nay
+// ô "Tính giờ" đứng cạnh "Tổng số câu của bài" và là một con số của CẢ BÀI, nên cộng lại sẽ cho
+// ra một số chưa từng được gõ ở đâu cả, đúng cái bẫy mà ghi chú 27/9/2026 ngay dưới đã cảnh báo.
+// Vì vậy hàm chỉ còn đổi đơn vị phút → mili giây; đề trộn và bài một bộ dùng CHUNG một con số.
+// Trần `TIME_MIN_MAX` đã được `setTimeMin()` kẹp sẵn nên không phải kẹp lại ở đây.
+function mixTimeLimitMs() {
+  const min = setTimeMin();
+  return min > 0 ? min * 60000 : 0;
 }
 
 function startExamTimer(limitMs) {
@@ -4231,29 +4354,47 @@ function examTimeBarHtml() {
   return '<div class="exam-timebar' + (low ? ' low' : '') + '" id="examTimeBar">'
     + '<i id="examTimeBarFill" style="width:' + (frac * 100).toFixed(2) + '%"></i></div>';
 }
-// Ô nhập số phút của bộ đang chọn ở thẻ "Chọn từng bộ đề". Lưu NGAY mỗi nhịp gõ
-// (cùng cách với các ô của bảng trộn) và KHÔNG gọi `renderQuiz()` — vẽ lại là mất tiêu điểm ô nhập.
+// Ô nhập số phút ở thẻ "Trộn đề theo tỷ lệ". Lưu NGAY mỗi nhịp gõ (cùng cách với các ô của
+// bảng trộn) và KHÔNG gọi `renderQuiz()` — vẽ lại là mất tiêu điểm ô nhập.
+// Không còn `curSet()` trong đường này: cài đặt giờ không thuộc bộ đề nào nên không được phụ
+// thuộc vào việc dropdown đang chọn bộ nào.
 function onTimeMinInput() {
   const el = document.getElementById('setTimeMin');
-  const s = curSet();
-  if (!el || !s) return;
+  if (!el) return;
   const raw = parseInt(el.value, 10);
   const v = isFinite(raw) ? Math.max(0, Math.min(TIME_MIN_MAX, raw)) : 0;
-  if (setTimeMin(s) === v) return;
-  s.timeMin = v;
-  saveLib();
+  if (_timeMin === v) return;
+  _timeMin = v;
+  try { localStorage.setItem(TIME_KEY, String(v)); } catch (e) {}
 }
-function timeLimitHtml(s) {
-  if (!s) return '';
-  const v = setTimeMin(s);
+function timeLimitHtml() {
+  const v = setTimeMin();
   return '<div class="time-row">'
-    + '<label for="setTimeMin" class="time-lbl">' + ico('clock') + '<span>Thi thử có tính giờ</span></label>'
+    // Nhãn rút "Thi thử có tính giờ" → **"Tính giờ"** (28/9/2026 — người dùng chọn phương án
+    // này sau khi đo: hàng này phải chứa thêm nút 📦 nên nhãn cũ 127,7px bị bóp xuống 3 dòng,
+    // kéo hàng cao thêm ~15px). "Tính giờ" ≈ 52px nên VẪN DÙNG ĐƯỢC cả icon 🕐 và nút 📦, và
+    // hàng trở lại đúng chiều cao 40,2px của ô nhập. Ý "thi thử" + "0 = không giới hạn" không
+    // mất: chúng nằm trong `title` của ô nhập ngay dưới. Đồng hồ vẫn do icon 🕐 gánh.
+    + '<label for="setTimeMin" class="time-lbl">' + ico('clock') + '<span>Tính giờ</span></label>'
     + `<input id="setTimeMin" class="quiz-input time-inp" type="number" min="0" max="${TIME_MIN_MAX}" step="1"`
     + ` value="${v}" inputmode="numeric" title="Số phút làm bài. 0 = không giới hạn." oninput="onTimeMinInput()" onchange="onTimeMinInput()">`
     + '<span class="time-unit">phút</span>'
     // Dòng phụ "0 = không giới hạn · áp dụng cho “Từng câu” và “Cả bộ” (không áp dụng cho “Học”)"
     // đã XOÁ (27/9/2026 — "bỏ các chữ này"). Ý "0 = không giới hạn" KHÔNG mất: nó vẫn nằm trong
     // `title` của chính ô nhập ở trên. CSS `.time-hint` đi kèm cũng đã xoá vì hết chỗ dùng.
+    // ── Nút 📦 Thư viện (28/9/2026 — "dời tab thư viện xuống kế ô phút", rồi đi theo hàng này
+    //    xuống thẻ "Trộn đề theo tỷ lệ" theo yêu cầu "dời tab tính giờ xuống tab tổng số câu của
+    //    bài") ──
+    // Nút đi CÙNG hàng với ô phút vì cả hai đều là thứ chỉ liên quan tới VIỆC LÀM BÀI, không
+    // liên quan tới thẻ nào; tách ra là phải thêm một hàng nút riêng ở đâu đó. Hàng này chỉ có
+    // một ô nhập ngắn bên trái, còn lại là khoảng trống, và nhãn "Tính giờ" co được
+    // (`min-width:0`) nên cửa sổ hẹp thì nó tự xuống dòng chứ nút KHÔNG bị bóp.
+    // Nút cố ý dùng lại `.big-upload-btn.lib-act` để vẫn là ĐÚNG cái tab xanh đó.
+    // CẢNH BÁO PHẠM VI: nút chỉ sống khi thẻ "Trộn đề theo tỷ lệ" được dựng, tức khi có ít nhất
+    // một bộ đề CÓ CÂU HỎI. Trường hợp `!nQ` không dựng thẻ đó, nên thẻ 📦 ở `quizHomeHtml` vẫn
+    // giữ một nút y hệt — sửa nhãn hay `onclick` ở đây thì PHẢI sửa cả chỗ đó, kẻo hai nút lệch.
+    + '<button type="button" class="big-upload-btn lib-act time-lib-btn" onclick="openLibPanel()"'
+    + ' title="Nạp file, nạp cả thư mục, đổi tên, xoá, sao lưu, phục hồi">' + ico('archive') + ' Thư viện</button>'
     + '</div>';
 }
 
@@ -4285,7 +4426,7 @@ function startSetExam(setId, mode) {
   const s = libSet(setId);
   if (!s || !s.questions.length) { alert('Bộ đề này chưa có câu hỏi.'); return; }
   _libSetId = s.id;
-  startExam(s.questions, s.name, mode, setTimeMin(s) * 60000);   // tên đầy đủ — không còn rút gọn ở màn hẹp
+  startExam(s.questions, s.name, mode, setTimeMin() * 60000);   // tên đầy đủ — không còn rút gọn ở màn hẹp
 }
 
 function replayExam() { if (_exam) startExam(_exam.questions, _exam.title, _exam.mode, _exam.limitMs); }
@@ -4304,7 +4445,7 @@ function mixExam(mode) {
   shuffleArr(picked);
   // Tiêu đề này được `esc()` khi in ra (xem `quizPlayHtml`), nên KHÔNG đặt icon SVG vào đây được —icon sẽ bị thoát thành chữ. Đặt chữ không.
   // Đề trộn cũng tính giờ được — xem `mixTimeLimitMs()` ở khối THI THỬ CÓ ĐẾM NGƯỢC.
-  startExam(picked, 'Trộn đề · ' + picked.length + ' câu', mode, mixTimeLimitMs(rows));
+  startExam(picked, 'Trộn đề · ' + picked.length + ' câu', mode, mixTimeLimitMs());
 }
 
 function answerQuiz(i) {
@@ -4939,7 +5080,11 @@ function exportLibrary() {
         addedAt: s.addedAt,
         // Giới hạn thời gian đi theo bộ đề qua file sao lưu (0 = không giới hạn). Thiếu dòng này
         // thì phục hồi xong mọi bộ về "không tính giờ" mà không ai biết vì sao.
-        timeMin: setTimeMin(s),
+        // Trường `timeMin` theo TỪNG BỘ trong file sao lưu giữ NGUYÊN giá trị cũ của bộ đó, KHÔNG
+        // ghi `setTimeMin()` vào đây: giới hạn giờ từ 28/9/2026 là cài đặt chung, nhét cùng một
+        // con số vào cả 18 bộ đề là gieo vào file một dữ liệu trông như thể mỗi bộ có giờ riêng.
+        // Bản cũ đọc file này vẫn hiểu đúng như trước; bản này thì không đọc trường đó nữa.
+        timeMin: (s && s.timeMin) || 0,
         questions: s.questions.map(function (q) {
           return { q: q.q, options: q.options.slice(), correct: q.correct, explain: q.explain || '' };
         })
