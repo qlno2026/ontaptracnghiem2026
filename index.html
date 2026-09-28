@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- Màu thanh trạng thái trên điện thoại (Android). #0f1b2d → #202020 (27/9/2026) → #2c2c2c
-     (28/9/2026) → **#373737** (28/9/2026 lần 2 — kéo nền tối sáng thêm một nấc nữa; vẫn đi theo
-     `--navy-mid`) cho khớp nền header MỚI ở
+     (28/9/2026) → #373737 (28/9/2026 lần 2) → #2c2c2c (28/9/2026 lần 3 — "chỉnh màu nền xám
+     đen dark mode") → **#292929** (28/9/2026 lần 5 — "đen hơn 1 tí": cả dải tối lùi −3 kênh,
+     meta theo `--navy-mid`)
+     cho khớp nền header MỚI ở
      chế độ tối — xem `.header`. Meta này không đổi theo theme được, nên lấy màu của chế độ tối,
      đúng nền xám đậm của app. -->
-<meta name="theme-color" content="#373737">
+<meta name="theme-color" content="#292929">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -66,8 +68,30 @@
        chữ chính #cbd5e1 trên nền #2f2f2f **9,0:1** · trên thẻ #373737 **8,0:1**
        chữ phụ   #94a3b8 trên thẻ #373737 **4,65:1** (sát ngưỡng — CHỚ nâng nền thêm nữa mà
                  không nâng theo `--text-dim`). */
-  --navy: #2f2f2f;
-  --navy-mid: #373737;
+  /* ── 28/9/2026, LẦN 3 — "chỉnh màu nền xám đen dark mode" ──────────────────────────────────
+     LÙI VỀ ĐÚNG MỘT NẤC (−12 mỗi kênh, đảo lại đúng nấc lần 2) vì tông Chuẩn hiện tại vẫn SÁNG
+     quá so với "xám đen" người dùng muốn: #2f2f2f → **#232323**; `--navy-mid` TÍNH LẠI bằng
+     công thức cũ chứ không cộng bừa: #232323 (35) hoà 4% trắng = 35 + 0,04 × 220 ≈ 44 = #2c2c2c.
+     Ba tông `body.tone-…` dời cùng nấc nên THỨ TỰ vẫn nguyên: Dịu #282828 > Chuẩn #232323 >
+     Sáng #1d1d1d. ĐO LẠI trên nền MỚI — chiều lùi NỀN TỐI ĐI thì mọi mốc TỐT LÊN, KHÔNG phải
+     nâng màu chữ nào (đúng như lần 1 đã cảnh báo "chớ nâng nền thêm nữa" — giờ đi chiều ngược):
+       chữ chính  #cbd5e1 trên nền #232323 **10,6:1** · trên thẻ #2c2c2c **9,4:1**
+       chữ phụ   #94a3b8 trên thẻ #2c2c2c **5,4:1** — hết cảnh báo "sát ngưỡng 4,65:1" của lần 2
+       chữ đáp án #9fadc0 trên tấm #333333 **5,5:1** (lần 2 chỉ 4,69:1)
+       chữ câu hỏi #cbd5e1 trên tấm #333333 **8,5:1** — cặp câu hỏi/đáp án vẫn cách rõ
+     `--card` rgba(255,255,255,0.04) tự chạy theo nền trang, không đụng tới.
+     LẦN 4 (cùng ngày, "nâng nhẹ tông Sáng cho đỡ sát đen"): Sáng được nâng RIÊNG
+     #1d1d1d → #202020 — vẫn đứng dưới Chuẩn #232323 nên thứ tự ba tông không đổi.
+     LẦN 5 (cùng ngày, "cho nền dark mode đen hơn 1 tí") — đảo lại nấc lần 4: CẢ BA tông lùi
+     ĐỒNG LOẠT −3 mỗi kênh ("1 tí", không phải nấc −12 của lần 1–3):
+       Dịu #252525 > Chuẩn **#202020** > Sáng #1d1d1d — thứ tự nguyên, Sáng về đúng #1d1d1d của
+       lần 3 (trần của Sáng là Chuẩn; Chuẩn lùi thì Sáng phải lùi theo).
+     ĐO LẠI (tông Chuẩn) — nền lùi tối đi thì mọi mốc TỐT LÊN, KHÔNG phải nâng màu chữ nào:
+       chữ chính  #cbd5e1 trên nền #202020 **11,0:1** · trên thẻ #292929 **9,8:1**
+       chữ phụ   #94a3b8 trên thẻ **5,7:1** · chữ đáp án #9fadc0 trên tấm #303030 **5,8:1**
+     Chế độ SÁNG không thấy khối này (nó đè lại mọi bề mặt trong `body.light-mode`). */
+  --navy: #202020;
+  --navy-mid: #292929;
   /* Màu xanh chính (nút, huy hiệu A/B/C/D, thanh tiến độ). Đã ĐẬM hơn theo yêu cầu
      18/9/2026: #3b82f6 → #1d4ed8 — hồi đó chọn cho cùng sắc với đầu dải gradient của .header.
      (Dải gradient đó đã bị BỎ 27/9/2026 "bảng header bỏ màu xanh đổi sang màu giống với các
@@ -140,7 +164,9 @@
                           vào nhau.
                           TRẦN: nấc tiếp theo (#a8b3c4 rồi tới trắng) làm đáp án ngang cỡ chữ câu hỏi
                           — mất luôn tương phản CỐ Ý giữa hai dòng. Muốn vượt #94a3b8 thì phải nói rõ
-                          đánh đổi đó cho người dùng. */
+                          đánh đổi đó cho người dùng.
+                          28/9/2026 LẦN 3: nền lùi về một nấc (tấm #3e3e3e → **#333333**), giữ
+                          nguyên #9fadc0 — đo lại **5,5:1**, dư địa thoải mái hơn nấc 4,69:1 vừa qua. */
   --q-text: #cbd5e1;   /* chữ CÂU HỎI ở chế độ tối. 20/9/2026 — hạ CÙNG nấc với `--text`
                           (#e2e8f0 → #cbd5e1). Hai token này là cùng MỘT vai trò "chữ chính", chỉ khác
                           chỗ dùng, nên lệch nấc là chữ câu hỏi sáng hơn mọi chữ khác trên màn và
@@ -149,11 +175,12 @@
                           Ở chế độ sáng là #1f2937 (xám RẤT ĐẬM) — đã đi qua hai nấc theo yêu cầu:
                           đen mặc định → xanh dương đậm #1e3a8a → xám đậm #1f2937.
                           Muốn đậm hơn nữa thì dùng #111827 (xám 900). */
-  --set-box-bg: #3e3e3e;   /* nền hộp từng bộ đề — xám THUẦN ĐẬM ở chế độ tối (đổi từ #262a33
+  --set-box-bg: #303030;   /* nền hộp từng bộ đề — xám THUẦN ĐẬM ở chế độ tối (đổi từ #262a33
                               cùng lượt với --navy #171717 và tấm đáp án #262626, 19/9/2026;
-                              NÂNG #262626 → #333333 → **#3e3e3e** (28/9/2026, hai nấc liên tiếp) —
-                              cả hai lượt đều đọc khối đo ở `--navy`),
-                              GIỮ NGUYÊN quan hệ cũ: vẫn NHỈNH lên trên thẻ #373737,
+                              NÂNG #262626 → #333333 → #3e3e3e (28/9/2026, hai nấc) rồi LÙI VỀ
+                              #333333 (lần 3 — "xám đen dark mode") rồi **#303030** (lần 5 —
+                              "đen hơn 1 ti", −3 kênh cùng cả dải; đọc khối đo ở `--navy`)),
+                              GIỮ NGUYÊN quan hệ cũ: vẫn NHỈNH lên trên thẻ #292929,
                               xám nhạt ở chế độ sáng (body.light-mode đè lại) */
   --border: rgba(255,255,255,0.22);   /* viền ô ở chế độ tối: rõ hơn 0.08 cũ */
   /* Viền nút GHIM (📌) — TÍM, và ĐÂY LÀ LÝ DO NÓ KHÔNG CÒN XANH DƯƠNG (21/9/2026 —
@@ -851,7 +878,8 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
        R = G = B. Tấm này lấy ĐÚNG màu tấm trong ảnh mẫu, và trùng lại với --set-box-bg).
        Tấm/thẻ = 1.08:1; chữ đáp án #8394a9 trên tấm mới = **4.88:1** — vẫn trên ngưỡng 4.5:1.
      Chế độ sáng đè lại bằng luật body.light-mode .quiz-opt ngay bên dưới. */
-  background: #3e3e3e; /* 28/9/2026: #262626 → #333333 → #3e3e3e, đi theo --set-box-bg cho khỏi đen */ color: var(--answer);
+  background: #303030; /* 28/9/2026: #262626 → #333333 → #3e3e3e → #333333 (lần 3) → **#303030**
+                          (lần 5 — "đen hơn 1 tí"), đi theo --set-box-bg; chữ đáp án đo lại **5,8:1** */ color: var(--answer);
   font-family: 'Inter', sans-serif; font-size: var(--fs-lead); line-height: 1.5;
   font-weight: 500;   /* câu trả lời: 16px, nét 500 */
   cursor: pointer;
@@ -2041,17 +2069,22 @@ body.light-mode .arc-item { background: var(--surface-card) !important; border-c
    MÀU NHẤN (`--accent`) CỐ Ý giữ nguyên ở cả ba mức: đổi nó theo là mỗi mức có một hệ nút khác
    nhau, trong khi người dùng chỉ muốn chỉnh độ dịu của nền/chữ. */
 body.tone-diu {
-  --navy: #343434;      /* 28/9/2026: #1c1c1c → #282828 → #343434 (hai nấc — xem khối đo ở `--navy`) */
-  --navy-mid: #3c3c3c;  /* = --navy hoà 4% trắng: 52 + 0,04 × 203 ≈ 60 = #3c3c3c */
-  --set-box-bg: #434343;
+  --navy: #252525;      /* 28/9/2026: #1c1c1c → #282828 → #343434 → #282828 (lần 3) → **#252525**
+                          (lần 5 — "đen hơn 1 ti": cả ba tông lùi đồng loạt −3 kênh; vẫn SÁNG hơn
+                          tông Chuẩn #202020 nên thứ tự ba tông không đổi) */
+  --navy-mid: #2e2e2e;  /* = --navy hoà 4% trắng: 37 + 0,04 × 218 ≈ 46 = #2e2e2e */
+  --set-box-bg: #353535;
   --text: #b6c0cc;
   --text-dim: #9ca8b5;  /* LẦN 2: #8d99a6 → #9ca8b5 — thẻ lên #3c3c3c, chữ phụ #8d99a6 tụt xuống
                           3,80:1; nấc mới đo lại **4,56:1**. Ghi chú "Dịu" ở trên nói CẢ BA mức phải
                           vượt 4,5:1 ("bớt chói, không phải bớt đọc được") — nấc cũ đã sát ngưỡng
-                          (4,49:1) nên phải chỉnh theo, không để nguyên. */
+                          (4,49:1) nên phải chỉnh theo, không để nguyên. LẦN 3: thẻ lùi về #313131,
+                          giữ nguyên #9ca8b5 — đo lại **5,4:1**. LẦN 5: thẻ #2e2e2e → **5,6:1**. */
   --answer: #a6b3c6;    /* LẦN 2: #8d99a6 → #a6b3c6 — tấm #434343 sáng lên nên chữ đáp án phải
                           sáng theo (đo lại 4,66:1). TRƯỚC lượt này nó đã dưới ngưỡng (3,41:1 trên
-                          tấm #383838) — lượt này sửa luôn chứ không để nguyên. */
+                          tấm #383838) — lượt này sửa luôn chứ không để nguyên. LẦN 3: tấm lùi về
+                          đúng #383838, giữ nguyên #a6b3c6 — đo lại **5,5:1**. LẦN 5: tấm
+                          #353535 → **5,8:1**. */
   --q-text: #c3ccd6;
   --border: rgba(255,255,255,0.18);
 }
@@ -2083,10 +2116,16 @@ body.light-mode.tone-diu {
   --q-text: #333d4b;
 }
 body.tone-sang {
-  --navy: #292929;      /* 28/9/2026: #101010 → #1d1d1d → #292929 — vẫn ĐẬM NHẤT trong ba tông
-                          nhưng hết đen (hai nấc) */
-  --navy-mid: #323232;  /* = --navy hoà 4% trắng: 41 + 0,04 × 214 ≈ 50 = #323232 */
-  --set-box-bg: #3a3a3a;
+  --navy: #1d1d1d;      /* 28/9/2026: #101010 → #1d1d1d → #292929 → #1d1d1d (lần 3) → #202020
+                          (lần 4 — "nâng nhẹ cho đỡ sát đen") → **#1d1d1d** (lần 5 — "đen hơn 1 ti":
+                          cả ba tông lùi đồng loạt −3 kênh nên nấc lần 4 bị ĐẢO LẠI; trần của tông
+                          này là Chuẩn #202020, không thể giữ #202020 khi Chuẩn cũng là #202020.
+                          ĐO LẠI: chữ chính #f1f5f9 trên nền **15,4:1**, trên thẻ #262626 **13,8:1**;
+                          chữ phụ/đáp án #a9b5c4 trên thẻ **7,3:1**, trên tấm #2d2d2d **6,6:1**.
+                          GHI CHÚ về "ám xanh đen": bảng màu là xám THUẦN R = G = B nên không có
+                          sắc xanh để gỡ — cảm giác ám xanh là của nền QUÁ TỐI) */
+  --navy-mid: #262626;  /* = --navy hoà 4% trắng: 29 + 0,04 × 226 ≈ 38 = #262626 */
+  --set-box-bg: #2d2d2d; /* = --navy + 16, đúng quan hệ hai tông còn lại (Dịu #35, Chuẩn #30) */
   --text: #f1f5f9;
   --text-dim: #a9b5c4;
   --answer: #a9b5c4;
@@ -2200,6 +2239,24 @@ body.light-mode .cfg-step-btn:disabled { color: var(--text-dim); }
   font-family: 'Inter', sans-serif; font-size: var(--fs-sub); font-weight: 500;
 }
 .cfg-seg-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+/* ── THẺ "TÔNG NỀN" TRÊN TRANG CHỦ (28/9/2026) ────────────────────────────────────────────────
+   Thẻ mảnh đầu trang: một hàng ba nút Dịu/Chuẩn/Sáng + (thêm cùng ngày) hàng chỉnh NỀN ĐẬM NHẠT —
+   đường tắt của hàng "Màu" trong panel
+   Cài đặt, KHÔNG phải bộ điều khiển thứ hai: cùng `setTone()`, cùng storage, cùng nút tô xanh.
+   Ba nút chia đều bề ngang thẻ (`flex:1`) khác panel (nút co theo chữ) vì đây là mục CHÍNH của
+   thẻ chứ không phải một ô phụ trong hàng menu; padding 9px cho vùng chạm đủ ~36px cao.
+   Chế độ sáng không cần luật riêng: `.cfg-seg-btn` lấy màu từ token (`--text-dim` được khai lại
+   sẵn, nút `.on` là cặp `--accent`/`--on-accent` của `.quiz-btn.primary`). */
+.tone-card { text-align: left; }
+.tone-card .cfg-seg { display: flex; width: 100%; }
+.tone-card .cfg-seg-btn { flex: 1; padding: 9px 4px; text-align: center; }
+/* Hàng "Nền đậm / nhạt" trong thẻ Tông nền (28/9/2026): tái dùng đúng bộ luật `.cfg-step` của
+   panel Cài đặt (số `tabular-nums`, nút tự khoá hai đầu thang) nhưng GỌN hơn — thẻ này nằm đầu
+   trang phải thấp, không phải panel cuộn riêng: nút 28px, số co theo chữ và màu mờ.
+   `margin-top: 6px` là khe duy nhất tách hai hàng trong thẻ (`.cfg-row` không có lề riêng). */
+.tone-adj-row { margin-top: 6px; }
+.tone-adj-row .cfg-step-btn { width: 28px; height: 28px; border-radius: 8px; }
+.tone-adj-row .cfg-step-val { min-width: 0; color: var(--text-dim); }
 
 /* ── ĐỘ SÁNG TOÀN APP (27/9/2026 — cùng lượt với panel Cài đặt) ────────────────────────────────
    `filter: brightness()` đặt trên BỐN KHỐI GỐC của giao diện, KHÔNG đặt trên `<html>`/`<body>`.
@@ -2546,6 +2603,11 @@ const ICONS = {
   // `sun` = mặt trời có tám tia (độ sáng). CỐ Ý khác `theme` (vành + sao) dù hai hàng nằm gần
   // nhau: một cái là "đổi cả bảng màu", một cái là "tăng giảm độ chói" — hai việc khác nhau.
   sun:     '<circle cx="12" cy="12" r="4.3"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/>',
+  // `minus` = gạch ngang (giảm). `palette` = bảng màu có các chấm màu + cần trộn (28/9/2026) —
+  // icon của thẻ "Tông nền" trên trang chủ. CỐ Ý khác `theme` (vành + sao, đổi SÁNG/TỐI) dù hai
+  // hàng nằm gần nhau: một cái là "đổi cả nền sáng/tối cho app", một cái là "chọn tông xám của
+  // nền tối" — hai việc khác nhau, và `sliders` (thanh trượt) đã dành cho đúng nghĩa "chỉnh số".
+  palette: '<circle cx="12" cy="12" r="8.6"/><circle cx="9.4" cy="9.4" r="1.15"/><circle cx="14.6" cy="9.4" r="1.15"/><circle cx="9.4" cy="14.6" r="1.15"/><path d="M12 16.6a4.6 4.6 0 0 0 4.6-4.6"/>',
   minus:   '<path d="M5.6 12h12.8"/>'
 };
 // `ico('play')` → một thẻ <svg> đã sẵn sàng chèn vào chuỗi HTML. KHÔNG bọc `esc()` cho kết quả
@@ -2811,6 +2873,10 @@ function quizHomeHtml() {
   const nQ = totalQuestions();
   let h = '';
 
+  // ── Tông nền ── (28/9/2026) thẻ MỎNG ĐẦU TRANG: chuyển nhanh Dịu / Chuẩn / Sáng không cần vào
+  // panel Cài đặt. Hiện cả khi thư viện trống — chỉnh hiển thị không phụ thuộc dữ liệu.
+  h += toneCardHtml();
+
   // ── Thanh tìm kiếm ── (NGOÀI thẻ, ngay dưới thanh xanh trên cùng)
   if (quizLib.length) {
     // `.search-field` là gốc định vị CHỈ cho ô nhập (icon 🔍 bên trái, nút ✕ bên phải). Không thể
@@ -2948,6 +3014,17 @@ const FS_KEY = 'qlno_fs';           // phần trăm dạng chuỗi ('100'); bả
 const BR_KEY = 'qlno_bright';       // phần trăm dạng chuỗi
 const NOTES_KEY = 'qlno_notes';     // văn bản ghi chú
 const TONE_OPTS = [['diu', 'Dịu'], ['chuan', 'Chuẩn'], ['sang', 'Sáng']];
+// ── BIÊN NỀN ĐẬM/NHẠT (28/9/2026) — dùng với `stepBg`/`setNavyVars` (xem cạnh `setTone`) ──────
+// DELTA bù lên ba token nền của chế độ tối, ĐƠN VỊ KÊNH xám (mỗi nấc bấm = ±3 trên 0–255).
+// Âm = ĐẬM hơn tông, 0 = đúng màu tông, dương = NHẬT hơn.
+// Biên CHỌN THEO NGƯỠNG TƯƠNG PHẢN (đo trên tông Chuẩn, chữ phụ #94a3b8 trên thẻ là mốc YẾU
+// nhất): NHẬT bị chặn ở +12 vì qua đó mốc đó tụt dưới 4,5:1 (ở +12 còn **4,78:1**); ĐẬM không
+// vướng tương phản nào (mọi mốc đều TĂNG khi nền lùi) nên cho tới −18 — đủ nhiều nấc cho kiểu
+// "đen hơn 1 tí" mà chưa đen tuyệt đối. Bù tự do CÓ THỂ làm hai tông chèn lên nhau (Nhạt tối đa
+// ở Sáng vượt cả Dịu) — chấp nhận: bù là chỉnh mịn của người dùng trên tông ĐANG xem, không phải
+// dữ liệu; đổi tông là quay về thang chuẩn của tông đó.
+const BG_ADJ_MIN = -18, BG_ADJ_MAX = 12, BG_ADJ_STEP = 3, BG_ADJ_DEF = 0;
+const BG_ADJ_KEY = 'qlno_bgadj';   // số nguyên DELTA dạng chuỗi
 // Thang CỠ CHỮ: 80–150%, bước 10%. `FS_DEF` phải nằm trong thang, và 100% ứng với `--fs-unit: 1px`
 // đúng bằng giá trị khai ở `:root` — mặc định không đổi một pixel nào so với bản cũ.
 const FS_MIN = 80, FS_MAX = 150, FS_STEP = 10, FS_DEF = 100;
@@ -2960,6 +3037,7 @@ const BR_MIN = 60, BR_MAX = 120, BR_STEP = 10, BR_DEF = 100;
 const FS_LEGACY = { nho: 90, chuan: 100, lon: 110 };
 let _tone = 'chuan';
 let _fsPct = FS_DEF;
+let _bgAdj = BG_ADJ_DEF;   // DELTA nền đậm/nhạt (chế độ tối) — xem hằng BG_ADJ_* ở trên
 let _bright = BR_DEF;
 let _notes = '';
 
@@ -2983,6 +3061,8 @@ function loadDisp() {
   try {
     const t = localStorage.getItem(TONE_KEY);
     if (t && TONE_OPTS.some(o => o[0] === t)) _tone = t;
+    const ba = parseInt(localStorage.getItem(BG_ADJ_KEY), 10);
+    if (!isNaN(ba)) _bgAdj = clampStep(ba, BG_ADJ_MIN, BG_ADJ_MAX, BG_ADJ_STEP);
     const f = localStorage.getItem(FS_KEY);
     // `FS_LEGACY[f]` phải đứng TRƯỚC phép đọc số: 'chuan' cho ra NaN, nên nếu đảo thứ tự thì máy
     // đang dùng bản cũ sẽ rơi về mặc định và cỡ chữ tự đổi ngay lần mở đầu tiên.
@@ -3003,6 +3083,9 @@ function applyDisp() {
   // Màu: gắn lên <body> — các token màu là giá trị tuyệt đối nên ở đâu cũng đúng.
   document.body.classList.toggle('tone-diu', _tone === 'diu');
   document.body.classList.toggle('tone-sang', _tone === 'sang');
+  // Nền đậm nhạt (28/9/2026): bù DELTA lên ba token tông — hàm tự gỡ biến khi về 0, gọi lại bao
+  // nhiêu lần cũng vô hại như mọi mức ở đây. Xem bộ hàm cạnh `setTone`.
+  setNavyVars();
   // Cỡ chữ: đặt thẳng `--fs-unit` bằng style nội tuyến trên `<html>`, KHÔNG phải `<body>`. Lý do
   // đầy đủ nằm ở khối ghi chú cạnh hai luật `html.fs-…` vừa bị xoá trong <style>; tóm tắt: mọi
   // nấc chữ đều là `calc(n * var(--fs-unit))` khai ở `:root`, mà giá trị biến được tính NGAY tại
@@ -3030,6 +3113,63 @@ function setTone(key) {
   applyDisp();
   // Vẽ lại để ô ĐANG CHỌN đổi màu xanh — cùng cách app đang làm với mọi lựa chọn khác (xem
   // `useSetAct`). `renderQuiz()` đọc lại `_tone` nên nút mới được tô đúng.
+  renderQuiz();
+}
+// ── NỀN ĐẬM/NHẠT (28/9/2026) ─────────────────────────────────────────────────────────────────
+// Phục vụ hàng "Nền đậm / nhạt" trên thẻ Tông nền. Nguyên tắc: KHÔNG thêm bảng màu mới — giá
+// trị là DELTA (nấc × 3 kênh) bù LÊN token tông (`--navy`, `--navy-mid`, `--set-box-bg`) của
+// CHẾ ĐỘ TỐI; chế độ sáng tự đè lại mọi bề mặt bằng `--surface-*` nên không thấy bù này. Chỉ
+// bù BA token nền: mọi màu CHỮ giữ nguyên nên tương phản đổi đúng một chiều theo delta — đậm
+// hơn thì mọi mốc TỐT lên, NHẬT hơn thì kém dần nên biên dương bị chặn bởi ngưỡng (hằng BG_ADJ_*).
+// Đọc giá trị GỐC của token (chưa bù) — phải đọc lại MỖI LẦN vì class tông trên <body> có thể
+// vừa đổi: gỡ style nội tuyến ra rồi đọc computed style, xong gắn lại. KHÔNG được đọc khi style
+// nội tuyến còn: sẽ đọc phải giá trị ĐÃ bù của lần trước và bù chồng lên (lỗi cộng dồn).
+function baseNavies() {
+  const bs = document.body.style;
+  const names = ['--navy', '--navy-mid', '--set-box-bg'];
+  const saved = names.map(n => [n, bs.getPropertyValue(n), bs.getPropertyPriority(n)]);
+  saved.forEach(([n]) => bs.removeProperty(n));
+  const cs = getComputedStyle(document.body);
+  const out = {
+    navy: cs.getPropertyValue('--navy').trim(),
+    mid: cs.getPropertyValue('--navy-mid').trim(),
+    box: cs.getPropertyValue('--set-box-bg').trim()
+  };
+  saved.forEach(([n, v, p]) => { if (v) bs.setProperty(n, v, p); });
+  return out;
+}
+// Xám thuần R = G = B: lấy kênh G, kẹp biên 10–235 (không cho đen/tắng tuyệt đối), trả về hex.
+function shiftNavy(hex, delta) {
+  let g = (parseInt(hex.slice(1), 16) >> 8) & 0xff;
+  g = Math.max(10, Math.min(235, g + delta));
+  return '#' + ((g << 16) | (g << 8) | g).toString(16).padStart(6, '0');
+}
+// Gắn/gỡ biến bù trên style của <body> (biến trên body thắng biến ở `:root`). Giá trị là DELTA
+// cộng trên token của tông ĐANG bật nên tự đi theo class tông — đổi tông không phải tính lại,
+// mà `applyDisp()` sau `setTone()` cũng tính lại sạch sẽ. Đúng 0 thì GỠ hết — trạng thái sạch.
+function setNavyVars() {
+  const bs = document.body.style;
+  if (_bgAdj === 0) {
+    bs.removeProperty('--navy'); bs.removeProperty('--navy-mid'); bs.removeProperty('--set-box-bg');
+    return;
+  }
+  const base = baseNavies();
+  bs.setProperty('--navy', shiftNavy(base.navy, _bgAdj));
+  bs.setProperty('--navy-mid', shiftNavy(base.mid, _bgAdj));
+  bs.setProperty('--set-box-bg', shiftNavy(base.box, _bgAdj));
+}
+// Nhãn số của hàng chỉnh: đếm NẤC thay vì kênh màu ('Đậm 2' = −6 kênh) — người dùng chỉnh theo
+// cảm nhận, không theo con số 0–255; 'Mặc định' thay cho 0 để nói rõ "đúng màu tông đang chọn".
+function bgAdjLabel() {
+  const n = Math.round(_bgAdj / BG_ADJ_STEP);
+  return n === 0 ? 'Mặc định' : (n < 0 ? 'Đậm ' + (-n) : 'Nhạt ' + n);
+}
+// Nút −/+ của hàng "Nền đậm / nhạt": cùng khuôn `stepSetting` (kẹp biên, lưu máy, áp + vẽ lại)
+// nhưng đổi DELTA nền. Nút tự khoá hai đầu thang qua `disabled` trong `toneCardHtml()`.
+function stepBg(dir) {
+  _bgAdj = clampStep(_bgAdj + dir * BG_ADJ_STEP, BG_ADJ_MIN, BG_ADJ_MAX, BG_ADJ_STEP);
+  try { localStorage.setItem(BG_ADJ_KEY, String(_bgAdj)); } catch (e) {}
+  applyDisp();
   renderQuiz();
 }
 // `kind` = 'fs' (cỡ chữ) hoặc 'bright' (độ sáng); `dir` = +1 hoặc −1.
@@ -3077,6 +3217,42 @@ function cfgStepRow(kind, iconName, label, pct, min, max) {
     + '<span class="cfg-step-val" aria-live="polite">' + pct + '%</span>' + up
     + '</span></div>';
 }
+// ── THẺ "TÔNG NỀN" TRÊN TRANG CHỦ (28/9/2026) ────────────────────────────────────────────────
+// Chuyển nhanh giữa ba tông xám của nền tối (Dịu / Chuẩn / Sáng) không cần vào panel Cài đặt —
+// cùng cơ chế `setTone()` với hàng "Màu" trong panel, nên storage, class trên <body> và nút tô
+// xanh đều là MỘT: chọn ở đây thì nút trong panel đổi theo và ngược lại (`renderQuiz()` vẽ lại
+// cả hai chỗ). Thẻ MỎNG đứng đầu trang, trước cả ô tìm kiếm: đây là chỉnh_hiển_thị toàn app,
+// không thuộc thẻ thư viện hay thẻ chọn đề nào. Tái dùng đúng bộ luật `.cfg-seg-btn` của panel
+// (nút đang chọn = nền xanh) — hàng nhãn chỉ để đọc, KHÔNG là `button.cfg-row` nên không có
+// hover nền (bấm nó không làm gì, khỏi gợi bấm được).
+function toneCardHtml() {
+  let h = '<div class="quiz-card tone-card">';
+  h += '<div class="cfg-row"><span class="cfg-ico">' + ico('palette') + '</span>';
+  h += '<span class="cfg-row-txt">Tông nền</span></div>';
+  h += '<div class="cfg-seg">';
+  TONE_OPTS.forEach(o => {
+    const on = _tone === o[0];
+    h += '<button type="button" class="cfg-seg-btn' + (on ? ' on' : '') + '"'
+      + ' aria-pressed="' + (on ? 'true' : 'false') + '"'
+      + ' onclick="setTone(\'' + o[0] + '\')">' + o[1] + '</button>';
+  });
+  h += '</div>';
+  // Hàng chỉnh ĐẬM/NHẠT (28/9/2026): cùng khuôn hàng "Cỡ chữ/Độ sáng" của panel (nút −/+ và số
+  // `aria-live`), tái dùng đúng luật `.cfg-step` nhưng bản gọn trong thẻ (xem CSS `.tone-adj-row`).
+  h += '<div class="cfg-row tone-adj-row"><span class="cfg-ico">' + ico('sliders') + '</span>';
+  h += '<span class="cfg-row-txt">Nền đậm / nhạt</span><span class="cfg-step">';
+  h += '<button type="button" class="cfg-step-btn" onclick="stepBg(-1)"'
+    + ' aria-label="Nền đậm hơn" title="Đậm hơn"' + (_bgAdj <= BG_ADJ_MIN ? ' disabled' : '') + '>'
+    + ico('minus') + '</button>';
+  h += '<span class="cfg-step-val" aria-live="polite">' + bgAdjLabel() + '</span>';
+  h += '<button type="button" class="cfg-step-btn" onclick="stepBg(1)"'
+    + ' aria-label="Nền nhạt hơn" title="Nhạt hơn"' + (_bgAdj >= BG_ADJ_MAX ? ' disabled' : '') + '>'
+    + ico('plus') + '</button>';
+  h += '</span></div>';
+  h += '</div>';
+  return h;
+}
+
 // Ba NHÓM, kẻ ngang nằm GIỮA CÁC NHÓM (xem luật `.cfg-group + .cfg-group` trong <style>) — đúng ảnh: một kẻ
 // dưới "Sáng / Tối", một kẻ dưới "Chọn File", không kẻ nào giữa các hàng trong cùng nhóm.
 // Thứ tự nhóm 3 là Màu → Cỡ chữ → Độ sáng: hai hàng chỉnh số đứng CẠNH NHAU để mắt so được hai
