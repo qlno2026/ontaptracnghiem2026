@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!-- Màu thanh trạng thái trên điện thoại (Android). #0f1b2d → **#202020** (27/9/2026) cho khớp nền
-     header MỚI ở chế độ tối — xem `.header`. Meta này không đổi theo theme được, nên lấy màu của
-     chế độ tối, đúng nền xám đậm của app. -->
-<meta name="theme-color" content="#202020">
+<!-- Màu thanh trạng thái trên điện thoại (Android). #0f1b2d → #202020 (27/9/2026) → #2c2c2c
+     (28/9/2026) → **#373737** (28/9/2026 lần 2 — kéo nền tối sáng thêm một nấc nữa; vẫn đi theo
+     `--navy-mid`) cho khớp nền header MỚI ở
+     chế độ tối — xem `.header`. Meta này không đổi theo theme được, nên lấy màu của chế độ tối,
+     đúng nền xám đậm của app. -->
+<meta name="theme-color" content="#373737">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -35,8 +37,37 @@
      6.99:1 · câu hỏi trên tấm 12.28:1 · ĐÁP ÁN #8394a9 trên tấm mới **4.88:1** (vẫn trên
      ngưỡng 4.5:1 — nên KHÔNG phải chỉnh màu chữ) · trắng trên nút xanh 6.70:1 · tấm/thẻ 1.08:1.
      Chế độ SÁNG không đụng tới: nó đè lại mọi biến này trong khối body.light-mode. */
-  --navy: #171717;
-  --navy-mid: #202020;
+  /* ── 28/9/2026 — "màu nền dark mode và light mode đừng sáng và đen quá" ─────────────────────
+     CẢ DẢI TỐI được NÂNG lên một nấc cho khỏi "đen quá", giữ NGUYÊN mọi quan hệ đã canh:
+       --navy       #171717 → **#232323**  (nền trang; vẫn xám thuần R = G = B)
+       --navy-mid   #202020 → **#2c2c2c**  (bề mặt nâng lên — ĐÚNG bằng --navy hoà 4% trắng:
+                        35 + 0,04 × (255 − 35) = 43,8 ≈ 44 = #2c2c2c, nên thanh dính/`header`
+                        vẫn khớp y như trước, không phải nới tay)
+       --set-box-bg #262626 → **#333333**  (hộp bộ đề: vẫn NHỈNH lên trên thẻ #2c2c2c)
+     Ba tông `body.tone-…` ở cuối tệp dời theo CÙNG một nấc (Dịu #282828 > Chuẩn #232323 >
+     Sáng #1d1d1d) nên "Dịu vẫn dịu nhất, Sáng vẫn đậm nhất" — chỉ là không mức nào còn đen.
+     ĐO LẠI trên nền MỚI, mọi mốc vẫn thừa xa 4,5:1 nên KHÔNG phải sửa màu chữ nào:
+       chữ chính  #cbd5e1 trên #232323  12,07 → **10,6:1**
+       chữ chính  #cbd5e1 trên thẻ #2c2c2c  10,94 → **9,4:1**
+       chữ phụ    #94a3b8 trên #232323   6,99 → **6,1:1**
+       chữ đáp án #94a3b8 trên tấm #333333  5,90 → **5,1:1**
+     `--card` rgba(255,255,255,0.04) KHÔNG phải sửa: nó tự chạy theo nền trang.
+     Chế độ SÁNG không thấy khối này (nó đè lại mọi bề mặt trong `body.light-mode`). */
+  /* ── 28/9/2026, LẦN 2 — "kéo nền dark mode sáng thêm một nấc nữa" ────────────────────────────
+     Nâng tiếp ĐÚNG +12 mỗi kênh như nấc trước, nhưng `--navy-mid` phải TÍNH LẠI bằng công thức cũ
+     chứ không cộng bừa: #2f2f2f (47) hoà 4% trắng = 47 + 0,04 × 208 ≈ 55 = #373737.
+     Ba tông dời cùng nấc nên THỨ TỰ vẫn nguyên: Dịu #343434 > Chuẩn #2f2f2f > Sáng #292929.
+     HỆ QUẢ BẮT BUỘC PHẢI THEO — tấm sáng lên thì CHỮ ĐÁP ÁN phải sáng theo mới giữ được ngưỡng:
+       #94a3b8 trên tấm mới #3e3e3e chỉ còn **4,17:1 — TỤT DƯỚI 4,5:1**
+       → nâng thành **#9fadc0 = 4,69:1**.
+     #9fadc0 vẫn NẰM DƯỚI trần #a8b3c4 mà ghi chú `--answer` ở dưới đã đặt (qua trần đó là đáp án
+     ngang cỡ chữ câu hỏi), và trên tấm mới chữ câu hỏi #cbd5e1 vẫn **7,2:1** — cặp câu hỏi/đáp án
+     không nhoè vào nhau. Hai mốc còn lại VẪN qua ngưỡng nên CỐ Ý không chỉnh:
+       chữ chính #cbd5e1 trên nền #2f2f2f **9,0:1** · trên thẻ #373737 **8,0:1**
+       chữ phụ   #94a3b8 trên thẻ #373737 **4,65:1** (sát ngưỡng — CHỚ nâng nền thêm nữa mà
+                 không nâng theo `--text-dim`). */
+  --navy: #2f2f2f;
+  --navy-mid: #373737;
   /* Màu xanh chính (nút, huy hiệu A/B/C/D, thanh tiến độ). Đã ĐẬM hơn theo yêu cầu
      18/9/2026: #3b82f6 → #1d4ed8 — hồi đó chọn cho cùng sắc với đầu dải gradient của .header.
      (Dải gradient đó đã bị BỎ 27/9/2026 "bảng header bỏ màu xanh đổi sang màu giống với các
@@ -86,7 +117,11 @@
      đừng đi; muốn khác thì phải nâng `--text-dim` LÊN cùng lúc, và nói rõ đánh đổi cho người dùng. */
   --text: #cbd5e1;
   --text-dim: #94a3b8;
-  --answer: #94a3b8;   /* chữ đáp án ở chế độ tối. Đường đi cả ngày 19/9/2026 — mỗi nấc đo trên
+  --answer: #9fadc0;   /* chữ đáp án ở chế độ tối. (28/9/2026 LẦN 2: #94a3b8 → **#9fadc0** vì tấm đã
+                          sáng lên #3e3e3e và #94a3b8 chỉ còn 4,17:1 — xem khối đo ở `--navy`.
+                          Đây là lần ĐẦU nó TÁCH khỏi `--text-dim` (#94a3b8): hai token trùng nhau từ
+                          20/9/2026 nay lệch một nấc, vì chữ phụ đứng trên THẺ còn chữ đáp án đứng
+                          trên TẤM — tấm sáng hơn nên cần chữ sáng hơn. Đừng gộp lại cho "gọn".) Đường đi cả ngày 19/9/2026 — mỗi nấc đo trên
                           NỀN ĐANG DÙNG lúc đó, nên các số bên cạnh KHÔNG so sánh chéo được:
                           #9aa8bb → #6b7d93 → #5f7086 → #5b6c7f →(nền đổi sang #262a33)
                           → #8b9bb0 → #8394a9 → #7d8ea3 →(nền đổi lần nữa sang #21252e)
@@ -114,8 +149,11 @@
                           Ở chế độ sáng là #1f2937 (xám RẤT ĐẬM) — đã đi qua hai nấc theo yêu cầu:
                           đen mặc định → xanh dương đậm #1e3a8a → xám đậm #1f2937.
                           Muốn đậm hơn nữa thì dùng #111827 (xám 900). */
-  --set-box-bg: #262626;   /* nền hộp từng bộ đề — xám THUẦN ĐẬM ở chế độ tối (đổi từ #262a33
-                              cùng lượt với --navy #171717 và tấm đáp án #262626, 19/9/2026),
+  --set-box-bg: #3e3e3e;   /* nền hộp từng bộ đề — xám THUẦN ĐẬM ở chế độ tối (đổi từ #262a33
+                              cùng lượt với --navy #171717 và tấm đáp án #262626, 19/9/2026;
+                              NÂNG #262626 → #333333 → **#3e3e3e** (28/9/2026, hai nấc liên tiếp) —
+                              cả hai lượt đều đọc khối đo ở `--navy`),
+                              GIỮ NGUYÊN quan hệ cũ: vẫn NHỈNH lên trên thẻ #373737,
                               xám nhạt ở chế độ sáng (body.light-mode đè lại) */
   --border: rgba(255,255,255,0.22);   /* viền ô ở chế độ tối: rõ hơn 0.08 cũ */
   /* Viền nút GHIM (📌) — TÍM, và ĐÂY LÀ LÝ DO NÓ KHÔNG CÒN XANH DƯƠNG (21/9/2026 —
@@ -283,8 +321,40 @@ body {
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   touch-action: manipulation;
-  transition: background 0.4s ease, color 0.4s ease;
+  transition: background-color 0.26s ease, color 0.26s ease;
 }
+
+/* ── HIỆU ỨNG CHUYỂN SÁNG/TỐI MƯỢT (28/9/2026 — "hiệu ứng chuyển chế độ sáng tối không mượt") ──
+   BỆNH: trước lượt này CHỈ `body` có transition (background/color 0.4s); MỌI bề mặt còn lại —
+   `.header`, thẻ, nút, ô nhập, tấm đáp án, mọi đường viền, và cả icon SVG (`stroke: var(--ico)`)
+   — đổi màu TỨC THÌ. Nên lúc bấm Sáng/Tối, nền trang trườn từ từ trong khi cả app đã nhảy màu
+   xong trước đó: mắt đọc ra là giật, không phải là "nhanh".
+   CHỮA: một lớp `body.theming` do `toggleTheme()` bật LÊN trong lúc chuyển rồi GỠ đi, cho MỌI
+   phần tử chuyển màu CÙNG LÚC và CÙNG một nhịp với `body`.
+   VÌ SAO LÀ LỚP TẠM, KHÔNG PHẢI GẮN THẲNG VÀO `*`: nếu gắn vĩnh viễn thì mọi thay đổi màu do
+   TRỎ/BẤM cũng trườn theo (hover nút, `:active`, nhấp nháy đáp án đúng/sai) — vừa chậm vừa sai
+   cảm giác. Lớp này chỉ sống ~0,4s quanh cú bấm nên các hiệu ứng kia không bị đụng tới.
+   KHÔNG ĐƯỢC DÙNG `!important`: `body.theming *` là (0,1,1) nên ĐÃ thắng mọi luật `transition`
+   cấp lớp (0,1,0) như `.home-btn` / `.theme-toggle` / `.set-dd-btn`. Riêng `.exam-timebar > i`
+   cũng (0,1,1) và đứng SAU trong tệp nên VẪN giữ `width 250ms linear` — thanh thời gian của
+   bài thi không bị đổi nhịp. Vì thế khối này phải đứng NGAY SAU `body`: đặt trước thì hai luật
+   kia sẽ đè mất và nút bấm mất phản hồi.
+   ĐỔI NHỊP thì sửa ĐÚNG HAI CHỖ cùng lúc: `transition` ở đây và ở `body` ngay trên (đang là
+   0,26s ≈ 260ms — ngắn hơn 0,4s cũ, vì khi CẢ APP cùng chạy thì 0,4s đọc ra là lê). */
+body.theming, body.theming * {
+  transition: background-color 0.26s ease, color 0.26s ease,
+              border-color 0.26s ease, stroke 0.26s ease, fill 0.26s ease,
+              box-shadow 0.26s ease, outline-color 0.26s ease;
+}
+/* CỐ Ý KHÔNG CÓ KHỐI `@media (prefers-reduced-motion: reduce)` CHO CHỖ NÀY — đừng thêm lại.
+   "Giảm chuyển động" (WCAG 2.3.3) nói về chuyển động: xoay, trượt, phóng to, nhấp nháy. Ở đây chỉ
+   đổi MÀU (background/color/border/stroke/…), không có gì di chuyển, nên vẫn nằm trong mức an toàn.
+   Đã thử thêm guard và ĐO ĐƯỢC hậu quả: gắn guard thì `body.theming *` bị ép `transition: none`,
+   tức chính vì mục đích NÀY mà mọi thứ lại SNAP Tức thì trong khi `body` (0,1,1, khai sau nên thắng
+   guard của chính nó) vẫn trườn — đúng y cái lệch nhịp đang chữa. Nếu muốn tôn trọng cài đặt đó
+   thì phải tắt cả `body` LẪN các phần tử (đổi thành đổi thẳng không hiệu ứng), chứ không phải chỉ
+   tắt một phía. Hiệu ứng chuyển động THẬT của app (thanh thời gian bài thi) vẫn giữ guard riêng
+   ở khối `.exam-timebar > i` — đứng nguyên, đừng đụng. */
 
 /* ── HEADER ───────────────────────── */
 /* Nền header = nền NÚT TAB (27/9/2026 — "bảng header bỏ màu xanh đổi sang màu giống với các tab").
@@ -781,7 +851,7 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
        R = G = B. Tấm này lấy ĐÚNG màu tấm trong ảnh mẫu, và trùng lại với --set-box-bg).
        Tấm/thẻ = 1.08:1; chữ đáp án #8394a9 trên tấm mới = **4.88:1** — vẫn trên ngưỡng 4.5:1.
      Chế độ sáng đè lại bằng luật body.light-mode .quiz-opt ngay bên dưới. */
-  background: #262626; color: var(--answer);
+  background: #3e3e3e; /* 28/9/2026: #262626 → #333333 → #3e3e3e, đi theo --set-box-bg cho khỏi đen */ color: var(--answer);
   font-family: 'Inter', sans-serif; font-size: var(--fs-lead); line-height: 1.5;
   font-weight: 500;   /* câu trả lời: 16px, nét 500 */
   cursor: pointer;
@@ -1254,11 +1324,45 @@ body.light-mode .exam-timebar.low > i { background: var(--red-text); }
    BA TÔNG hạ theo cùng một nấc, thứ tự độ chói giữ nguyên: Dịu #f1f3f5 < Chuẩn #f6f7f8 <
    Sáng #fbfbfc — xem hai khối `body.light-mode.tone-…` ở cuối tệp (chúng phải khai đủ token,
    xem ghi chú ở `body.light-mode.tone-diu`).
-   CHẾ ĐỘ TỐI KHÔNG ĐỤNG TỚI: ở đó thẻ là `--card` rgba trắng 4% trên #171717 — không có gì chói. */
+   CHẾ ĐỘ TỐI KHÔNG ĐỤNG TỚI Ở LƯỢT ĐÓ: ở đó thẻ là `--card` rgba trắng 4% trên #171717. */
+/* ── 28/9/2026 — "màu nền light mode đừng sáng quá": CẢ THANG SÁNG hạ MỘT nấc (đúng −8 mỗi kênh)
+   cho hết trắng gắt. Hạ ĐỀU TAY cả năm tấm nên THỨ TỰ vẫn nguyên, chỉ tụt độ chói:
+     thẻ         #f6f7f8 → **#eef0f2**   (vẫn SÁNG NHẤT — không còn tiến gần trắng tuyệt đối)
+     tấm đáp án  #f0f2f4 → **#e8eaec**   (vẫn DƯỚI thẻ 1,05:1 — CỐ Ý)
+     hộp bộ đề   #eaedf0 → **#e2e5e8**
+     nền trang   #e9ecef → **#e1e4e7**   (nền + bảng xổ)
+     hộp thoại   #e8ebee → **#e0e3e6**   (vẫn NẰM DƯỚI thẻ)
+   ĐO LẠI: nền hạ thì chữ ĐẬM hơn tương đương nên phần lớn mốc TĂNG, NHƯNG hai chỗ đứng trên nền
+   đã hạ màu chữ lại SÁNG nên phải canh lại — chúng đo trên TẤM, không phải trên thẻ:
+     --text-strong #1e293b trên thẻ   13,64 → **14,4:1**
+     --text-base   #1e293b trên nền   12,34 → **11,5:1**
+     chữ đáp án   #5f6b7c trên tấm mới #e8eaec  4,82 → **4,48:1 — TỤT DƯỚI 4,5:1**
+   → màu chữ đáp án phải ĐẬM theo: #5f6b7c → **#5a6575** (đo lại **4,90:1**). Hai tông sáng ở
+   cuối tệp chỉnh y như vậy (#5f6a78 → #58626e; #545f6e giữ nguyên vì trên tấm mới đã đủ).
+   BA VIỀN hạ theo CÙNG nấc để không mờ đi trên thẻ tối hơn: --border-light #c9d1da → #c1c9d2 ·
+   --border-field #b3bfcc → #abb7c4 · --border-answer #909ca9 → #8894a1 (đo lại ~2,6:1 trên thẻ mới).
+   Muốn hạ tiếp thì phải hạ `--text*` theo, đừng chỉ kéo mỗi nền. */
+/* ── 28/9/2026, LẦN 2 — "nền light mode tối thêm một nấc nữa" ──────────────────────────────────
+   Hạ tiếp ĐÚNG −8 mỗi kênh như nấc trước, và hạ CẢ NĂM TẤM nên thứ tự vẫn nguyên:
+     thẻ        #eef0f2 → **#e6e8ea**
+     tấm đáp án #e8eaec → **#e0e2e4**   (vẫn DƯỚI thẻ 1,05:1 — CỐ Ý)
+     hộp bộ đề   #e2e5e8 → **#dadde0**
+     nền trang   #e1e4e7 → **#d9dcdf**   (nền + bảng xổ)
+     hộp thoại   #e0e3e6 → **#d8dbde**
+   Ba tông ở cuối tệp hạ cùng nấc nên Dịu #e1e3e5 < Chuẩn #e6e8ea < Sáng #ebebec vẫn đúng thứ tự.
+   ĐO LẠI hai chỗ chữ đứng trên TẤM — ở chế độ sáng tấm tối đi thì chữ đáp án phải ĐẬM theo
+   (ngược chiều với chế độ tối, nơi tấm sáng lên thì chữ phải sáng lên):
+     Chuẩn #5a6575 trên tấm mới #e0e2e4 còn **4,55:1** — quá sát ngưỡng → hạ tiếp **#566171 = 4,83:1**
+     Dịu   #58626e → **#545e6a** · Sáng #545f6e giữ nguyên (trên tấm mới #e4e6e8 vẫn **5,18:1**)
+   Các mốc còn lại VẪN qua ngưỡng nên CỐ Ý không chỉnh: --text-strong #1e293b trên thẻ **11,9:1**
+   (trên nền trang **10,6:1**) · --text-dim trên thẻ **4,74:1** · --ok-strong trên thẻ **3,07:1**
+   (ngưỡng viền điều khiển 3:1) · --border-answer **2,79:1** trên thẻ mới.
+   Ba viền hạ tiếp cùng nấc: --border-light → #b9c1ca · --border-field → #a3afbc ·
+   --border-answer → #808c99. */
 body.light-mode {
   background: var(--surface-sunken); color: var(--text-base);
-  --text-dim: #5b6675; --border: rgba(0,0,0,0.22); --answer: #5f6b7c; --q-text: #1f2937;
-  --set-box-bg: #eaedf0; --pin-brd: #6d28d9; --pin-brd-hover: #7c3aed; --red-text: #dc2626;
+  --text-dim: #5b6675; --border: rgba(0,0,0,0.22); --answer: #566171; --q-text: #1f2937;
+  --set-box-bg: #dadde0; --pin-brd: #6d28d9; --pin-brd-hover: #7c3aed; --red-text: #dc2626;
   /* ── Biến CHỈ dùng ở chế độ SÁNG ───────────────────────────────────────────────────
      Mọi luật dùng nhóm này đều là luật `body.light-mode .<x>`, nên khai ở đây là đủ và chế
      độ tối không thấy chúng. KHÔNG khai chúng trong `:root`: đó là cách để một biến chỉ có
@@ -1271,13 +1375,13 @@ body.light-mode {
   --ok-hover: #15803d;        /* viền khi trỏ/bấm, chế độ sáng */
   --ok-strong: #059669;       /* viền đáp án ĐÚNG (3,51:1 trên thẻ #f6f7f8) — KHÔNG dùng --green */
   --danger: #d02020;          /* nút nguy hiểm + ô số câu (5,01:1); #dc2626 chỉ còn 4,50:1 trên thẻ ngà */
-  --surface-card: #f6f7f8;    /* thẻ, ô nhập, nút — TRẮNG NGÀ, không còn #ffffff (27/9/2026) */
-  --surface-answer: #f0f2f4;  /* tấm đáp án: 1,05:1 DƯỚI thẻ — CỐ Ý, xem ghi chú quiz-opt */
-  --surface-sunken: #e9ecef;  /* nền trang + bảng xổ bộ đề — CỐ Ý không đổi, xem ghi chú trên */
-  --surface-modal: #e8ebee;   /* nền hộp thoại — phải NẰM DƯỚI thẻ (1,12:1) để thẻ trong đó nổi lên */
-  --border-light: #c9d1da;    /* viền thẻ / khung */
-  --border-field: #b3bfcc;    /* viền ô nhập và nút (1,87:1) */
-  --border-answer: #909ca9;   /* viền tấm đáp án (2,61:1 trên thẻ #f6f7f8 — khớp 2,60:1 của chế độ tối) */
+  --surface-card: #e6e8ea;    /* thẻ, ô nhập, nút — hạ HAI nấc 28/9/2026 (không còn tiến gần #ffffff) */
+  --surface-answer: #e0e2e4;  /* tấm đáp án: 1,05:1 DƯỚI thẻ — CỐ Ý, xem ghi chú quiz-opt */
+  --surface-sunken: #d9dcdf;  /* nền trang + bảng xổ bộ đề — hạ HAI nấc 28/9/2026, xem ghi chú trên */
+  --surface-modal: #d8dbde;   /* nền hộp thoại — phải NẰM DƯỚI thẻ cùng nấc để thẻ trong đó nổi lên */
+  --border-light: #b9c1ca;    /* viền thẻ / khung */
+  --border-field: #a3afbc;    /* viền ô nhập và nút */
+  --border-answer: #808c99;   /* viền tấm đáp án (2,79:1 trên thẻ mới — quanh mốc 2,60:1 của chế độ tối) */
   --text-strong: #1e293b;     /* chữ trên thẻ (13,64:1 trên #f6f7f8; 14,63:1 khi thẻ còn trắng) */
   /* Chữ trên NỀN TRANG (xám #e9ecef), chế độ sáng. 20/9/2026 — "chữ nào đen quá thì giảm xuống
      một tí light mode": #000000 → **#1e293b**. Đen tuyệt đối trên nền sáng là cặp gắt nhất có thể
@@ -1937,12 +2041,17 @@ body.light-mode .arc-item { background: var(--surface-card) !important; border-c
    MÀU NHẤN (`--accent`) CỐ Ý giữ nguyên ở cả ba mức: đổi nó theo là mỗi mức có một hệ nút khác
    nhau, trong khi người dùng chỉ muốn chỉnh độ dịu của nền/chữ. */
 body.tone-diu {
-  --navy: #1c1c1c;
-  --navy-mid: #252525;
-  --set-box-bg: #2b2b2b;
+  --navy: #343434;      /* 28/9/2026: #1c1c1c → #282828 → #343434 (hai nấc — xem khối đo ở `--navy`) */
+  --navy-mid: #3c3c3c;  /* = --navy hoà 4% trắng: 52 + 0,04 × 203 ≈ 60 = #3c3c3c */
+  --set-box-bg: #434343;
   --text: #b6c0cc;
-  --text-dim: #8d99a6;
-  --answer: #8d99a6;
+  --text-dim: #9ca8b5;  /* LẦN 2: #8d99a6 → #9ca8b5 — thẻ lên #3c3c3c, chữ phụ #8d99a6 tụt xuống
+                          3,80:1; nấc mới đo lại **4,56:1**. Ghi chú "Dịu" ở trên nói CẢ BA mức phải
+                          vượt 4,5:1 ("bớt chói, không phải bớt đọc được") — nấc cũ đã sát ngưỡng
+                          (4,49:1) nên phải chỉnh theo, không để nguyên. */
+  --answer: #a6b3c6;    /* LẦN 2: #8d99a6 → #a6b3c6 — tấm #434343 sáng lên nên chữ đáp án phải
+                          sáng theo (đo lại 4,66:1). TRƯỚC lượt này nó đã dưới ngưỡng (3,41:1 trên
+                          tấm #383838) — lượt này sửa luôn chứ không để nguyên. */
   --q-text: #c3ccd6;
   --border: rgba(255,255,255,0.18);
 }
@@ -1955,25 +2064,29 @@ body.tone-diu {
    phải khai ĐỦ: surface-*, set-box-bg, answer, text-*. Thêm token tông mới ở khối TỐI thì
    phải thêm cả ở đây. */
 body.light-mode.tone-diu {
-  --surface-sunken: #e6e9ec;   /* nền trang: xám dịu — ĐẬM hơn thẻ một nấc (27/9/2026) */
-  --surface-card: #f1f3f5;     /* thẻ: bợt nhất trong ba tông · thẻ/nền 1,10:1 */
-  --surface-answer: #ebedf0;   /* tấm đáp án: 1,05:1 DƯỚI thẻ — phải CHÌM hơn thẻ */
-  --surface-modal: #e4e7eb;
-  --set-box-bg: #e7eaee;       /* khai lại, xem cảnh báo trên */
-  --answer: #5f6a78;           /* khai lại: 4,69:1 trên tấm — thay #8d99a6 của chế độ tối */
+  --surface-sunken: #d6d9dc;   /* nền trang: hạ HAI nấc 28/9/2026 cùng thang sáng — ĐẬM hơn thẻ */
+  --surface-card: #e1e3e5;     /* thẻ: bợt nhất trong ba tông · thẻ/nền mới 1,10:1 */
+  --surface-answer: #dbdde0;   /* tấm đáp án: 1,05:1 DƯỚI thẻ — phải CHÌM hơn thẻ */
+  --surface-modal: #d4d7db;
+  --set-box-bg: #d7dade;       /* khai lại, xem cảnh báo trên */
+  --answer: #545e6a;           /* LẦN 2: #58626e → #545e6a — tấm #dbdde0 tối đi, đo lại 4,84:1 */
   --text-strong: #3a4453;
   --text-base: #3a4453;
-  --text-dim: #6e7987;
+  --text-dim: #586371;         /* LẦN 2: #6e7987 → #586371 — thẻ xuống #e1e3e5, chữ phụ theo tông
+                                  cũ chỉ còn 3,44:1 (TRƯỚC lượt này đã dưới ngưỡng: 3,70:1 trên thẻ
+                                  #e9ebed). Nấc mới đo lại **4,75:1**. Cùng lý do với `--text-dim`
+                                  của `body.tone-diu` (chế độ tối) — "Dịu" giảm CHÓI, không giảm đọc. */
   --border: rgba(0,0,0,0.16);
-  --border-field: #c2cad4;
-  --border-light: #d3d9e0;
-  --border-answer: #a7b1bc;
+  --border-field: #b2bac4;
+  --border-light: #c3c9d0;
+  --border-answer: #97a1ac;
   --q-text: #333d4b;
 }
 body.tone-sang {
-  --navy: #101010;
-  --navy-mid: #1a1a1a;
-  --set-box-bg: #212121;
+  --navy: #292929;      /* 28/9/2026: #101010 → #1d1d1d → #292929 — vẫn ĐẬM NHẤT trong ba tông
+                          nhưng hết đen (hai nấc) */
+  --navy-mid: #323232;  /* = --navy hoà 4% trắng: 41 + 0,04 × 214 ≈ 50 = #323232 */
+  --set-box-bg: #3a3a3a;
   --text: #f1f5f9;
   --text-dim: #a9b5c4;
   --answer: #a9b5c4;
@@ -1981,19 +2094,19 @@ body.tone-sang {
   --border: rgba(255,255,255,0.30);
 }
 body.light-mode.tone-sang {
-  --surface-sunken: #e3e6ea;
-  --surface-card: #fbfbfc;     /* thẻ SÁNG NHẤT trong ba tông — vẫn không quay lại #ffffff · thẻ/nền 1,21:1 */
-  --surface-answer: #f4f6f8;   /* tấm đáp án: 1,05:1 DƯỚI thẻ */
-  --surface-modal: #eef0f3;
-  --set-box-bg: #f2f4f6;       /* khai lại, xem cảnh báo ở `body.light-mode.tone-diu` */
-  --answer: #545f6e;           /* khai lại: 5,99:1 trên tấm — thay #a9b5c4 của chế độ tối (1,9:1) */
+  --surface-sunken: #d3d6da;
+  --surface-card: #ebebec;     /* thẻ SÁNG NHẤT trong ba tông — hạ HAI nấc, không quay lại #ffffff */
+  --surface-answer: #e4e6e8;   /* tấm đáp án: 1,05:1 DƯỚI thẻ */
+  --surface-modal: #dee0e3;
+  --set-box-bg: #e2e4e6;       /* khai lại, xem cảnh báo ở `body.light-mode.tone-diu` */
+  --answer: #545f6e;           /* khai lại, GIỮ NGUYÊN ở lượt 2: trên tấm mới #e4e6e8 vẫn 5,18:1 */
   --text-strong: #0d1520;
   --text-base: #0d1520;
   --text-dim: #4b5563;
   --border: rgba(0,0,0,0.28);
-  --border-field: #9aa6b3;
-  --border-light: #b6c0ca;
-  --border-answer: #808d9b;
+  --border-field: #8a96a3;
+  --border-light: #a6b0ba;
+  --border-answer: #707d8b;
   --q-text: #0f172a;
 }
 /* Hai mức CỠ CHỮ — chỉ đổi `--fs-unit`, xem ghi chú "HỆ CỠ CHỮ" ở `:root`.
@@ -2333,6 +2446,13 @@ function toggleTheme() {
   const bucket = themeBucket();
   _theme[bucket] = document.body.classList.toggle('light-mode') ? 'light' : 'dark';
   try { localStorage.setItem('qlno_theme', JSON.stringify(_theme)); } catch (e) {}
+  // Cho cả app chuyển màu CÙNG một nhịp (xem khối `body.theming` trong <style>): bật lớp rồi gỡ
+  // sau khi hiệu ứng chạy xong — 400ms > 260ms của transition nên gỡ trễ một nhịp an toàn.
+  // Timer lưu trên CHÍNH hàm: bấm liên tục thì cú sau ghi đè cú trước, không cắt ngang hiệu ứng
+  // đang chạy (bấm nhanh nhiều lần mà lớp bị gỡ sớm là màu đứng giữa đường).
+  clearTimeout(toggleTheme._t);
+  document.body.classList.add('theming');
+  toggleTheme._t = setTimeout(() => document.body.classList.remove('theming'), 400);
 }
 
 // ── MODAL ──────────────────────────
