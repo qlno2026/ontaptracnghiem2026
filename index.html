@@ -596,7 +596,7 @@ body.light-mode .big-upload-btn {
 }
 .big-upload-btn:active { opacity: 0.9; }
 .big-upload-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-/* Hai nút dưới của bảng 🎲 (`📋 Trộn & làm cả bộ`, `📖 Trộn & học`) CHỈ HIỆN MÀU LÚC BẤM GIỮ
+/* Hai nút dưới của bảng 🎲 (`☰ Trộn & làm cả bộ`, `🎓 Trộn & ôn tập`) CHỈ HIỆN MÀU LÚC BẤM GIỮ
    (20/9/2026 — "tôi muốn khi chọn mới hiển thị màu").
    Lịch sử trong ngày, để không ai "khôi phục" nhầm: (1) hai nút này từng là `.quiz-btn` xám bình
    thường; (2) rồi được tô nền xanh trong suốt ở MỌI LÚC cho đồng bộ với nút 🎲; (3) giờ quay lại
@@ -618,6 +618,16 @@ body.light-mode .quiz-btn.mix-act:active {
    nên không phá yêu cầu "chỉ hiện màu khi bấm giữ" — mà bàn phím vẫn thấy mình đang ở nút nào. */
 .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.45); }
 body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.35); }
+/* RÚT PADDING NGANG 12px → 6px cho HAI nút này (28/9/2026 — cùng lượt "đồng bộ tên chế độ"):
+   nhãn "Trộn & ôn tập" dài hơn "Trộn & học" cũ 3 ký tự (~30px), mà hai nút chia ĐÔI một hàng
+   (yêu cầu 19/9/2026 "cho 2 bảng này đều nhau" — không được cho chúng tự co theo chữ), nên ở
+   cửa sổ 360px nhãn dài thêm đã đủ đẩy chữ xuống dòng. Rút padding lấy lại 12px cho mỗi nút,
+   đưa "Trộn & ôn tập" về MỘT dòng ở 360 (đo: cần 149,1px, có 154px) — tức hết hẳn phần lệch do
+   lượt đổi tên, không phải chấp nhận thêm một dòng phụ.
+   "Trộn & làm cả bộ" vẫn xuống 2 dòng ở cửa sổ dưới ~404px — ĐÓ LÀ TÌNH TRẠNG CÓ TỪ TRƯỚC (nhãn
+   này không đổi ở lượt này), không phải hậu quả của việc đổi tên `học` → `ôn tập`.
+   Độ ưu tiên: (0,2,0) mạnh hơn `.quiz-btn` (0,1,0), nên khai TRƯỚC `.quiz-btn` vẫn thắng. */
+.quiz-btn.mix-act { padding-left: 6px; padding-right: 6px; }
 
 .quiz-btn {
   padding: 9px 12px; border-radius: 9px; cursor: pointer;
@@ -657,7 +667,11 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    Chữ TRẮNG #ffffff (10,5:1) → XANH `#93c5fd` (20/9/2026 — "tôi muốn chữ xanh khi chọn ở dark
    mode") → **`--accent-glow` #60a5fa** (xem lượt đồng bộ ngay dưới).
    ĐỒNG BỘ VỚI NÚT 📦 THƯ VIỆN (20/9/2026 — "cho màu bảng này đồng bộ màu bảng thư viện"): chip
-   đang bật lấy ĐÚNG cặp màu của `.big-upload-btn.lib-act` (nút 📦 Thư viện) theo từng chế độ —
+   đang bật lấy ĐÚNG cặp màu của nút 📦 Thư viện theo từng chế độ —
+   ⚠ TỪ 28/9/2026 ("bỏ màu khi chọn tab thư viện") NÚT 📦 KHÔNG CÒN MÀU Ở LÚC NGHỈ, nên cặp màu
+   dưới đây giờ chỉ còn khớp khi nút đó ĐANG BẤM GIỮ (`:active`). Điều này là CỐ Ý và là điều
+   kiện để chip đang bật đọc ra là chip, còn nút 📦 đọc ra là nút — xem khối luật của
+   `.big-upload-btn.lib-act`. Đừng "sửa lại cho đồng bộ" bằng cách tô màu nút 📦 trở lại.
    nền `0,32 → **0,18**` (tối) và `0,26 → **0,14**` (sáng), chữ `#93c5fd`/`#1e40af` →
    **`--accent-glow` #60a5fa** (tối) / **`#1d4ed8`** (sáng). Viền không đổi vì hai chỗ vốn đã cùng
    một giá trị.
@@ -668,20 +682,36 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    Muốn quay lại nền đậm thì phải đi cùng chữ sáng hơn, đo lại chứ đừng đổi alpha một mình. */
 .quiz-toggle.on { background: rgba(59,130,246,0.18); border-color: var(--accent-glow); color: var(--accent-glow); }
 
-/* Hai chip bật/tắt trên trang chủ nằm CHUNG MỘT HÀNG.
-   Đo bằng canvas ở cỡ 17px: “Đảo câu hỏi” 96.3px, “Đảo đáp án” 92.2px. Cộng
-   padding 8px mỗi bên và gap 8px thì cần 228.5px — vừa khung nhìn 311px (thẻ
-   rộng 266px). Bản cũ “Đảo câu hỏi: Bật” + “Đảo đáp án: Bật” cần 309px nên mỗi
-   cái phải xuống một hàng; thêm icon 🔀 còn tốn thêm ~56px nữa.
-   `auto-fit` + `minmax(120px, 1fr)` cho hai cột BẰNG NHAU khi đủ chỗ, và tự dồn
-   thành một cột khi cửa sổ hẹp hơn ~248px — không bao giờ tràn chữ. */
+/* BA ô trên MỘT HÀNG ở ĐÁY thẻ “Chọn từng bộ đề”: hai chip “Đảo câu hỏi / Đảo đáp án” + nút 📦
+   Thư viện (28/9/2026 lần 16 — “cho 3 tab này chung 1 hàng”). Trước đó là hai chip một hàng rồi nút
+   📦 rộng bằng cả thẻ ở hàng dưới — tốn thêm ~53px chiều cao cho đúng một nút.
+   BA CỘT ĐỀU NHAU, KHÔNG dùng `auto-fit` như bản cũ: `auto-fit` + `minmax(120px, 1fr)` sẽ dồn nút 📦
+   xuống hàng thứ hai ngay khi cửa sổ hẹp hơn ~390px — đúng thứ yêu cầu này muốn bỏ. Cột đều cũng
+   để hàng thẳng cột với lưới nút phía trên (`.set-acts-4` cũng là các cột `1fr`).
+   BỀ NGANG THẬT: hàng = cửa sổ − 44px (đo ở 430 → 386px), mỗi ô = (hàng − 6px khe) / 3 → **126,7px**
+   ở cửa sổ 430 và **103,5px** ở 360.
+   · “Đảo câu hỏi” 96,3px chữ, “Đảo đáp án” 92,2px (đo bằng canvas ở cỡ 17px) → giữ padding ngang 8px
+     thì ô phải 114,3px, tức chữ một dòng chỉ từ ~400px cửa sổ trở lên — vỡ ở đúng những khổ máy
+     hay gặp (375/390). Nên rút còn **4px**: ô cần 106,3px → một dòng từ **~369px** trở lên, phủ
+     được cả 375 (iPhone SE/mini). Hạ tiếp về 2px thì mới vừa 360, nhưng đổi lại chữ dính sát viền
+     viên thuốc — không đáng. Hẹp hơn ngưỡng thì nhãn xuống hai dòng (KHÔNG tràn chữ) và
+     `grid-auto-rows: 1fr` giữ ba ô cao bằng nhau; đã đo ở 360 và ở các cỡ chữ 110/120/150%: cả ba
+     ô luôn cùng cao, cùng một hàng.
+   · nút 📦 cần ~90px (icon 17,8 + chữ “Thư viện” 68) nên padding ngang cũng rút còn 4px.
+   VÌ SAO NÚT 📦 GIỮ BO GÓC 10px CHỨ KHÔNG THÀNH VIÊN THUỐC NHƯ HAI CHIP: màu của nó đã được đồng bộ
+   ĐÚNG BẰNG màu chip đang BẬT (nền xanh 0,18 + viền + chữ `--accent-glow` — xem `.quiz-toggle.on`
+   ngay trên). Bo tròn nữa thì nó thành một viên thuốc xanh y hệt chip đang bật, và người dùng sẽ
+   tưởng đây là công tắc thứ ba đang mở. Hình chữ nhật là thứ còn phân biệt “nút mở bảng” với
+   “công tắc” — ĐỪNG đồng bộ hình dạng ở đây cho dù hai màu đã đồng bộ.
+   Padding DỌC của nút 📦 hạ 11px → **7px** cho đúng chiều cao hai chip: ba ô đều `1fr` nên ô cao hơn
+   kéo cả hàng cao theo. Khe NGANG giữ **3px** như bản cũ để thẳng hệ với `.set-acts` ngay trên. */
 .chip-row {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  /* 8 → 4 → **3px** ở cả hai chiều (27/9/2026, hai lượt cùng siết với `.set-acts` ngay trên). Hai chip này
-     nằm thẳng cột với bốn nút phía trên nhờ cùng bề ngang cột, nên khe NGANG phải BẰNG khe của lưới
-     đó — lệch nhau là mắt thấy hai hàng không cùng một hệ. */
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 3px; margin-top: 3px;
+  grid-auto-rows: 1fr;   /* cửa sổ rất hẹp: có nhãn xuống 2 dòng thì ba ô vẫn cao bằng nhau */
 }
+.chip-row .quiz-toggle.chip { padding: 7px 4px; }
+.chip-row .big-upload-btn.lib-act { padding: 7px 4px; width: 100%; }
 .quiz-toggle.chip { padding: 7px 8px; text-align: center; }
 
 /* Hàng nút thư viện trên trang chủ — KHÔNG còn dùng ở trang chủ từ 19/9/2026 (nút 📦 đã chuyển
@@ -725,6 +755,41 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    Phải đứng SAU `.lib-head .lib-act` (cùng độ ưu tiên 0,2,0) — luật `padding: 12px 11px` ở đó sẽ
    thắng nếu luật này bị đặt trước. */
 .big-upload-btn.lib-act { padding: 11px 10px; }
+/* Nút 📦 Thư viện KHÔNG tô màu lúc nghỉ — CHỈ hiện màu khi BẤM GIỮ (28/9/2026 — "bỏ màu khi chọn
+   tab thư viện").
+   VÌ SAO PHẢI TÁCH KHỎI `.big-upload-btn`: lúc nghỉ nút này mang ĐÚNG cặp màu của chip "đang bật"
+   (`.quiz-toggle.on` — cùng nền xanh 0,18, cùng viền, cùng chữ `--accent-glow`; đã cố ý đồng bộ
+   từ 20/9/2026). Đứng cạnh hai chip Đảo câu hỏi / Đảo đáp án trong hàng ba ô, nó đọc ra như một
+   CÔNG TẮC THỨ BA ĐANG MỞ chứ không phải một nút để bấm — mà hàng đó lại là chỗ hay bị hiểu nhầm
+   nhất, vì hai ô kia mới thật sự là công tắc. Bỏ nền màu là cách chữa GỐC (đổi bo góc chỉ là đổi
+   cái để phân biệt, không chữa được cảm giác "đang bật" — xem ghi chú ở `.chip-row`).
+   Lúc nghỉ giờ nó trùng khuôn với hai chip CHƯA bật: nền trong suốt + viền `--border` + chữ
+   `--text-dim`. Đúng cách hai nút "Trộn & …" của bảng 🎲 đã làm từ 20/9/2026 ("tôi muốn khi chọn
+   mới hiển thị màu") — cùng một ý người dùng nên cố ý dùng CÙNG một cách làm, đừng nghĩ ra cách
+   thứ hai cho cùng một yêu cầu.
+   ĐỘ ƯU TIÊN: `.big-upload-btn.lib-act` (0,2,0) mạnh hơn `.big-upload-btn` (0,1,0) NHƯNG YẾU hơn
+   `body.light-mode .big-upload-btn` (0,2,1) — nên chế độ SÁNG BẮT BUỘC phải khai lại ở (0,3,1),
+   thiếu nó thì nút vẫn xanh ở chế độ sáng. Đây đúng là cái bẫy đã sập một lần ở token `--text`.
+   `:active` là chỗ DUY NHẤT còn màu, và nó lấy ĐÚNG cặp màu cũ để lúc bấm vẫn thấy rõ là đang bấm.
+   Luật này đổi MÀU nên nó ăn theo cả nút 📦 ở thẻ trạng thái trắng thư viện (`!nQ`, rộng bằng cả
+   thẻ) — đúng ý: cùng một nút thì cùng một cách hiện màu ở mọi chỗ.
+   Muốn trả lại nền xanh suốt ở lúc nghỉ thì XOÁ HAI LUẬT NỀN + CHỮ dưới đây, đừng sửa
+   `.big-upload-btn` (nút "Cài đặt" ở cuối trang vẫn dùng lớp đó và KHÔNG nằm trong phạm vi yêu cầu
+   này — nếu người dùng muốn nó cũng mất màu thì phải là một yêu cầu riêng). */
+.big-upload-btn.lib-act { background: transparent; border-color: var(--border); color: var(--text-dim); }
+body.light-mode .big-upload-btn.lib-act { background: transparent; border-color: var(--border); color: var(--text-dim); }
+.big-upload-btn.lib-act:active {
+  background: rgba(59,130,246,0.18); border-color: var(--accent-glow); color: var(--accent-glow);
+}
+/* ICON ĐI THEO MÀU CHỮ của chính nút này — `.ico` mặc định lấy `stroke: var(--ico)` = màu xanh
+   `--accent-glow` cho MỌI icon trong app, nên nếu để nguyên thì ở trạng thái nghỉ nút này có chữ
+   xám mà icon vẫn xanh: vừa lệch nhau trong cùng một nút, vừa mang lại đúng thứ "còn màu" mà lượt
+   này muốn bỏ. `currentColor` khiến icon đổi theo `:active` luôn, không phải khai thêm luật nào.
+   (Đứng SAU luật `:active` ở trên là để đọc theo thứ tự trạng thái, không phải vì độ ưu tiên.) */
+.big-upload-btn.lib-act .ico { stroke: currentColor; }
+body.light-mode .big-upload-btn.lib-act:active {
+  background: rgba(59,130,246,0.14); border-color: var(--accent); color: var(--accent);
+}
 
 /* ── QUIZ ───────────────────────── */
 /* Lề giữa các bảng trên trang chủ. Hai lượt siết: 19/9/2026 ("khoảng cách các bảng này nhỏ
@@ -1117,7 +1182,30 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
   display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 3px;
   grid-auto-rows: 1fr;   /* cửa sổ rất hẹp: có nhãn phải xuống 2 dòng thì cả bốn nút vẫn cao bằng nhau */
 }
-.set-acts .quiz-btn { width: 100%; padding: 9px 6px; text-align: center; }
+/* `display: flex` (28/9/2026 lần 17) là bắt buộc KỂ TỪ KHI nhãn được bọc trong `.act-in`: một hộp
+   `inline-flex` nằm trong dòng chảy văn bản bị canh theo ĐƯỜNG CƠ SỞ, nên dòng chứa nó cao thêm
+   ~2,4px — đo được hàng cao 40,3 → **42,8px**, tức cả hai hàng nút (4 nút ở trang chủ, 3 nút ở
+   màn 👁 "Câu hỏi") cao thêm từng ấy mà chẳng ai yêu cầu. Nút thành `flex` thì `.act-in` là mục
+   flex (hết dính đường cơ sở), `justify-content: center` canh cả cụm icon + chữ, còn
+   `text-align: center` bên trong vẫn canh từng DÒNG chữ khi nhãn phải xuống dòng. */
+.set-acts .quiz-btn {
+  width: 100%; padding: 9px 6px; text-align: center;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Icon và chữ là HAI MỤC của một flex, không phải hai mục inline chung một dòng chảy.
+   Vì sao (28/9/2026 lần 17 — "chỉnh cho chữ thẳng hàng"): khi nhãn phải xuống hai dòng, dòng thứ
+   hai canh giữa theo cả hộp (icon + chữ) nên lệch trục so với dòng đầu — nhìn như chữ không thẳng
+   hàng. Tách khối chữ ra thành một mục flex riêng thì `text-align: center` của nút canh giữa CÁC
+   DÒNG TRONG khối chữ đó, hai dòng luôn cùng trục, còn icon đứng riêng bên trái và tự canh giữa
+   theo chiều dọc (`align-items: center`).
+   `gap: 0.26em` ≈ 4,4px ở cỡ 17px — đúng bằng dấu cách mà nhãn vẫn giữ (flex bỏ qua khoảng trắng
+   giữa các mục, nên nếu xoá `gap` này icon sẽ DÍNH vào chữ).
+   `min-width: 0` + `max-width: 100%` là BẮT BUỘC: không có chúng thì khối chữ rộng theo `max-content`
+   và TRÀN ra ngoài nút ở cửa sổ hẹp thay vì xuống dòng. */
+.set-acts .quiz-btn > .act-in {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.26em; min-width: 0; max-width: 100%;
+}
 /* Nút ICON nằm trong lưới này (màn KẾT QUẢ — 20/9/2026) phải TRẢ LẠI padding của `.home-btn`:
    `.set-acts .quiz-btn` (0,2,0) MẠNH HƠN `.home-btn` (0,1,0), nên không có luật này thì icon mang
    padding 9px 6px → nút cao 28+18 = 46px và KÉO CẢ HÀNG cao thêm 4px (nút chữ bên cạnh chỉ 41,8px).
@@ -1128,14 +1216,57 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
 /* Hàng BA nút ở màn 👁 "Câu hỏi" (20/9/2026 — "cho 3 tab còn lại nằm cùng hàng").
    Cùng công thức với `.set-acts`, chỉ đổi số cột. Phải khai SAU `.set-acts`: hai luật cùng độ ưu
    tiên (0,1,0) nên CHỈ THỨ TỰ phân định — dời lên trên là ba nút quay về 2×2 ngay.
-   Ba cột ở khung 393px còn ~101px chỗ chữ cho mỗi nút, nên "📖 Học (chọn sai làm lại)" xuống
-   3 dòng; `grid-auto-rows: 1fr` của `.set-acts` giữ cả ba nút cao bằng nhau. */
+   Ba cột ở khung 393px còn ~101px chỗ chữ cho mỗi nút, nên nhãn dài thời đó ("📖 Học (chọn sai
+   làm lại)") xuống 3 dòng; `grid-auto-rows: 1fr` của `.set-acts` giữ cả ba nút cao bằng nhau.
+   NHÃN HIỆN TẠI (28/9/2026 lần 17 + hai lượt sau đổi tiếp nút `single`): `Một câu / Cả bộ /
+   Ôn tập` — cả ba MỘT dòng ở mọi cửa sổ ĐÃ ĐO, vì ba ô ở đây rộng hơn hẳn hàng bốn nút. Ba ô rộng hơn hàng bốn nút ở trang chủ
+   ~30px nên đây không còn là hàng chật nhất. */
 .set-acts-3 { grid-template-columns: 1fr 1fr 1fr; }
+/* Hàng BỐN nút ở thẻ "Chọn từng bộ đề" — 28/9/2026 lần 15 ("cho 4 tab từng câu, cả bộ, học,
+   câu hỏi nằm chung hàng"): bốn nút làm bài (Từng câu / Cả bộ / Học / Câu hỏi) từ lưới 2×2
+   xuống MỘT hàng bốn cột.
+   ĐÂY LÀ LƯỚI RIÊNG, KHÔNG PHẢI SỬA `.set-acts` GỐC: lớp gốc còn dùng ở màn KẾT QUẢ (2 nút —
+   đúng 2 cột) và ở thẻ 👁 "Câu hỏi" (3 nút — `.set-acts-3`), nên đổi `grid-template-columns`
+   của lớp gốc là phá hai chỗ kia. Luật này phải khai SAU `.set-acts` và sau `.set-acts .quiz-btn`:
+   cùng độ ưu tiên (0,1,0) / (0,2,0) nên CHỈ THỨ TỰ phân định.
+   NHÃN HIỆN TẠI: `Làm bài / Cả bộ / Ôn tập / Câu hỏi` (28/9/2026 — "… Học → Ôn tập", rồi
+   "1 câu → Làm bài" và nút cả bộ lùi về "Cả bộ"; xem `setActBtn`).   BẢNG ĐO sau khi ĐỔI NHÃN (28/9/2026 lần 17, và hai lượt đổi tiếp nút `single` → "Một câu"),
+   cỡ chữ 100%. Mỗi lần đo đặt thẳng bề ngang HÀNG (lưới chỉ phụ thuộc bề ngang hàng — KHÔNG có
+   `@media` nào cho nó), mà hàng = cửa sổ − 44px:
+     cửa sổ 430 → hàng 386, ô 94,2px · CẢ BỐN một dòng · hàng cao **40,1px**
+     cửa sổ 414 → hàng 370, ô 90,3px · vẫn một dòng  ← NGƯỠNG nằm ngay dưới mức này
+     cửa sổ 412 → hàng 368, ô 89,7px · "Một câu" xuống 2 dòng, hàng cao 60,3px
+     cửa sổ 390 → hàng 346, ô 84,2px · "Một câu" + "Câu hỏi" xuống 2 dòng
+     cửa sổ 375 → hàng 331, ô 80,5px · y như 390
+     cửa sổ 360 → hàng 316, ô 76,8px · thêm "Ôn tập" xuống 2 dòng
+   NGƯỠNG TÍNH RA: chỗ chữ = ô − 1,05em icon − 0,26em khe − 2px viền; nhãn dài nhất "Một câu" cần
+   66px → ô ≥ 90,25px → hàng ≥ 370px → **cửa sổ ≥ 414px**. Khớp đúng bảng trên.
+   ⚠ ĐỔI NHÃN LÀ ĐỔI NGƯỠNG — luôn đo lại, đừng suy từ lượt trước: nhãn dài nhất chỉ cần dài
+   thêm 2,5px là ngưỡng lùi 10px (khi còn là "Làm bài" 63,5px thì ngưỡng là 404px, giờ "Một câu"
+   66px → 414px). Muốn hạ ngưỡng mà không đổi nhãn thì chỉ còn cách rút `gap` của `.act-in`
+   (0,26em ≈ 4,4px) hoặc bỏ icon — cả hai đã cân nhắc và bị loại vì lợi 3–4px không đáng đánh đổi.
+   ĐÓ LÀ LÝ DO CHÍNH của lượt đổi nhãn này: nhãn cũ "Từng câu" cần ~107px nên vỡ hai dòng ở MỌI
+   cửa sổ dưới ~430px — đúng thứ người dùng thấy và gọi là "chữ không thẳng hàng". Đổi nhãn ngắn
+   lại là cách duy nhất chữa gốc, vì bề ngang hàng là cố định: muốn nhãn cũ một dòng thì phải hạ
+   cỡ chữ nút xuống ~13px (nhỏ hơn cả `--fs-note`) hoặc bỏ icon.
+   KHI PHẢI XUỐNG DÒNG (cửa sổ dưới 404px) thì hai dòng canh giữa TRONG KHỐI CHỮ, không còn lệch
+   trục như trước — nhờ `<span class="act-in">` + `display: flex` ở `.set-acts .quiz-btn`.
+   `grid-auto-rows: 1fr` của `.set-acts` giữ cả bốn nút cao BẰNG NHAU (60,3px khi có nhãn vỡ dòng).
+   Kết quả tổng: hàng cao **40,1px** ở cửa sổ rộng, thay cho **83,2px** của lưới 2×2 (đo cùng chỗ,
+   cùng nhãn mới) — lợi 43,1px. Hai cách chia dùng CHUNG một bề ngang nên phần lợi là hằng số ở
+   mọi cỡ chữ, không phải ăn may ở 100%.
+   BỎ padding NGANG cùng lý do với `.set-acts-3` ngay dưới: bề ngang ô đã do `1fr` quyết định,
+   padding chỉ ăn mất chỗ của chữ. Canh giữa KHÔNG đổi: `text-align: center` canh theo lòng hộp,
+   mà padding hai bên đều 0 nên lòng hộp vẫn cùng tâm. Padding DỌC 9px giữ nguyên. */
+.set-acts-4 { grid-template-columns: repeat(4, 1fr); }
+.set-acts-4 .quiz-btn { padding-left: 0; padding-right: 0; }
 /* BỎ padding NGANG của hàng ba nút. Bề ngang mỗi ô đã do LƯỚI `1fr` quyết định, nên 12px padding
-   chỉ ăn mất chỗ của chữ: ở khung 327px ô rộng 87,1px → còn 73px chỗ chữ, mà nhãn dài nhất
-   (`Từng câu`, 77px ở 17px) lại phải xuống 2 dòng. Bỏ padding ngang → 85,1px, một dòng, và
-   vẫn đủ chỗ tới khoảng 310px. Canh giữa KHÔNG đổi: `text-align:center` canh theo lòng hộp, mà
-   padding đối xứng thì lòng hộp vẫn cùng tâm. */
+   chỉ ăn mất chỗ của chữ. NHÃN ĐÃ ĐỔI (28/9/2026 lần 17): nhãn dài nhất của hàng này giờ là
+   `Làm bài` (63,5px ở 17px) chứ không còn `Từng câu` (77px), nên ngưỡng vỡ dòng cũ ("dưới khung
+   ~390px thì `▶️ Từng câu` xuống 2 dòng") KHÔNG còn đúng — ba nút này một dòng ở mọi cửa sổ đã
+   đo (360 · 375 · 390 · 430). Bỏ padding ngang vẫn là bắt buộc và ngày càng quan trọng khi cỡ
+   chữ lớn: ở cỡ 150% `Làm bài` cần ~95px chữ, không có 12px padding thì mới đủ. Canh giữa KHÔNG
+   đổi: `text-align:center` canh theo lòng hộp, mà padding đối xứng thì lòng hộp vẫn cùng tâm. */
 .set-acts-3 .quiz-btn { padding-left: 0; padding-right: 0; }
 /* Hàng đầu thẻ 👁 "Câu hỏi": tên bộ đề bên trái, nút quay về dồn ra mép phải.
    LƯỚI `1fr auto` — KHÔNG còn `1fr 1fr` (20/9/2026, cùng lượt "bỏ viền bỏ nền, thêm icon"):
@@ -1254,43 +1385,24 @@ body.light-mode .exam-timebar > i { background: var(--accent); }
 .exam-timebar.low > i { background: var(--red-text); }
 body.light-mode .exam-timebar.low > i { background: var(--red-text); }
 @media (prefers-reduced-motion: reduce) { .exam-timebar > i { transition: none; } }
-/* Ô nhập số phút — hàng "Tính giờ". `.time-inp` khai SAU `.quiz-input` trong tệp nên
-   `flex: none` + bề ngang cố định của nó thắng bề ngang mặc định của lớp nút/ô nhập chung.
-   28/9/2026 ("dời tab tính giờ xuống tab tổng số câu của bài"): hàng này DỜI từ thẻ
-   "Chọn từng bộ đề" xuống thẻ "Trộn đề theo tỷ lệ", ngay dưới "Tổng số câu của bài". Không luật
-   nào ở khối này phải sửa vì nó vốn không phụ thuộc thẻ chứa — chỉ có khoảng cách là khác
-   (xem mục `margin` bên dưới). */
-/* 27/9/2026 — thêm `margin-bottom: 10px`: dòng phụ `.time-hint` bên dưới hàng này đã bị xoá ("bỏ
-   các chữ này"), mà chính nó là thứ tạo khoảng thở giữa hàng "phút" và hàng nút bên dưới (còn
-   lại đúng 3px). Lề dưới đặt Ở ĐÂY chứ không ở hàng nút: hàng nút dùng chung với hai thẻ khác.
-   Số này vẫn đúng ở chỗ MỚI: dưới hàng "Tính giờ" bây giờ là khung `.mix-table`, và 10px là
-   khoảng thở giữa ô nhập và kẻ trên của hàng đầu tiên. Lề TRÊN `4px` thì bị lề dưới 12px của
-   hàng "Tổng số câu của bài" nuốt mất (lề dọc liền nhau gộp thành max(12,4) = 12px) — muốn
-   siết khe đó thì phải hạ số bên hàng "Tổng số câu", không phải hạ số này. */
-.time-row { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
-.time-lbl { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: var(--fs-sub); color: var(--text-dim); }
-.time-inp { flex: none; width: 74px; text-align: center; font-size: var(--fs-sub); }
+/* Cụm "🕐 Tính giờ [60] phút" — 28/9/2026 lần 13 ("cho 2 tab nằm chung hàng"): nó nằm CHUNG
+   HÀNG với "Tổng số câu" trong thẻ "Trộn đề theo tỷ lệ" (xem `quizMixHtml` + `timeLimitHtml`).
+   `.time-inp` khai SAU `.quiz-input` trong tệp nên `flex: none` + bề ngang cố định của nó thắng
+   bề ngang mặc định của ô nhập chung.
+   Vì hàng cha là `flex-wrap: wrap`, `.time-group` BẮT BUỘC `flex: none` — thiếu nó thì ở máy hẹp
+   cụm này bị co lại (ô số méo) thay vì rớt xuống dòng dưới cho gọn.
+   Không còn `margin`: khoảng dọc giờ do chính hàng hai-cài-đặt tự lo (`margin-bottom`, 28/9/2026
+   lần 14: 12 → **6px** — "cho khoảng cách gần hơn", xem ghi chú dài ở `quizMixHtml`).
+   BỀ NGANG 56px VÀ KHE 6px LÀ SỐ ĐO, ĐỪNG NỚI RA: hàng ở cửa sổ 430px chỉ còn ~46px dư ở cỡ chữ
+   100%, và số dư ấy là để cỡ chữ lớn hơn (110–120%) vẫn nằm chung một hàng — bảng cộng đầy đủ
+   nằm ở `quizMixHtml`. 74px cũ chỉ dùng được khi cụm này đứng một mình trên hàng tiêu đề. */
+.time-group { display: flex; align-items: center; gap: 6px; flex: none; }
+.time-lbl { flex: none; display: flex; align-items: center; gap: 6px; font-size: var(--fs-sub); color: var(--text-dim); white-space: nowrap; }
+.time-inp { flex: none; width: 56px; text-align: center; font-size: var(--fs-sub); }
 .time-unit { flex: none; font-size: var(--fs-sub); color: var(--text-dim); }
-/* Nút 📦 ở cuối hàng "phút" (28/9/2026 — "dời tab thư viện xuống kế ô phút").
-   HAI chỗ phải thắng của lớp gốc, nên selector CỐ Ý là `.time-row .time-lib-btn` (0,2,0) chứ
-   không phải một lớp đơn (0,1,0):
-     - `flex`, vì `.lib-act` gốc là `flex: 1 1 auto` — để nguyên thì trong hàng này nút nong ra
-       chiếm hết chỗ trống và đẩy ô nhập "phút" lệch sang trái;
-     - `padding`, vì `.big-upload-btn.lib-act` khai `11px 10px` ở CÙNG độ ưu tiên (0,2,0), còn
-       `.big-upload-btn` khai `12px 18px`. Ở 18px nút chiếm ~150px và bóp nhãn ô phút xuống
-       nhiều dòng.
-   `10px 8px` là số ĐO, không phải số tròn cho đẹp — cả hai chiều đều có lý do:
-     - dọc 10px → nút cao **40,2px**, BẰNG ĐÚNG ô nhập bên cạnh, nên `align-items: center`
-       không còn lệch nửa li;
-     - ngang 8px → nút rộng **100,2px**. Đây là ngưỡng cuối cùng còn cứu được nhãn "Tính giờ"
-       trên MỘT dòng ở máy 360px, và nó SÁT NÚT: đo được chữ cần **57,05px** trong khi chỗ dành
-       cho chữ là **54,7px lúc padding 10px** (hụt đúng 2,35px) và **58,7px lúc padding 8px**.
-       Nới lại về 10px là nhãn rớt xuống hai dòng ngay — đừng "cho đều" thành `10px 10px`.
-   Vì cùng (0,2,0) nên THỨ TỰ QUYẾT ĐỊNH: khối `.time-*` nằm dưới `.big-upload-btn.lib-act`
-   trong tệp là đúng, ĐỪNG dời luật này lên trên.
-   `white-space: nowrap` an toàn Ở ĐÂY (khác lời cảnh báo cho `.lib-act-row`): nút là `flex: none`
-   nên không bao giờ bị co, nhãn ngắn và cố định — không có nguy cơ tràn chữ. */
-.time-row .time-lib-btn { flex: none; padding: 10px 8px; font-size: var(--fs-sub); white-space: nowrap; }
+/* (28/9/2026 lần 12 — "dời tab thư viện lên trên tab trộn đề") Luật `.time-row .time-lib-btn` đã
+   XOÁ cùng lượt nút 📦 rời hàng "phút" để lên đáy thẻ "Chọn từng bộ đề": hàng này không còn
+   nút nào nên cũng hết cái phải thắng `.lib-act` (flex + padding). */
 
 /* ── MODAL ───────────────────────── */
 .modal-overlay {
@@ -1476,6 +1588,23 @@ body.light-mode {
   --border-field: #a3afbc;    /* viền ô nhập và nút */
   --border-answer: #808c99;   /* viền tấm đáp án (2,79:1 trên thẻ mới — quanh mốc 2,60:1 của chế độ tối) */
   --text-strong: #1e293b;     /* chữ trên thẻ (13,64:1 trên #f6f7f8; 14,63:1 khi thẻ còn trắng) */
+  /* ── `--text` — TOKEN BỊ BỎ SÓT, VÁ 28/9/2026 ("cho tính thời gian ở light mode chữ màu đen") ──
+     Trước lượt này, `--text` CHƯA TỪNG được khai lại cho chế độ sáng. Đó không phải chuyện hình
+     thức: `:root` khai nó là màu chữ của chế độ TỐI (#cbd5e1), nên MỌI chỗ còn dùng thẳng
+     `var(--text)` đều vẽ ra chữ xám nhạt trên nền sáng. ĐO trên đồng hồ đếm ngược `.exam-timer`:
+     **#cbd5e1 trên nền trang #d9dcdf = 1,05:1** — gần như tàng hình, và đúng là chỗ người dùng
+     phải báo lên.
+     Vá Ở TOKEN chứ không vá từng chỗ (đúng cách app vẫn làm với các token khác): một dòng này
+     sửa một lượt cho `.exam-timer`, `#mixWarn`, màu điểm ở màn kết quả và hai dòng trong hộp
+     thoại nạp file — ba chỗ sau dùng `style="color:var(--text)"` viết thẳng trong JS nên CSS
+     thường không với tới.
+     Lấy `--text-base` ("đen mềm" #1e293b) chứ KHÔNG phải #000: app đã bỏ đen tuyệt đối ở chế độ
+     sáng từ 20/9/2026 — xem ghi chú ở chính token đó ngay dưới. Và vì là `var()` nên nó tự ăn
+     theo từng tông: Chuẩn #1e293b · Dịu #3a4453 · Sáng #0d1520 — nhưng HAI KHỐI
+     `body.light-mode.tone-*` BẮT BUỘC phải khai lại `--text`, nếu không thì `body.tone-diu` /
+     `body.tone-sang` (0,1,1, đứng SAU trong tệp) sẽ thắng luật này — đúng cái bẫy token đã ghi
+     ở đầu khối tông sáng. */
+  --text: var(--text-base);
   /* Chữ trên NỀN TRANG (xám #e9ecef), chế độ sáng. 20/9/2026 — "chữ nào đen quá thì giảm xuống
      một tí light mode": #000000 → **#1e293b**. Đen tuyệt đối trên nền sáng là cặp gắt nhất có thể
      (21:1) và làm nét chữ dày lên trong mắt; #1e293b là nấc "đen mềm" app ĐÃ dùng sẵn cho chữ trên
@@ -2173,6 +2302,7 @@ body.light-mode.tone-diu {
   --answer: #545e6a;           /* LẦN 2: #58626e → #545e6a — tấm #dbdde0 tối đi, đo lại 4,84:1 */
   --text-strong: #3a4453;
   --text-base: #3a4453;
+  --text: var(--text-base);    /* khai lại — xem ghi chú `--text` ở khối `body.light-mode` */
   --text-dim: #586371;         /* LẦN 2: #6e7987 → #586371 — thẻ xuống #e1e3e5, chữ phụ theo tông
                                   cũ chỉ còn 3,44:1 (TRƯỚC lượt này đã dưới ngưỡng: 3,70:1 trên thẻ
                                   #e9ebed). Nấc mới đo lại **4,75:1**. Cùng lý do với `--text-dim`
@@ -2211,6 +2341,7 @@ body.light-mode.tone-sang {
   --answer: #545f6e;           /* khai lại, GIỮ NGUYÊN ở lượt 2: trên tấm mới #e4e6e8 vẫn 5,18:1 */
   --text-strong: #0d1520;
   --text-base: #0d1520;
+  --text: var(--text-base);    /* khai lại — xem ghi chú `--text` ở khối `body.light-mode` */
   --text-dim: #4b5563;
   --border: rgba(0,0,0,0.28);
   --card-brd: var(--border-light); /* khai lại, xem cảnh báo khối body.light-mode.tone-diu */
@@ -2867,13 +2998,20 @@ function toggleQuizOpt(k) { _quizOpts[k] = !_quizOpts[k]; renderQuiz(); }
 // viền. Hai kiểu cùng cỡ nên đổi màu KHÔNG làm nút nhảy kích thước.
 // `exam` = true khi nút nằm ở màn 👁 "Câu hỏi" — lúc đó ô xanh tra theo `examKey` chứ không
 // phải `key` (xem `isExamActOn`). Mặc định false = thẻ "Chọn từng bộ đề".
+// NHÃN ĐƯỢC BỌC TRONG `<span class="act-in">` (28/9/2026 lần 17 — "chỉnh cho chữ thẳng hàng"):
+// nhãn truyền vào là `ico(...) + ' chữ'`, tức SVG và chữ là hai mục INLINE nằm chung một dòng chảy.
+// Khi nhãn phải xuống hai dòng (cửa sổ hẹp), dòng thứ hai canh giữa theo CẢ hộp — kể cả phần icon —
+// nên nó lệch khỏi dòng đầu; mắt đọc ra đúng như "chữ không thẳng hàng". Bọc lại thành flex thì
+// icon và khối chữ thành HAI MỤC RIÊNG: khối chữ tự canh giữa các dòng CỦA NÓ nên hai dòng luôn
+// cùng một trục. Khoảng cách icon–chữ do `gap` của `.act-in` lo (flex BỎ QUA khoảng trắng giữa các
+// mục), nhưng ĐỪNG bỏ dấu cách trong `label` — các chỗ khác vẫn đọc nhãn dạng chuỗi đó.
 function setActBtn(setId, key, label, title, off, exam) {
   const on = exam ? isExamActOn(setId, key) : isSetActOn(setId, key);
   return '<button class="quiz-btn' + (on ? ' primary' : '') + '" data-set-act="' + key + '"'
     + (off || '')
     + ' onclick="useSetAct(\'' + setId + '\',\'' + key + '\')"'
     + (title ? ' title="' + title + '"' : '')
-    + (on ? ' aria-current="true"' : '') + '>' + label + '</button>';
+    + (on ? ' aria-current="true"' : '') + '><span class="act-in">' + label + '</span></button>';
 }
 
 // ── DROPDOWN CHỌN BỘ ĐỀ (tự vẽ, 19/9/2026) ──
@@ -2959,8 +3097,9 @@ function quizHomeHtml() {
 
   // ── Thư viện ── CHỈ dựng khi CHƯA có câu hỏi nào, và bản thân thẻ giờ KHÔNG còn tiêu đề.
   // 28/9/2026 — "bỏ chữ thư viện bộ đề, dời tab thư viện xuống kế ô phút": tiêu đề "📚 Thư viện
-  // bộ đề" đã XOÁ và nút 📦 dời xuống hàng "phút" của thẻ "Chọn từng bộ đề" (xem
-  // `timeLimitHtml`). Trước đây thẻ này chỉ còn đúng một hàng chữ + một nút — hai dòng phụ đã bỏ
+  // bộ đề" đã XOÁ. Cùng ngày, lần 12, nút 📦 DỜI thêm một lần nữa — lên ĐÁY thẻ "Chọn từng bộ
+  // đề" (`quizHomeHtml`, ngay dưới hàng chip), tức ngay TRÊN thẻ "Trộn đề theo tỷ lệ".
+  // Trước đây thẻ này chỉ còn đúng một hàng chữ + một nút — hai dòng phụ đã bỏ
   // từ 19/9 và 27/9 — tức một dải gần trống cao ~55px; bỏ hẳn ở trạng thái thường thì màn chính
   // gọn hơn và bớt được một khung.
   // VÌ SAO THẺ NÀY VẪN PHẢI CÒN, và vì sao điều kiện là `!nQ` chứ KHÔNG phải `!quizLib.length`:
@@ -3035,24 +3174,52 @@ function quizHomeHtml() {
     // Chế độ "Học" vẫn cố ý không tính giờ, giờ do `startExam` quyết định chứ không do chỗ này.
     // Dòng "Bộ \"…\" có N câu hỏi" ở đây đã XOÁ (19/9/2026 — "tôi muốn bỏ những chữ này"): số câu
     // đã hiện ngay trên nút dropdown ("Tên (N câu)") và trên từng hàng của danh sách xổ xuống.
-    h += '<div class="set-acts">';
+    // BỐN nút trên MỘT hàng (28/9/2026 lần 15 — "cho 4 tab từng câu, cả bộ, học, câu hỏi nằm
+    // chung hàng"): lưới 2×2 → hàng bốn cột, nhờ lớp `set-acts-4`. Số đo của hàng này (bảng đầy
+    // đủ theo từng cửa sổ, ngưỡng vỡ dòng) nằm ở khối CSS của `set-acts-4` — ĐỌC Ở ĐÓ trước khi
+    // sửa nhãn hay padding, đừng đoán lại từ đầu.
+    h += '<div class="set-acts set-acts-4">';
     // Nhãn dùng ICON NÉT (27/9/2026 — xem `ico()`): thay cho '▶️' / '📋' / '📖' / '👁'. Bề ngang
-    // gần như không đổi (emoji ≈ 1,2em còn icon 1,05em), nên các ngưỡng vỡ dòng đã đo ở
-    // `.set-acts-3` và `@media` vẫn giữ nguyên giá trị — xem ghi chú ngay trên hai nút bên dưới.
-    h += setActBtn(selSet.id, 'single', ico('play') + ' Từng câu', 'Làm từng câu một', off);
+    // gần như không đổi (emoji ≈ 1,2em còn icon 1,05em), nên các ngưỡng vỡ dòng đã đo hồi đó vẫn
+    // dùng được. Các con số cũ (40,3px / 61,2px) KHÔNG còn đúng sau khi đổi nhãn — số hiện hành
+    // nằm ở khối CSS `.set-acts-4`.
+    // NHÃN ĐỔI (28/9/2026 lần 17 — "đổi chữ từng câu thành 1 câu, cả bộ thành Làm bài, học thành
+    // Ôn tập"): `Từng câu → **1 câu**`, `Cả bộ → **Làm bài**`, `Học → **Ôn tập**`; "Câu hỏi" giữ
+    // nguyên. Phải đổi ở CẢ HAI màn dùng chung `setActBtn` (đây và màn 👁 "Câu hỏi") — hai chỗ
+    // đó đặt tên cho cùng ba chế độ, lệch nhau là người dùng phải học hai bộ tên cho một việc.
+    // HỆ QUẢ ĐO ĐƯỢC: nhãn ngắn đi nên từ cửa sổ **~404px** trở lên cả bốn nút một dòng (trước đó
+    // "Từng câu" vỡ hai dòng ở mọi cửa sổ dưới ~430px — đúng thứ người dùng phàn nàn "chỉnh cho
+    // chữ thẳng hàng"). Dưới 404px thì nhãn vẫn xuống dòng, nhưng hai dòng canh giữa TRONG khối
+    // chữ nên không còn lệch trục (xem `<span class="act-in">` ở `setActBtn`).
+    // ĐỔI TIẾP (cùng ngày, ba lượt liên tiếp — "1 câu" → "Làm bài" → **"Một câu"**): nút `single`
+    // giờ mang nhãn **"Một câu"**, còn nút `all` LÙI về nhãn ngắn **"Cả bộ"** (người dùng chọn
+    // phương án đó khi được hỏi, vì hai nút không thể cùng ghi "Làm bài"). Cặp tên: `Một câu /
+    // Cả bộ` — và ĐÂY là lý do không nút nào ghi "Làm bài" nữa: nó vừa không phân biệt được với
+    // chế độ cả bộ, vừa dễ đọc thành "làm cả bài".
+    // Muốn đổi lại nhãn thì PHẢI đo lại ngưỡng vỡ dòng: "Một câu" dài hơn "Làm bài" ~5px, xem
+    // bảng đo ở khối CSS `.set-acts-4`.
+    h += setActBtn(selSet.id, 'single', ico('play') + ' Một câu', 'Làm từng câu một', off);
     h += setActBtn(selSet.id, 'all', ico('layers') + ' Cả bộ', 'Làm cả bộ trong một trang', off);
-    h += setActBtn(selSet.id, 'study', ico('cap') + ' Học', 'Học: chọn sai thì chọn lại', off);
+    h += setActBtn(selSet.id, 'study', ico('cap') + ' Ôn tập', 'Ôn tập: chọn sai thì chọn lại', off);
     h += setActBtn(selSet.id, 'browse', ico('eye') + ' Câu hỏi', 'Xem danh sách câu hỏi của bộ này', '');
     h += '</div>';
   }
-  // Hai chip "Đảo câu hỏi / Đảo đáp án" nằm ở ĐÁY thẻ này, NGAY DƯỚI hàng nút "Học / Câu hỏi"
-  // (19/9/2026 — "tôi muốn tab đảo câu hỏi,đảo đáp án dời xuống dưới tab học và câu hỏi").
-  // Đặt NGOÀI khối `if (selSet)` để hai chip không phụ thuộc việc có bộ đề hay không.
-  // Không cần thêm CSS: nhịp ở đây do `.chip-row` tự lo (`margin-top: 4px`, khớp `.set-acts`).
+  // ── HÀNG BA Ô ở ĐÁY thẻ này: hai chip "Đảo câu hỏi / Đảo đáp án" + nút 📦 Thư viện ──
+  // Hai chip đứng đây từ 19/9/2026 ("tôi muốn tab đảo câu hỏi,đảo đáp án dời xuống dưới tab học và
+  // câu hỏi") và nằm NGOÀI khối `if (selSet)` để không phụ thuộc việc có bộ đề hay không.
+  // 28/9/2026 lần 16 — "cho 3 tab này chung 1 hàng": nút 📦 vốn là một hàng riêng (rộng bằng cả
+  // thẻ, `margin-top:8px`) ngay dưới hai chip, giờ vào CHUNG lưới này thành ô thứ ba. Đặt nút ở
+  // cùng thẻ với dropdown chọn bộ đề vẫn đúng nghĩa cũ: cả hai đều nói về THƯ VIỆN bộ đề.
+  // Số đo (vì sao ba cột đều, vì sao rút padding, và vì sao nút 📦 KHÔNG được bo tròn theo chip):
+  // xem khối `.chip-row` trong <style>.
+  // CẢNH BÁO PHẠM VI: vẫn còn một nút 📦 y hệt ở thẻ thư viện của trạng thái `!nQ` phía trên —
+  // sửa nhãn hay `onclick` ở đây thì PHẢI sửa cả chỗ đó (nút đó vẫn rộng bằng cả thẻ, có lý do:
+  // ở trạng thái trắng thư viện nó đứng một mình, trên nút "Phục hồi từ file sao lưu").
   h += '<div class="chip-row">';
   h += quizToggleHtml('shuffleQ', 'Đảo câu hỏi');
   h += quizToggleHtml('shuffleA', 'Đảo đáp án');
-  h += '</div>';
+  h += '<button type="button" class="big-upload-btn lib-act" onclick="openLibPanel()"'
+    + ' title="Nạp file, nạp cả thư mục, đổi tên, xoá, sao lưu, phục hồi">' + ico('archive') + ' Thư viện</button>';
   h += '</div>';
 
   // ── Trộn đề ──
@@ -3129,7 +3296,11 @@ let _tone = 'chuan';
 let _fsPct = FS_DEF;
 let _bgAdj = BG_ADJ_DEF;   // DELTA nền đậm/nhạt (chế độ tối) — xem hằng BG_ADJ_* ở trên
 let _bright = BR_DEF;
-let _timeMin = 0;   // số phút của "Tính giờ" — 0 = không giới hạn (đọc/ghi qua `TIME_KEY`)
+// 28/9/2026 lần 13 — mặc định 0 → **60 phút** ("Tổng 100. Thời gian 60"): bài làm theo bộ và
+// đề trộn mặc định CÓ tính giờ, đúng một giờ. `0` vẫn là giá trị hợp lệ (= không giới hạn) khi
+// người dùng tự gõ, và giá trị đã lưu trong máy (`TIME_KEY`) LUÔN thắng số này — xem `loadDisp`
+// — nên đổi ở đây KHÔNG ghi đè lựa chọn của ai.
+let _timeMin = 60;  // số phút của "Tính giờ" — 0 = không giới hạn (đọc/ghi qua `TIME_KEY`)
 let _notes = '';
 
 // Kẹp về thang + làm tròn về đúng bước. MỌI đường vào đều đi qua đây (bấm +/− ngay trên màn,
@@ -3514,12 +3685,14 @@ function quizBrowseHtml() {
   //   2. "cho icon vô" — trả lại ba icon, GIỮ nhãn ngắn. Giờ VỪA ĐƯỢC, vì luật
   //      `.set-acts-3 .quiz-btn { padding-left/right: 0 }` (xem khối CSS) đã nới chỗ chữ từ 100,5px
   //      lên **112,5px** — `▶️ Từng câu` cần 104,9px nên lọt.
-  // ⚠ NGUỠNG BỊ LẠI: cả ba chỉ nằm một dòng khi khung ≥ khoảng 390px. Dưới mức đó `▶️ Từng câu`
-  // lại xuống 2 dòng → hàng cao thêm ~20px (vẫn cao BẰNG NHAU nhờ `grid-auto-rows: 1fr`).
-  // Đừng sửa nhãn nữa nếu chưa đo lại: đây là cặp nhãn đã được chọn qua hai lượt và có số ở trên.
-  h += '<div class="set-acts set-acts-3" style="margin-top:0">';    h += setActBtn(s.id, 'single', ico('play') + ' Từng câu', 'Thi từng câu một', n ? '' : ' disabled', true);
+  // ⚠ ĐÃ HẾT NGƯỠNG VỠ DÒNG (28/9/2026 lần 17 — cùng lượt đổi nhãn ở thẻ "Chọn từng bộ đề"):
+  // nhãn dài nhất của hàng này giờ là **"Ôn tập"** chứ không còn "Từng câu", nên cảnh báo cũ
+  // ("dưới khung ~390px thì `▶️ Từng câu` xuống 2 dòng") KHÔNG còn đúng — ba nút một dòng ở mọi
+  // cửa sổ đã đo (360/375/390/430px). ĐỔI NHÃN NÀY THÌ PHẢI ĐO LẠI: đây là hàng chật nhất trong
+  // app (ba nút trên bề ngang hẹp hơn hàng bốn nút ở trang chủ chỉ 30px).
+  h += '<div class="set-acts set-acts-3" style="margin-top:0">';    h += setActBtn(s.id, 'single', ico('play') + ' Một câu', 'Thi từng câu một', n ? '' : ' disabled', true);
     h += setActBtn(s.id, 'all', ico('layers') + ' Cả bộ', 'Làm cả bộ trong một trang', n ? '' : ' disabled', true);
-    h += setActBtn(s.id, 'study', ico('cap') + ' Học', 'Học: chọn sai thì chọn lại', n ? '' : ' disabled', true);
+    h += setActBtn(s.id, 'study', ico('cap') + ' Ôn tập', 'Ôn tập: chọn sai thì chọn lại', n ? '' : ' disabled', true);
   h += '</div></div>';
 
   if (!n) {
@@ -3839,19 +4012,48 @@ function quizMixHtml() {
   // Dòng phụ "Đặt phần trăm cho từng bộ; tổng phải đúng 100%." đã XOÁ (27/9/2026 — "bỏ các chữ
   // này"): dòng "Tổng tỷ lệ: …%" ngay dưới bảng đã tự báo đủ hay thiếu. Lề dưới tiêu đề 0 → 12px
   // để giữ khoảng thở cũ (2px + dòng phụ + 12px) chứ không để tiêu đề dính vào hàng nhập.
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:12px">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
-  h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">';
-  h += '<div style="flex:1;font-size:var(--fs-sub);font-weight:var(--fw-body)">Tổng số câu của bài</div>';
+  // 28/9/2026 lần 14 — "cho khoảng cách gần hơn": 12 → **6px**, và khe DƯỚI hàng cài đặt cũng
+  // 12 → 6px. ĐO lại trong thẻ ở cửa sổ 430px: trước lượt này toàn thẻ chỉ còn đúng HAI khe
+  // 12px (tiêu đề→hàng cài đặt và hàng cài đặt→bảng), mọi khe khác đã là 4–10px; sau lượt này
+  // dãy khe là 6 · 6 · 10 · 4 · 8 — hai khe đầu đứng ngang hàng với phần còn lại của thẻ.
+  // ĐỪNG hạ tiếp xuống 3–4px: trên thẻ chỉ còn 5px lề trong, hai khe 6px đã ngang cỡ lề đó rồi.
+  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:6px">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
+  // HAI cài đặt CỦA CẢ BÀI nằm CHUNG MỘT HÀNG (28/9/2026 lần 13 — "cho 2 tab nằm chung hàng").
+  // Đường đi của "Tính giờ" trong ngày, chép lại đây để không ai "sắp xếp lại" lần thứ tư: đứng
+  // riêng một hàng dưới "Tổng số câu của bài" → lần 12 dời lên chung hàng với TIÊU ĐỀ thẻ → lần
+  // này gộp thẳng vào hàng "Tổng số câu của bài", còn tiêu đề trở lại đứng riêng một dòng.
+  // CÁC CON SỐ DƯỚI ĐÂY LÀ SỐ ĐO, không phải số tròn cho đẹp. Bề ngang thật của hàng ở cửa sổ
+  // 430px là **386px**; cộng lại: nhóm trái (nhãn 85 + khe 6 + ô 62 = 153) | khe 8 | nhóm phải
+  // (nhãn giờ 78,8 + khe 6 + ô 56 + khe 6 + "phút" 31,8 = 178,6) = **339,6px**, dư ~46px.
+  // DƯ NHIỀU LÀ CỐ Ý, không phải làm chưa tới: cỡ chữ của app chỉnh được tới 150%, và đo lại ở
+  // 110% hàng còn ~358px, ở 120% còn ~377px — đều vẫn trong 386px. Cắt sát tới mức chỉ vừa ở
+  // 100% thì máy nào để cỡ chữ lớn hơn một nấc là cụm giờ rớt xuống dòng dưới ngay.
+  // Khe GIỮA hai nhóm là 8px (khe chung của app), còn khe BÊN TRONG mỗi nhóm để **6px**: mỗi
+  // nhóm bớt được hai khe × 2px, đúng phần cần thêm cho cỡ chữ 120%. Nhìn không khác gì, vì hai
+  // thứ nằm hai bên khe đều đã có lề trong 10px của riêng chúng.
+  // Hai chỗ phải RÚT mới vừa một hàng:
+  //   · Nhãn rút "Tổng số câu của bài" → **"Tổng số câu"** (−59px). Nhãn đầy đủ cộng cụm giờ là
+  //     434px, vượt hẳn bề ngang hàng — giữ nguyên nhãn cũ thì KHÔNG cách nào cho hai thứ nằm
+  //     chung hàng. Nghĩa không mất: câu đầy đủ nằm ở `title` của nhãn, và thẻ đã tên là
+  //     "Trộn đề theo tỷ lệ" rồi.
+  //   · Ô "Tổng số câu" 88 → **62px**, ô phút 74 → **56px** (xem `.time-inp` ở CSS): vẫn thừa
+  //     chỗ cho ba chữ số, và cỡ nhỏ thế này vốn đã là chuẩn trong chính thẻ này — ô % của
+  //     `.mix-row` cũng chỉ rộng chừng ấy.
+  // `justify-content: space-between` cho hai cụm đứng hai mép thay vì dồn cục bên trái; khi máy
+  // quá hẹp thì cụm giờ rớt xuống dòng dưới (`flex-wrap`) và rơi về mép TRÁI, vì hàng chỉ còn
+  // một mục. ĐỔI MỘT TRONG CÁC SỐ TRÊN LÀ PHẢI CỘNG LẠI — nhất là ĐỪNG nới hai ô nhập ra.
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px">';
+  h += '<div style="display:flex;align-items:center;gap:6px;min-width:0">';
+  h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);white-space:nowrap" title="Tổng số câu của bài trộn — số câu lấy ra từ các bộ đề">Tổng số câu</div>';
   // Ô nhập trong bảng trộn để cỡ 15px cho BẰNG các chữ xung quanh (yêu cầu 19/9/2026).
   // Cố ý KHÔNG hạ .quiz-input xuống 15px: lớp đó còn dùng cho ô đổi tên bộ đề ở bảng 📦
   // (ô nhập tên là chữ chính, phải giữ 17px/500). Chỉ hai ô của bảng trộn hạ cỡ.
-  h += `<input id="mixTotal" type="number" min="1" max="${Math.max(1, totalQuestions())}" class="quiz-input" style="width:88px;text-align:center;font-size:var(--fs-sub)" value="${mixTotalValue()}" oninput="onMixInput()">`;
-  h += '</div>';
-  // Hàng "Tính giờ" đứng NGAY DƯỚI "Tổng số câu của bài" (28/9/2026 — "dời tab tính giờ xuống
-  // tab tổng số câu của bài"): hai hàng này cùng một loại — nhãn bên trái, ô số bên phải — và
-  // giờ còn CHUNG một phạm vi, cả hai đều là con số CỦA CẢ BÀI chứ không của riêng bộ nào.
-  // Nút 📦 Thư viện đi kèm trong chính hàng này.
-  h += timeLimitHtml();
+  h += `<input id="mixTotal" type="number" min="1" max="${Math.max(1, totalQuestions())}" class="quiz-input" style="width:62px;text-align:center;font-size:var(--fs-sub)" value="${mixTotalValue()}" oninput="onMixInput()">`;
+  h += '</div>';          // đóng nhóm "Tổng số câu"
+  h += timeLimitHtml();   // nhóm "🕐 Tính giờ [..] phút" — cùng hàng, tự đẩy về mép phải
+  h += '</div>';          // đóng hàng hai-cài-đặt
+  // Nút 📦 Thư viện KHÔNG ở thẻ này: nó nằm ở đáy thẻ "Chọn từng bộ đề" (`quizHomeHtml`), tức
+  // thẻ ngay trên — theo yêu cầu "dời tab thư viện lên trên tab trộn đề" (cùng ngày, lần 12).
   // 18 hàng nằm trong `.mix-table` — khung giữ VIỀN + BO GÓC của cả khối (xem khối .mix-table ở
   // CSS). Nhờ nó, kẻ TRÊN hàng đầu và kẻ DƯỚI hàng cuối là viền của khung nên BO THEO CUNG, còn
   // kẻ giữa các hàng vẫn do từng `.mix-row` tự vẽ ở phía trên.
@@ -3894,7 +4096,14 @@ function quizMixHtml() {
   h += '</div>';
   h += '<div id="mixWarn" style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text);margin-top:4px"></div>';
   h += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">';
-  h += `<button id="mixBtnSingle" class="big-upload-btn" style="width:100%" onclick="mixExam('single')">${ico('dice')} Trộn &amp; làm từng câu</button>`;
+  // NHÃN THEO TÊN CHẾ ĐỘ MỚI (28/9/2026 — "đồng bộ tên chế độ ở bảng Trộn đề theo tỷ lệ với các tab
+  // mới"): hàng nút này là đường vào ĐÚNG ba chế độ của hai hàng tab ở trên, nên nó phải gọi tên
+  // y như tab — `Một câu / Cả bộ / Ôn tập` thay cho `làm từng câu / làm cả bộ / học`. Giữ chữ
+  // thường ở giữa câu ("Trộn & làm một câu") theo đúng lối viết cũ của hàng này; từ chỉ chế độ thì
+  // giống hệt tab, đó mới là thứ cần đồng bộ.
+  // "làm từng câu" → **"làm một câu"** NGẮN HƠN 1 ký tự; "học" → **"ôn tập"** DÀI HƠN 3 ký tự, nên
+  // hàng dưới phải đo lại — xem ghi chú ở hai nút dưới.
+  h += `<button id="mixBtnSingle" class="big-upload-btn" style="width:100%" onclick="mixExam('single')">${ico('dice')} Trộn &amp; làm một câu</button>`;
   // Hai nút dưới chia ĐỀU bề ngang (yêu cầu 19/9/2026 — "cho 2 bảng này đều nhau"): trước đây
   // chúng là flex item tự co theo chữ, nên "Trộn & làm cả bộ" dài hơn "Trộn & học" và hai mép
   // phải lệch nhau. `flex:1` + `min-width:0` cho mỗi nút đúng một nửa hàng; `min-width:0` là
@@ -3904,7 +4113,9 @@ function quizMixHtml() {
   // thị màu"); lúc nghỉ chúng là `.quiz-btn` xám bình thường. Class `mix-act` chỉ khai `:active`.
   // Thêm class thay vì tô `.quiz-btn` vì lớp đó dùng chung với nửa app.
   h += `<button id="mixBtnAll" class="quiz-btn mix-act" style="flex:1;min-width:0" onclick="mixExam('all')">${ico('layers')} Trộn &amp; làm cả bộ</button>`;
-  h += `<button id="mixBtnStudy" class="quiz-btn mix-act" style="flex:1;min-width:0" onclick="mixExam('study')">${ico('cap')} Trộn &amp; học</button>`;
+  // "Trộn & ôn tập" dài hơn "Trộn & học" 3 ký tự — đo lại ở 360px: vẫn một dòng (xem số ở ghi chú
+  // ngay trên). Nếu sau này phải rút, rút padding ngang của hai nút này, ĐỪNG rút chữ.
+  h += `<button id="mixBtnStudy" class="quiz-btn mix-act" style="flex:1;min-width:0" onclick="mixExam('study')">${ico('cap')} Trộn &amp; ôn tập</button>`;
   h += '</div></div>';
   return h;
 }
@@ -4369,7 +4580,7 @@ function onTimeMinInput() {
 }
 function timeLimitHtml() {
   const v = setTimeMin();
-  return '<div class="time-row">'
+  return '<div class="time-group">'
     // Nhãn rút "Thi thử có tính giờ" → **"Tính giờ"** (28/9/2026 — người dùng chọn phương án
     // này sau khi đo: hàng này phải chứa thêm nút 📦 nên nhãn cũ 127,7px bị bóp xuống 3 dòng,
     // kéo hàng cao thêm ~15px). "Tính giờ" ≈ 52px nên VẪN DÙNG ĐƯỢC cả icon 🕐 và nút 📦, và
@@ -4382,19 +4593,13 @@ function timeLimitHtml() {
     // Dòng phụ "0 = không giới hạn · áp dụng cho “Từng câu” và “Cả bộ” (không áp dụng cho “Học”)"
     // đã XOÁ (27/9/2026 — "bỏ các chữ này"). Ý "0 = không giới hạn" KHÔNG mất: nó vẫn nằm trong
     // `title` của chính ô nhập ở trên. CSS `.time-hint` đi kèm cũng đã xoá vì hết chỗ dùng.
-    // ── Nút 📦 Thư viện (28/9/2026 — "dời tab thư viện xuống kế ô phút", rồi đi theo hàng này
-    //    xuống thẻ "Trộn đề theo tỷ lệ" theo yêu cầu "dời tab tính giờ xuống tab tổng số câu của
-    //    bài") ──
-    // Nút đi CÙNG hàng với ô phút vì cả hai đều là thứ chỉ liên quan tới VIỆC LÀM BÀI, không
-    // liên quan tới thẻ nào; tách ra là phải thêm một hàng nút riêng ở đâu đó. Hàng này chỉ có
-    // một ô nhập ngắn bên trái, còn lại là khoảng trống, và nhãn "Tính giờ" co được
-    // (`min-width:0`) nên cửa sổ hẹp thì nó tự xuống dòng chứ nút KHÔNG bị bóp.
-    // Nút cố ý dùng lại `.big-upload-btn.lib-act` để vẫn là ĐÚNG cái tab xanh đó.
-    // CẢNH BÁO PHẠM VI: nút chỉ sống khi thẻ "Trộn đề theo tỷ lệ" được dựng, tức khi có ít nhất
-    // một bộ đề CÓ CÂU HỎI. Trường hợp `!nQ` không dựng thẻ đó, nên thẻ 📦 ở `quizHomeHtml` vẫn
-    // giữ một nút y hệt — sửa nhãn hay `onclick` ở đây thì PHẢI sửa cả chỗ đó, kẻo hai nút lệch.
-    + '<button type="button" class="big-upload-btn lib-act time-lib-btn" onclick="openLibPanel()"'
-    + ' title="Nạp file, nạp cả thư mục, đổi tên, xoá, sao lưu, phục hồi">' + ico('archive') + ' Thư viện</button>'
+    // ── Nút 📦 Thư viện KHÔNG còn ở đây (28/9/2026 lần 12 — "dời tab thư viện lên trên tab trộn
+    //    đề"): nút đã lên ĐÁY thẻ "Chọn từng bộ đề" trong `quizHomeHtml`, tức thẻ NGAY TRÊN thẻ
+    //    "Trộn đề theo tỷ lệ". Cụm này giờ nằm CHUNG HÀNG với "Tổng số câu" (lần 13 — "cho 2
+    //    tab nằm chung hàng"); xem bảng cộng bề ngang ở `quizMixHtml`.
+    // CẢNH BÁO PHẠM VI: vẫn còn HAI nút 📦 trong `quizHomeHtml` — một ở thẻ thư viện của trạng
+    // thái `!nQ`, một ở đáy thẻ "Chọn từng bộ đề" — sửa nhãn hay `onclick` ở một chỗ thì PHẢI
+    // sửa cả chỗ kia, kẻo hai nút lệch.
     + '</div>';
 }
 
