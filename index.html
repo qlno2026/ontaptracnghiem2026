@@ -699,8 +699,15 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    BA CỘT ĐỀU NHAU, KHÔNG dùng `auto-fit` như bản cũ: `auto-fit` + `minmax(120px, 1fr)` sẽ dồn nút 📦
    xuống hàng thứ hai ngay khi cửa sổ hẹp hơn ~390px — đúng thứ yêu cầu này muốn bỏ. Cột đều cũng
    để hàng thẳng cột với lưới nút phía trên (`.set-acts-4` cũng là các cột `1fr`).
-   BỀ NGANG THẬT: hàng = cửa sổ − 44px (đo ở 430 → 386px), mỗi ô = (hàng − 6px khe) / 3 → **126,7px**
-   ở cửa sổ 430 và **103,5px** ở 360.
+   BỀ NGANG THẬT: hàng = cửa sổ − 44px (đo ở 430 → 386px), mỗi ô = (hàng − 12px khe) / 3 → **124,7px**
+   ở hàng 386 và **101,3px** ở hàng 316 (hai số này ĐO LẠI 29/9/2026, lượt khe NGANG 3 → 6px — lượt đó
+   là khe 6px; XEM GHI CHÚ Ở `.set-acts` NGAY TRÊN để biết vì sao sau khi đo lại đã hạ về **4px**).
+   Ở khe 4px, cùng hai bề ngang hàng đó cho **125,3px** và **101,9px**. ĐỔI KHE LÀ PHẢI ĐO LẠI: mỗi 3px
+   khe thêm lấy của MỖI ô đúng 1px — ở hàng 316 cả ba ô đã xuống hai dòng (< 106,3px mà "Đảo câu hỏi"
+   cần) GIỐNG NHƯ TRƯỚC, vì bản cũ (khe 3px) cũng chỉ 103,5px.
+   Ở cửa sổ đang xem (hàng 375,7px, khe 4px) ba ô đo được **122,6 × 36,1px** — vẫn thừa chỗ: hàng này
+   KHÔNG phải hàng chật, chật là hàng bốn nút ở `.set-acts-4`; nếu sau này muốn nới khe mạnh tay thì
+   hàng này một mình chịu được tới ~8px (ô còn 119,9px).
    · “Đảo câu hỏi” 96,3px chữ, “Đảo đáp án” 92,2px (đo bằng canvas ở cỡ 17px) → giữ padding ngang 8px
      thì ô phải 114,3px, tức chữ một dòng chỉ từ ~400px cửa sổ trở lên — vỡ ở đúng những khổ máy
      hay gặp (375/390). Nên rút còn **4px**: ô cần 106,3px → một dòng từ **~369px** trở lên, phủ
@@ -716,10 +723,12 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    đã chọn cho chúng giống nhau, nên lượt này đổi hình — nhưng lý do cũ KHÔNG sai: nếu thấy khó
    phân biệt ba ô, chỗ cần sửa là MÀU chứ đừng trả viên thuốc về cho một mình chip nào.
    Padding DỌC của nút 📦 hạ 11px → **7px** cho đúng chiều cao hai chip: ba ô đều `1fr` nên ô cao hơn
-   kéo cả hàng cao theo. Khe NGANG giữ **3px** như bản cũ để thẳng hệ với `.set-acts` ngay trên. */
+   kéo cả hàng cao theo.   Khe NGANG **4px** — 3 → 4 ngày 29/9/2026 ("cho khoảng các tab xa ra 1 tí"), CÙNG LƯỢT và cùng lý
+   do với `.set-acts` ngay trên (xem ghi chú ở đó: hàng bốn nút chỉ chịu được tới 4px). Hai hàng tab
+   này PHẢI dùng chung một khe — đổi một bên là mắt thấy lệch ngay, vì chúng xếp thẳng trên dưới nhau. */
 .chip-row {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 3px; margin-top: 3px;
+  gap: 4px; margin-top: 3px;
   grid-auto-rows: 1fr;   /* cửa sổ rất hẹp: có nhãn xuống 2 dòng thì ba ô vẫn cao bằng nhau */
 }
 .chip-row .quiz-toggle.chip { padding: 7px 4px; }
@@ -1211,8 +1220,27 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
    là sửa cho cả ba — cố ý, chúng là cùng một ngôn ngữ nút.
    Mức 4px là bước siết đầu: hai nút vẫn còn 8px nền (2px lề trong + 4px khe + 2px) nên chưa dính
    viền vào nhau. Muốn sát nữa thì hạ tiếp về 2px, ĐỪNG bỏ hẳn về 0. */
+/* NỚI LẠI 29/9/2026 — "cho khoảng các tab xa ra 1 tí": gap **3px → 4px**, tức về ĐÚNG nấc 4px của
+   lượt siết 27/9 (xem bảng ĐO TRƯỚC KHI SỬA ngay trên). Đây là lượt thứ tư người dùng đổi ý về khe
+   này (6 → 4 → 3 → 4), nên ĐỪNG coi 4px là "chưa nới".
+   CHỈ ĐI ĐƯỢC ĐẾN 4px — ĐÓ LÀ SỐ ĐO, KHÔNG PHẢI SỰ DÈ DẶT. Hàng bốn nút (`.set-acts-4`) là hàng
+   chật nhất app, và mỗi **1px khe lấy mất 3px** bề ngang hàng (ba khe × bốn nút). Ở cửa sổ đang
+   xem (vùng nội dung 404px, có thanh cuốn) bề ngang hàng chỉ còn **375,7px** → mỗi ô được
+   (375,7 − 12) / 4 = **90,9px**, trong khi nhãn "Một câu" cần **90,25px**: dư đúng **0,6px**.
+   ÉP BỀ NGANG HÀNG để đo ngưỡng, khe 4px: **373px còn một dòng, 372px thì "Một câu" xuống hai dòng**
+   (hàng cao 40,1 → 60,3px). Với khe 6px ngưỡng là ~377px — ở cửa sổ này bốn tab vỡ hai dòng NGAY,
+   nên đã hạ về 4px sau khi đo (người dùng chọn phương án giữ một dòng).
+   QUY RA CỬA SỔ: khe 4px cho ngưỡng ~**376px** nếu tính theo cách bảng trên (hàng ≈ cửa sổ − 44px,
+   webview có thanh cuốn chiếm chỗ) và ~**401px** ở bản xem trước không thanh cuốn (hàng ≈ cửa sổ − 28px).
+   Khe 3px của lượt trước là 373 / 398px — dải đổi hành vi chỉ rộng ~3px ngay trên ngưỡng cũ, và các
+   khổ máy hay gặp (360 · 375 · 390 · 412) vốn đã xuống hai dòng từ trước, nên không mất thêm khổ nào.
+   MUỐN RỘNG HƠN NỮA thì phải MUA CHỖ bằng cách khác, không phải bằng khe lưới: rút khe icon–chữ trong
+   nhãn (`.act-in`, đang 0,26em ≈ 4,4px) hoặc thu nhỏ icon — mỗi 1px mua lại được ~1px cho ô, tức
+   ~3px cho bề ngang hàng, đúng bằng 1px khe.
+   `margin-top` GIỮ NGUYÊN 3px: yêu cầu nói về khe giữa CÁC TAB trong một hàng, không phải khe
+   giữa hai hàng tab — khe DỌC đổi theo là vượt quá yêu cầu. */
 .set-acts {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 3px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 3px;
   grid-auto-rows: 1fr;   /* cửa sổ rất hẹp: có nhãn phải xuống 2 dòng thì cả bốn nút vẫn cao bằng nhau */
 }
 /* `display: flex` (28/9/2026 lần 17) là bắt buộc KỂ TỪ KHI nhãn được bọc trong `.act-in`: một hộp
@@ -1274,6 +1302,14 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
      cửa sổ 360 → hàng 316, ô 76,8px · thêm "Ôn tập" xuống 2 dòng
    NGƯỠNG TÍNH RA: chỗ chữ = ô − 1,05em icon − 0,26em khe − 2px viền; nhãn dài nhất "Một câu" cần
    66px → ô ≥ 90,25px → hàng ≥ 370px → **cửa sổ ≥ 414px**. Khớp đúng bảng trên.
+   ⚠ BẢNG TRÊN ĐO Ở KHE 3px. Từ 29/9/2026 khe NGANG là **4px** ("cho khoảng các tab xa ra 1 tí" —
+   xem `.set-acts`), nên mỗi ô hẹp đi đúng **0,75px** và ngưỡng thành **hàng ≥ 373px**, tức cửa sổ
+   ≥ 417px theo phép đo có thanh cuốn (−44px) hay ≥ 401px ở bản xem trước không thanh cuốn (−28px).
+   Ép bề ngang HÀNG để đo hai đầu mút, khe 4px: **373px còn một dòng, 372px thì "Một câu" xuống hai
+   dòng** (hàng 40,1 → 60,3px); khe 5px đã vỡ ở cửa sổ đang xem (ô 90,2px), khe 6px vỡ chắc chắn
+   (ô 89,4px — SAI LẦM ĐÃ XẢY RA VÀ ĐÃ SỬA trong chính lượt này).
+   ĐỔI KHE LÀ ĐỔI NGƯỠNG — mỗi 1px khe lùi ngưỡng 3px hàng ngang, nên ở cửa sổ này chỉ còn đúng 1px
+   khe là nới được; muốn hơn thì phải mua chỗ bằng cách khác (xem ghi chú ở `.set-acts`).
    ⚠ ĐỔI NHÃN LÀ ĐỔI NGƯỠNG — luôn đo lại, đừng suy từ lượt trước: nhãn dài nhất chỉ cần dài
    thêm 2,5px là ngưỡng lùi 10px (khi còn là "Làm bài" 63,5px thì ngưỡng là 404px, giờ "Một câu"
    66px → 414px). Muốn hạ ngưỡng mà không đổi nhãn thì chỉ còn cách rút `gap` của `.act-in`
@@ -1752,6 +1788,80 @@ body.light-mode .mix-name { background: none; color: var(--text-base); }
   font-size: var(--fs-base); font-weight: 400; padding: 4px 9px; cursor: pointer;
 }
 .mix-reset:hover { border-color: var(--accent-glow); }
+
+/* ── ĐẦU THẺ "Trộn đề theo tỷ lệ" GIỜ LÀ NÚT GẤP/MỞ (29/9/2026 — "cho thêm dấu rút gọn và sổ ra") ──
+   Cả hàng tiêu đề bấm được, dấu ▾ đứng ở MÉP PHẢI — đúng lối `.set-dd-btn` (nút mở danh sách bộ
+   đề), nơi mũi tên cũng đứng ở mép phải chứ không dán sau chữ.
+   TRẠNG THÁI GẤP/MỞ CHỈ NẰM Ở `aria-expanded` CỦA CHÍNH NÚT NÀY: không class thứ hai, không
+   thuộc tính `style` nào. Dấu ▾ và thân thẻ đều đọc từ đó (`.mix-head[aria-expanded="false"] +
+   .mix-body`), nên chúng không thể lệch nhau kiểu "mũi tên nói đang mở mà thân thì đóng".
+   ĐỪNG rút gọn thành `display:none` gán thẳng trong chuỗi HTML: làm thế là bỏ luôn tín hiệu mà
+   phần đọc màn hình dùng để biết thẻ này gấp được.
+   ── 29/9/2026, LƯỢT NGAY SAU — "cho kích cỡ bảng bằng nhau, và cho mũi tên sổ ra to hơn" ──
+   Hàng này phải CAO ĐÚNG BẰNG một ô của `.chip-row` ngay trên nó, và dấu ▾ phải to hơn hẳn.
+   SỐ ĐO, đừng đoán lại: ô chip = viền 1px × 2 + lề dọc 7px × 2 + dòng chữ 17px ≈ 20px = **36px**
+   (đo trong app: `.quiz-toggle.chip` 123 × 36). Hai hệ quả trực tiếp:
+     · lề dọc của hàng này là **8px**, KHÔNG phải 7 — nó không có viền, nên 7 + 7 + 20 chỉ ra 34px,
+       thấp hơn chip đúng 2px và mắt đọc ra ngay là hai hàng lệch nhau;
+     · cỡ chữ về **`--fs-base` (17px)**, cỡ của chip — giữ `--fs-head` (18px) thì dòng chữ cao hơn
+       ~1px và hàng lại cao hơn chip, dù lề đã đúng.
+   Vì sao KHÔNG thêm viền cho bằng chip: người dùng chỉ hỏi KÍCH CỠ. Thêm viền là biến hàng này
+   thành ô thứ tư của hàng chip, trong khi nó là ĐẦU THẺ chứ không phải một công tắc.
+   Lề dưới 6px → **0**: lề dọc 8px mới đã tự làm khoảng thở dưới chữ rồi, cộng thêm 6px nữa là
+   khe tiêu đề → bảng phình lên 14px trong khi cả thẻ đang giữ nhịp 6 · 10 · 4 · 8.
+   (Nhờ lề dưới bằng 0 luôn, luật riêng cho trạng thái gấp không còn cần nữa — đã xoá.)
+   `font-family` BẮT BUỘC: tiêu đề cũ là một <div> nên thừa hưởng sẵn màu chữ và cỡ chữ của thẻ,
+   còn <button> thì không — mọi nút khác trong thẻ đều tự khai 'Inter', sans-serif. */
+.mix-head {
+  width: 100%; display: flex; align-items: center; gap: 8px; text-align: left;
+  padding: 8px 10px; margin: 0; border: 0; background: none; border-radius: 10px;
+  color: inherit; font-family: 'Inter', sans-serif;
+  font-size: var(--fs-base); font-weight: var(--fw-ui);
+  cursor: pointer;
+}
+/* ── PHẢN HỒI KHI TRỎ / BẤM GIỮ (29/9/2026 — "cho cả hàng Trộn đề đổi nền nhẹ khi trỏ chuột và
+   khi bấm giữ, để nó đọc ra là bấm được chứ không chỉ nhờ dấu mũi tên") ──
+   Hàng này KHÔNG có viền và KHÔNG có nền, nên trước lượt này dấu ▾ là thứ duy nhất nói rằng nó
+   bấm được — mà dấu thì nằm tận mép phải, cách chỗ con trỏ hay đứng cả một gang tay.
+   Dùng ĐÚNG hai nấc mà app đã có cho việc này, không tự nghịch ra giá trị mới:
+     trỏ    → `rgba(127,127,127,0.14)` — y hệt `button.cfg-row:hover`, hàng bấm được trong Cài đặt
+     bấm giữ → `rgba(127,127,127,0.22)` — nấc đậm hơn, y hệt `.mix-step button:active`
+   Chế độ SÁNG phải khai LẠI: nền xám trong suốt 0,14 trên thẻ sáng gần như không thấy (đúng lỗi
+   đã gặp ở `.set-dd-item:hover` và `.search-clear:hover`). Lấy `rgba(0,0,0,0.06)` — giá trị
+   `.search-clear` đang dùng cho CẢ hai trạng thái; ở đây cũng gộp lại một nấc, vì 0,06 trên nền
+   sáng đã đủ rõ và bày thêm nấc thứ ba cho trạng thái bấm là trang trí vô ích.
+   Đây là luật `body.light-mode …` nên (0,2,1) — ĐÈ ĐƯỢC hai luật trên (0,2,0). Đúng ý: đừng
+   "sửa" bằng cách bỏ tiền tố `body.light-mode`, nền tối sẽ trôi sang chế độ sáng.
+   Nền này KHÔNG đụng tới lề hay chiều cao: nó là `background` trên `padding-box` 36px có sẵn, nên
+   hai hàng vẫn cao bằng nhau và bảng bên dưới không nhích. */
+.mix-head:hover { background: rgba(127, 127, 127, 0.14); }
+.mix-head:active { background: rgba(127, 127, 127, 0.22); }
+body.light-mode .mix-head:hover, body.light-mode .mix-head:active { background: rgba(0, 0, 0, 0.06); }
+/* Nhãn CỐ Ý KHÔNG cho `display: flex`: giữ nguyên dòng chảy inline của tiêu đề cũ để icon SVG
+   vẫn canh theo `vertical-align: -0.16em` của `.ico` y như trước — nhét vào flex là icon tự dời
+   lên canh giữa dòng, tức tiêu đề đổi dáng dù không ai yêu cầu. */
+.mix-head-t { flex: 1; min-width: 0; }
+/* Dấu ▾ — 29/9/2026: `--fs-tiny` (11px) → **`--fs-base` (17px)**, to bằng chữ của nhãn đứng cạnh
+   nó ("cho mũi tên sổ ra to hơn"). Ở 11px nó chỉ là một chấm mờ ở mép phải, trong khi đây là
+   dấu hiệu DUY NHẤT cho biết cả hàng bấm được. `line-height: 1` giữ nó không đội chiều cao hàng
+   lên: dòng chữ của nhãn (20px) vẫn là mục cao nhất của hàng.
+   Màu: lúc NGHỈ là chữ mờ `--text-dim`, khi trỏ/bấm bằng bàn phím mới ăn màu icon `--ico`
+   (xanh dương ở cả hai chế độ, tự đổi nấc cho nền sáng). Quy ước của tệp: chỗ nào bấm được thì
+   khi trỏ phải có một khác biệt NHÌN THẤY được — từ 29/9/2026 hàng này có HAI dấu hiệu cùng lúc:
+   dấu ▾ này đổi màu, và cả hàng đổi nền (khối luật `:hover` / `:active` ở trên). */
+.mix-caret { flex: none; font-size: var(--fs-base); line-height: 1; color: var(--text-dim); transition: transform 0.15s, color 0.15s; }
+.mix-head:hover .mix-caret, .mix-head:focus-visible .mix-caret { color: var(--ico); }
+.mix-head:focus { outline: none; }
+/* Vòng focus CHỈ cho bàn phím (`:focus-visible`) — cùng cặp màu với `.quiz-btn.mix-act`
+   (`.quiz-btn:focus-visible` cũng đi đôi như vậy): #60a5fa trên nền sáng chỉ ~2,2:1 nên chế
+   độ sáng hạ xuống `--accent` #1d4ed8, đúng cách `--ico` đã làm. */
+.mix-head:focus-visible { box-shadow: 0 0 0 2px var(--accent-glow); }
+body.light-mode .mix-head:focus-visible { box-shadow: 0 0 0 2px var(--accent); }  /* ▾ khi GẤP, ▴ khi MỞ — đúng chiều quay của `.set-dd-caret` (mở = quay 180°), để hai chỗ
+   gấp/mở trong app cùng một cách nói, không nơi nào quay ngược nơi nào. */
+.mix-head[aria-expanded="true"] .mix-caret { transform: rotate(180deg); }
+/* Thân thẻ là EM LIỀN SAU của nút (xem `quizMixHtml`), nên một luật này đủ để gấp cả bảng 18
+   hàng, hai hàng cài đặt, dòng cảnh báo và ba nút trộn — không phải gắn class cho từng khối. */
+.mix-head[aria-expanded="false"] + .mix-body { display: none; }
 
 /* ── CẶP NÚT ▲▼ cạnh ô phần trăm (19/9/2026 — "muốn có dấu mũi tên lên xuống kế ô số
    chỉnh cho dễ khi xem trên điện thoại"). Đặt NGAY SAU ô nhập nên không phải với tay, và
@@ -4054,6 +4164,19 @@ function onSearch() {
   }).join('');
 }
 
+// ── THẺ "Trộn đề theo tỷ lệ" ĐANG MỞ HAY GẤP (29/9/2026 — "cho thêm dấu rút gọn và sổ ra") ──
+// Đây là thẻ DÀI NHẤT trang chủ (bảng 18 hàng + hai hàng cài đặt + ba nút trộn), nên gấp nó lại
+// là cách duy nhất đưa nút 📦 Thư viện và nút Cài đặt ở cuối trang về gần tầm mắt.
+// CỐ Ý KHÔNG LƯU VÀO MÁY: gấp/mở là thao tác dọn màn hình trong lúc làm việc, không phải một
+// quy định về đề trộn (khác hẳn tỷ lệ trộn — thứ DUY NHẤT trong app được lưu). Nếu lưu lại thì
+// lần sau mở app thẻ dài nhất sẽ tự gấp, người dùng không thấy bảng đâu và tưởng app mất nó.
+let _mixOpen = true;
+// Vẽ lại cả trang chủ, đúng cách hai chip "Đảo câu hỏi / Đảo đáp án" đang làm (`toggleQuizOpt`):
+// gấp/mở là chuyện của RIÊNG cây HTML này, không có giá trị nào của bảng trộn bị mất khi vẽ lại
+// (`_mix` giữ số, ô nhập đọc lại từ đó). Ở đây không sợ mất con trỏ như hàng ô phần trăm — người
+// dùng vừa bấm vào TIÊU ĐỀ, không phải đang gõ.
+function toggleMixOpen() { _mixOpen = !_mixOpen; renderQuiz(); }
+
 function quizMixHtml() {
   const rows = mixRows();
   const pctSum = rows.reduce((a, r) => a + r.pct, 0);
@@ -4067,7 +4190,24 @@ function quizMixHtml() {
   // 12px (tiêu đề→hàng cài đặt và hàng cài đặt→bảng), mọi khe khác đã là 4–10px; sau lượt này
   // dãy khe là 6 · 6 · 10 · 4 · 8 — hai khe đầu đứng ngang hàng với phần còn lại của thẻ.
   // ĐỪNG hạ tiếp xuống 3–4px: trên thẻ chỉ còn 5px lề trong, hai khe 6px đã ngang cỡ lề đó rồi.
-  h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:6px">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
+  // 29/9/2026 — hàng tiêu đề trở thành NÚT GẤP/MỞ có lề dọc 8px (xem `.mix-head`), nên khe ĐẦU
+  // TIÊN của dãy đổi: **6 · 6 · 10 · 4 · 8 → 8 · 6 · 10 · 4 · 8**. Lề dưới của tiêu đề về **0**
+  // đúng vì thế: giữ thêm 6px nữa là khe đầu thành 14px, gấp đôi các khe còn lại.
+  // TIÊU ĐỀ GIỜ LÀ NÚT GẤP/MỞ (29/9/2026 — "cho thêm dấu rút gọn và sổ ra"): cả hàng bấm được,
+  // dấu ▾ đứng ở mép phải. Dùng <button> thật chứ không phải <div onclick> để bàn phím và phần
+  // đọc màn hình có sẵn Enter/Space cùng `aria-expanded` — thứ mà một div tự gắn thì phải tự
+  // viết lại, còn `aria-controls` nối thẳng xuống thân thẻ bên dưới.
+  // GẤP/MỞ Ở ĐÂY GỒM CẢ BA NÚT TRỘN (chúng nằm trong `.mix-body`): gấp thẻ là để cất cả thẻ đi,
+  // chứ không phải để lại đúng hàng nút — để lại thì thẻ vẫn cao gần bằng lúc mở.
+  // Dấu `▾` dùng ký tự chữ như `.set-dd-caret` của nút mở danh sách bộ đề, KHÔNG thêm icon SVG
+  // mới vào bảng `ICONS` cho một việc đã có sẵn cách làm trong app.
+  h += '<button type="button" class="mix-head" id="mixHead" aria-expanded="' + (_mixOpen ? 'true' : 'false') + '"'
+    + ' aria-controls="mixBody" title="' + (_mixOpen ? 'Gấp thẻ này lại' : 'Mở thẻ này ra') + '"'
+    + ' onclick="toggleMixOpen()">'
+    + '<span class="mix-head-t">' + ico('dice') + ' Trộn đề theo tỷ lệ</span>'
+    + '<span class="mix-caret" aria-hidden="true">▾</span>'
+    + '</button>';
+  h += '<div class="mix-body" id="mixBody">';
   // Hàng hai cài đặt "Tổng số câu / Tính giờ" đã DỜI khỏi chỗ này xuống dưới hàng "Tổng tỷ lệ +
   // ↺ Mặc định" (29/9/2026 — "dời hàng này xuống dưới chữ mặc định"); bản dựng cùng ghi chú đo
   // lường nằm ở cuối khối bảng trong hàm này.
@@ -4182,7 +4322,9 @@ function quizMixHtml() {
   // "Trộn & ôn tập" dài hơn "Trộn & học" 3 ký tự — đo lại ở 360px: vẫn một dòng (xem số ở ghi chú
   // ngay trên). Nếu sau này phải rút, rút padding ngang của hai nút này, ĐỪNG rút chữ.
   h += `<button id="mixBtnStudy" class="quiz-btn mix-act" style="flex:1;min-width:0" onclick="mixExam('study')">${ico('cap')} Trộn &amp; ôn tập</button>`;
-  h += '</div></div>';
+  h += '</div>';   // đóng hàng ba nút trộn
+  h += '</div>';   // đóng thân thẻ `.mix-body` — PHẢI đứng trước khi đóng thẻ
+  h += '</div>';   // đóng thẻ `.quiz-card`
   return h;
 }
 
