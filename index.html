@@ -656,8 +656,19 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
    `outline: none` là BẮT BUỘC: không có nó thì vòng mặc định vẫn vẽ thêm một lớp nữa. */
 .quiz-btn:focus { outline: none; border-color: var(--accent-glow); }
 
+/* BO GÓC CỦA CHIP = BO GÓC CỦA NÚT 📦 THƯ VIỆN (29/9/2026 — "cho viền giống viền thư viện").
+   999px (viên thuốc) → **10px**, ĐÚNG bằng `.big-upload-btn` mà nút 📦 đang dùng.
+   Đây là lượt ĐẢO NGƯỢC CÓ CHỦ Ý của một quyết định cũ: khối `.chip-row` bên dưới từng ghi "ĐỪNG
+   đồng bộ hình dạng ở đây" và giữ chip là viên thuốc để phân biệt công tắc với nút mở bảng —
+   người dùng đã xem cả hai và chọn cho chúng giống nhau. Ba ô của hàng `.chip-row` giờ cùng hình.
+   CHỈ ĐỔI HÌNH DẠNG, KHÔNG ĐỔI MÀU: viền vẫn `1px solid var(--border)`, nền trong suốt ở lúc nghỉ
+   — cặp màu này VỐN ĐÃ trùng nút 📦 từ 20/9/2026, nên sau lượt này chip CHƯA BẬT và nút 📦 chỉ
+   còn khác nhau ở chữ. Nếu sau này thấy khó phân biệt "nút mở bảng" với "công tắc", chỗ cần sửa
+   là MÀU/độ đậm — ĐỪNG trả 999px về một mình.
+   Phạm vi: `.quiz-toggle` chỉ có ĐÚNG hai chỗ dùng (hai chip Đảo câu hỏi / Đảo đáp án, đều do
+   `quizToggleHtml` dựng) nên luật này không vương sang chỗ khác. */
 .quiz-toggle {
-  padding: 7px 10px; border-radius: 999px; cursor: pointer;
+  padding: 7px 10px; border-radius: 10px; cursor: pointer;
   border: 1px solid var(--border); background: transparent; color: var(--text-dim);
   font-family: 'Inter', sans-serif; font-size: var(--fs-base); font-weight: 500;
 }
@@ -698,11 +709,12 @@ body.light-mode .quiz-btn.mix-act:focus-visible { box-shadow: 0 0 0 2px rgba(29,
      `grid-auto-rows: 1fr` giữ ba ô cao bằng nhau; đã đo ở 360 và ở các cỡ chữ 110/120/150%: cả ba
      ô luôn cùng cao, cùng một hàng.
    · nút 📦 cần ~90px (icon 17,8 + chữ “Thư viện” 68) nên padding ngang cũng rút còn 4px.
-   VÌ SAO NÚT 📦 GIỮ BO GÓC 10px CHỨ KHÔNG THÀNH VIÊN THUỐC NHƯ HAI CHIP: màu của nó đã được đồng bộ
-   ĐÚNG BẰNG màu chip đang BẬT (nền xanh 0,18 + viền + chữ `--accent-glow` — xem `.quiz-toggle.on`
-   ngay trên). Bo tròn nữa thì nó thành một viên thuốc xanh y hệt chip đang bật, và người dùng sẽ
-   tưởng đây là công tắc thứ ba đang mở. Hình chữ nhật là thứ còn phân biệt “nút mở bảng” với
-   “công tắc” — ĐỪNG đồng bộ hình dạng ở đây cho dù hai màu đã đồng bộ.
+   BO GÓC: ba ô giờ CÙNG một hình chữ nhật bo 10px (29/9/2026 — "cho viền giống viền thư viện"):
+   chip đổi từ 999px sang 10px, xem ghi chú ở `.quiz-toggle` ngay trên khối này.
+   Ghi chú CŨ ở đây từng dặn "ĐỪNG đồng bộ hình dạng" vì hình chữ nhật là thứ duy nhất còn phân biệt
+   "nút mở bảng" với "công tắc" (màu nút 📦 đã đồng bộ với chip đang BẬT từ 20/9/2026). Người dùng
+   đã chọn cho chúng giống nhau, nên lượt này đổi hình — nhưng lý do cũ KHÔNG sai: nếu thấy khó
+   phân biệt ba ô, chỗ cần sửa là MÀU chứ đừng trả viên thuốc về cho một mình chip nào.
    Padding DỌC của nút 📦 hạ 11px → **7px** cho đúng chiều cao hai chip: ba ô đều `1fr` nên ô cao hơn
    kéo cả hàng cao theo. Khe NGANG giữ **3px** như bản cũ để thẳng hệ với `.set-acts` ngay trên. */
 .chip-row {
@@ -790,6 +802,27 @@ body.light-mode .big-upload-btn.lib-act { background: transparent; border-color:
 body.light-mode .big-upload-btn.lib-act:active {
   background: rgba(59,130,246,0.14); border-color: var(--accent); color: var(--accent);
 }
+/* ICON 📦 CỦA NÚT "Thư viện" — VÀNG (29/9/2026 — "cho icon thư viện màu vàng").
+   CHỈ ICON ĐỔI MÀU, chữ vẫn `--text-dim`: người dùng muốn nhận ra nút bằng BIỂU TƯỢNG chứ không
+   phải bằng cả nhãn, nên luật `.lib-act` ở trên (chữ xám) KHÔNG bị đụng tới.
+   KHAI SAU `.big-upload-btn.lib-act .ico` (cùng độ ưu tiên 0,2,1) nên `#fbbf24` thắng
+   `currentColor`. Vì selector vẫn là `.big-upload-btn.lib-act` nên CẢ HAI nút 📦 của app (thẻ
+   trạng thái trắng thư viện + hàng ba ô cạnh hai chip Đảo) cùng đổi màu — đúng lối "cùng một nút
+   thì cùng một cách hiện màu" đã dùng cho nền nút. Icon 📦 ở TIÊU ĐỀ panel Thư viện
+   (`ico('archive')` trong `openLibPanel`) KHÔNG mang `.lib-act` nên KHÔNG đổi: đó là tiêu đề,
+   không phải nút.
+   VÀNG PHẢI CÓ HAI NẤC: #fbbf24 (amber-400) trên nền thẻ SÁNG chỉ ~1,9:1 — gần như tan vào nền,
+   nên chế độ sáng BẮT BUỘC hạ xuống #b45309 (amber-700, ~5,4:1), đúng cách token `--ico` đã làm
+   (xem `:root`). Dùng họ amber chứ không phải vàng thuần vì đây chính là họ màu của `--gold`
+   #f59e0b đã bị xoá ở lượt tối giản 27/9/2026 — "vàng" quay lại bằng họ màu app từng dùng.
+   `:active` GIỮ `currentColor`: lúc bấm, nền + viền + chữ đổi sang xanh nhấn; để icon đứng yên màu
+   vàng thì nút trông như đang lệch màu. Phải khai luật sáng RIÊNG vì
+   `body.light-mode .big-upload-btn.lib-act .ico` (0,4,1) mạnh hơn `…:active .ico` (0,4,0) — thiếu
+   nó thì ở chế độ sáng icon kẹt ở #b45309 suốt lúc bấm (đúng cái bẫy đã sập với nền nút). */
+.big-upload-btn.lib-act .ico { stroke: #fbbf24; }
+body.light-mode .big-upload-btn.lib-act .ico { stroke: #b45309; }
+.big-upload-btn.lib-act:active .ico { stroke: currentColor; }
+body.light-mode .big-upload-btn.lib-act:active .ico { stroke: currentColor; }
 
 /* ── QUIZ ───────────────────────── */
 /* Lề giữa các bảng trên trang chủ. Hai lượt siết: 19/9/2026 ("khoảng cách các bảng này nhỏ
@@ -1400,6 +1433,22 @@ body.light-mode .exam-timebar.low > i { background: var(--red-text); }
 .time-lbl { flex: none; display: flex; align-items: center; gap: 6px; font-size: var(--fs-sub); color: var(--text-dim); white-space: nowrap; }
 .time-inp { flex: none; width: 56px; text-align: center; font-size: var(--fs-sub); }
 .time-unit { flex: none; font-size: var(--fs-sub); color: var(--text-dim); }
+/* Chữ đơn vị "câu" của hàng cài đặt — EM của `.time-unit`: hai nửa của CÙNG một hàng, cùng vai
+   trò (chữ đơn vị đứng SAU ô số), nên cùng một khuôn y hệt. Có nó thì nửa trái đọc ra
+   "Tổng [100] câu", song song với nửa phải "Tính giờ [60] phút" (29/9/2026 — "đổi thành Tổng
+   100 câu"). `flex: none` BẮT BUỘC như `.time-unit`: hàng cha là `flex-wrap`, thiếu nó thì chữ
+   đơn vị bị co lại thành méo thay vì rớt xuống dòng dưới cho gọn. */
+.total-unit { flex: none; font-size: var(--fs-sub); color: var(--text-dim); }
+/* HAI ô số của hàng cài đặt "Tổng số câu / Tính giờ": HẠ CHIỀU CAO (29/9/2026 — "cho chiều cao
+   ô số hẹp lại"). Lề dọc 10px của `.quiz-input` → **5px**, đúng cỡ ô số trong bảng trộn
+   (`.mix-input` cũng 5px dọc) — hai loại ô số của cùng một thẻ giờ cao BẰNG nhau.
+   BỀ NGANG KHÔNG ĐỔI: 62px và 56px là SỐ ĐO đã cộng kỹ cho hàng ở cửa sổ 430px (xem bảng cộng
+   ở `quizMixHtml`), hạ được mỗi chiều cao. Vì bề ngang giữ nguyên nên hai ô vẫn nằm chung hàng
+   ở cỡ chữ 110–120%; chỉ hàng thấp đi ~10px.
+   KHÔNG khai trên `.quiz-input`: lớp đó còn là ô đổi tên bộ đề ở bảng 📦 (phải giữ 17px/10px lề)
+   và ô nhập các nơi khác — hạ ở đó là kéo theo cả app. Và phải khai SAU `.quiz-input` trong tệp
+   thì `padding-top/bottom` (longhand) mới thắng được `padding` (shorthand) của nó. */
+#mixTotal, .time-inp { padding-top: 5px; padding-bottom: 5px; }
 /* (28/9/2026 lần 12 — "dời tab thư viện lên trên tab trộn đề") Luật `.time-row .time-lib-btn` đã
    XOÁ cùng lượt nút 📦 rời hàng "phút" để lên đáy thẻ "Chọn từng bộ đề": hàng này không còn
    nút nào nên cũng hết cái phải thắng `.lib-act` (flex + padding). */
@@ -2726,11 +2775,12 @@ let _libPending = null;       // { kind: 'set' | 'all', setId }
 let _quizMode = 'home';       // home | browse | form | play | playAll | result
 let _quizState = null;
 let _exam = null;             // { questions, title, mode } của bài đang làm
-// Mặc định (19/9/2026 — "bỏ chọn mặc định đảo đáp án"): ĐẢO ĐÁP ÁN **TẮT**, ĐẢO CÂU HỎI **BẬT**.
-// Đáp án giữ đúng thứ tự A/B/C/D của bộ đề để người học nhớ vị trí; câu hỏi vẫn được xáo.
-// Đây là biến TRONG BỘ NHỚ, không lưu vào máy — mỗi lần mở app lại theo đúng hai giá trị này,
-// nên tắt ở đây là tắt "mặc định" thật (không phải trạng thái còn sót của phiên trước).
-let _quizOpts = { shuffleQ: true, shuffleA: false };
+// Mặc định (19/9/2026 — "bỏ chọn mặc định đảo đáp án"; 29/9/2026 — "bỏ không chọn mặc định
+// đảo câu hỏi"): CẢ HAI đều **TẮT**. Câu hỏi và đáp án giữ đúng thứ tự của bộ đề — người học
+// chủ động bật chip khi muốn xáo. Đây là biến TRONG BỘ NHỚ, không lưu vào máy — mỗi lần mở app
+// lại theo đúng hai giá trị này, nên tắt ở đây là tắt "mặc định" thật (không phải trạng thái còn
+// sót của phiên trước).
+let _quizOpts = { shuffleQ: false, shuffleA: false };
 // Ô làm bài đang được chọn trong hàng 2×2 của thẻ bộ đề. Nhớ CẢ BỘ LẪN Ô: bấm "📖 Học"
 // ở bộ A thì chỉ ô Học CỦA BỘ A mang màu xanh; ba ô kia của bộ A và MỌI ô của 10 bộ còn
 // lại trở về kiểu viền — cả app chỉ có ĐÚNG MỘT ô xanh tại một thời điểm. Bấm ở bộ khác
@@ -4018,40 +4068,9 @@ function quizMixHtml() {
   // dãy khe là 6 · 6 · 10 · 4 · 8 — hai khe đầu đứng ngang hàng với phần còn lại của thẻ.
   // ĐỪNG hạ tiếp xuống 3–4px: trên thẻ chỉ còn 5px lề trong, hai khe 6px đã ngang cỡ lề đó rồi.
   h += '<div style="font-size:var(--fs-head);font-weight:var(--fw-ui);margin-bottom:6px">' + ico('dice') + ' Trộn đề theo tỷ lệ</div>';
-  // HAI cài đặt CỦA CẢ BÀI nằm CHUNG MỘT HÀNG (28/9/2026 lần 13 — "cho 2 tab nằm chung hàng").
-  // Đường đi của "Tính giờ" trong ngày, chép lại đây để không ai "sắp xếp lại" lần thứ tư: đứng
-  // riêng một hàng dưới "Tổng số câu của bài" → lần 12 dời lên chung hàng với TIÊU ĐỀ thẻ → lần
-  // này gộp thẳng vào hàng "Tổng số câu của bài", còn tiêu đề trở lại đứng riêng một dòng.
-  // CÁC CON SỐ DƯỚI ĐÂY LÀ SỐ ĐO, không phải số tròn cho đẹp. Bề ngang thật của hàng ở cửa sổ
-  // 430px là **386px**; cộng lại: nhóm trái (nhãn 85 + khe 6 + ô 62 = 153) | khe 8 | nhóm phải
-  // (nhãn giờ 78,8 + khe 6 + ô 56 + khe 6 + "phút" 31,8 = 178,6) = **339,6px**, dư ~46px.
-  // DƯ NHIỀU LÀ CỐ Ý, không phải làm chưa tới: cỡ chữ của app chỉnh được tới 150%, và đo lại ở
-  // 110% hàng còn ~358px, ở 120% còn ~377px — đều vẫn trong 386px. Cắt sát tới mức chỉ vừa ở
-  // 100% thì máy nào để cỡ chữ lớn hơn một nấc là cụm giờ rớt xuống dòng dưới ngay.
-  // Khe GIỮA hai nhóm là 8px (khe chung của app), còn khe BÊN TRONG mỗi nhóm để **6px**: mỗi
-  // nhóm bớt được hai khe × 2px, đúng phần cần thêm cho cỡ chữ 120%. Nhìn không khác gì, vì hai
-  // thứ nằm hai bên khe đều đã có lề trong 10px của riêng chúng.
-  // Hai chỗ phải RÚT mới vừa một hàng:
-  //   · Nhãn rút "Tổng số câu của bài" → **"Tổng số câu"** (−59px). Nhãn đầy đủ cộng cụm giờ là
-  //     434px, vượt hẳn bề ngang hàng — giữ nguyên nhãn cũ thì KHÔNG cách nào cho hai thứ nằm
-  //     chung hàng. Nghĩa không mất: câu đầy đủ nằm ở `title` của nhãn, và thẻ đã tên là
-  //     "Trộn đề theo tỷ lệ" rồi.
-  //   · Ô "Tổng số câu" 88 → **62px**, ô phút 74 → **56px** (xem `.time-inp` ở CSS): vẫn thừa
-  //     chỗ cho ba chữ số, và cỡ nhỏ thế này vốn đã là chuẩn trong chính thẻ này — ô % của
-  //     `.mix-row` cũng chỉ rộng chừng ấy.
-  // `justify-content: space-between` cho hai cụm đứng hai mép thay vì dồn cục bên trái; khi máy
-  // quá hẹp thì cụm giờ rớt xuống dòng dưới (`flex-wrap`) và rơi về mép TRÁI, vì hàng chỉ còn
-  // một mục. ĐỔI MỘT TRONG CÁC SỐ TRÊN LÀ PHẢI CỘNG LẠI — nhất là ĐỪNG nới hai ô nhập ra.
-  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px">';
-  h += '<div style="display:flex;align-items:center;gap:6px;min-width:0">';
-  h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);white-space:nowrap" title="Tổng số câu của bài trộn — số câu lấy ra từ các bộ đề">Tổng số câu</div>';
-  // Ô nhập trong bảng trộn để cỡ 15px cho BẰNG các chữ xung quanh (yêu cầu 19/9/2026).
-  // Cố ý KHÔNG hạ .quiz-input xuống 15px: lớp đó còn dùng cho ô đổi tên bộ đề ở bảng 📦
-  // (ô nhập tên là chữ chính, phải giữ 17px/500). Chỉ hai ô của bảng trộn hạ cỡ.
-  h += `<input id="mixTotal" type="number" min="1" max="${Math.max(1, totalQuestions())}" class="quiz-input" style="width:62px;text-align:center;font-size:var(--fs-sub)" value="${mixTotalValue()}" oninput="onMixInput()">`;
-  h += '</div>';          // đóng nhóm "Tổng số câu"
-  h += timeLimitHtml();   // nhóm "🕐 Tính giờ [..] phút" — cùng hàng, tự đẩy về mép phải
-  h += '</div>';          // đóng hàng hai-cài-đặt
+  // Hàng hai cài đặt "Tổng số câu / Tính giờ" đã DỜI khỏi chỗ này xuống dưới hàng "Tổng tỷ lệ +
+  // ↺ Mặc định" (29/9/2026 — "dời hàng này xuống dưới chữ mặc định"); bản dựng cùng ghi chú đo
+  // lường nằm ở cuối khối bảng trong hàm này.
   // Nút 📦 Thư viện KHÔNG ở thẻ này: nó nằm ở đáy thẻ "Chọn từng bộ đề" (`quizHomeHtml`), tức
   // thẻ ngay trên — theo yêu cầu "dời tab thư viện lên trên tab trộn đề" (cùng ngày, lần 12).
   // 18 hàng nằm trong `.mix-table` — khung giữ VIỀN + BO GÓC của cả khối (xem khối .mix-table ở
@@ -4094,6 +4113,53 @@ function quizMixHtml() {
   h += '<div id="mixSum" style="flex:1;font-size:var(--fs-base);font-weight:var(--fw-body)"></div>';
   h += '<button class="mix-reset" onclick="resetMixToDefaults()" title="Về tỷ lệ mặc định của app">↺ Mặc định</button>';
   h += '</div>';
+  // HAI cài đặt CỦA CẢ BÀI nằm CHUNG MỘT HÀNG (28/9/2026 lần 13 — "cho 2 tab nằm chung hàng").
+  // 29/9/2026 — "dời hàng này xuống dưới chữ mặc định": cả hàng RỜI khỏi chỗ ngay dưới tiêu đề thẻ
+  // và xuống đây, đứng LIỀN DƯỚI hàng "Tổng tỷ lệ + ↺ Mặc định". Bảng trộn giờ nằm sát tiêu đề, còn
+  // hai cài đặt chung của cả bài đứng cạnh nút ↺ Mặc định — đúng nhóm "quy định chung", thay vì
+  // chen giữa tiêu đề và bảng.
+  // Đường đi của "Tính giờ" trong ngày, chép lại đây để không ai "sắp xếp lại" lần thứ năm: đứng
+  // riêng một hàng dưới "Tổng số câu của bài" → lần 12 dời lên chung hàng với TIÊU ĐỀ thẻ → lần 13
+  // gộp thẳng vào hàng "Tổng số câu của bài", còn tiêu đề trở lại đứng riêng một dòng → lần này cả
+  // hàng xuống dưới hàng "↺ Mặc định".
+  // CÁC CON SỐ DƯỚI ĐÂY LÀ SỐ ĐO, không phải số tròn cho đẹp. Bề ngang thật của hàng ở cửa sổ
+  // 430px là **386px**; cộng lại: nhóm trái (nhãn "Tổng" 36,7 + khe 6 + ô 62 + khe 6 + "câu" 26
+  // = 136,7) | khe 8 | nhóm phải (nhãn giờ 78,8 + khe 6 + ô 56 + khe 6 + "phút" 31,8 = 178,6)
+  // = **323,3px**, dư ~53px.
+  // DƯ NHIỀU LÀ CỐ Ý, không phải làm chưa tới: cỡ chữ của app chỉnh được tới 150%, và đo lại ở
+  // 110% hàng còn ~358px, ở 120% còn ~377px — đều vẫn trong 386px. Cắt sát tới mức chỉ vừa ở
+  // 100% thì máy nào để cỡ chữ lớn hơn một nấc là cụm giờ rớt xuống dòng dưới ngay.
+  // Khe GIỮA hai nhóm là 8px (khe chung của app), còn khe BÊN TRONG mỗi nhóm để **6px**: mỗi
+  // nhóm bớt được hai khe × 2px, đúng phần cần thêm cho cỡ chữ 120%. Nhìn không khác gì, vì hai
+  // thứ nằm hai bên khe đều đã có lề trong 10px của riêng chúng.
+  // Hai chỗ phải RÚT mới vừa một hàng:
+  //   · Nhãn rút "Tổng số câu của bài" → **"Tổng số câu"** (−59px), rồi 29/9/2026 — "đổi thành
+  //     Tổng 100 câu" — nhãn rút tiếp còn **"Tổng"** và chữ đơn vị **"câu"** ra đứng SAU ô số,
+  //     cho song song với "…phút" của nửa phải. Nhóm trái vì thế đi từ 153px (nhãn 85 + khe 6 +
+  //     ô 62) xuống **136,7px** — ròng HẸP đi 16,3px, nên chỗ dư của hàng còn rộng hơn trước.
+  //     Nhãn đầy đủ cộng cụm giờ là 434px, vượt hẳn bề ngang hàng — giữ nhãn dài thì KHÔNG cách
+  //     nào cho hai thứ nằm chung hàng. Nghĩa không mất: câu đầy đủ nằm ở `title` của nhãn.
+  //   · Ô "Tổng số câu" 88 → **62px**, ô phút 74 → **56px** (xem `.time-inp` ở CSS): vẫn thừa
+  //     chỗ cho ba chữ số, và cỡ nhỏ thế này vốn đã là chuẩn trong chính thẻ này — ô % của
+  //     `.mix-row` cũng chỉ rộng chừng ấy.
+  // `justify-content: space-between` cho hai cụm đứng hai mép thay vì dồn cục bên trái; khi máy
+  // quá hẹp thì cụm giờ rớt xuống dòng dưới (`flex-wrap`) và rơi về mép TRÁI, vì hàng chỉ còn
+  // một mục. ĐỔI MỘT TRONG CÁC SỐ TRÊN LÀ PHẢI CỘNG LẠI — nhất là ĐỪNG nới hai ô nhập ra.
+  // `margin-top:10px` cho khớp khe 10px của hàng "Tổng tỷ lệ" ngay trên; hàng đó KHÔNG có lề
+  // dưới nên khe này hoàn toàn do đây quyết định (lề dọc hai hàng anh em gộp thành một khe).
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px;margin-bottom:6px">';
+  h += '<div style="display:flex;align-items:center;gap:6px;min-width:0">';
+  h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);white-space:nowrap" title="Tổng số câu của bài trộn — số câu lấy ra từ các bộ đề">Tổng</div>';
+  // Ô nhập trong bảng trộn để cỡ 15px cho BẰNG các chữ xung quanh (yêu cầu 19/9/2026).
+  // Cố ý KHÔNG hạ .quiz-input xuống 15px: lớp đó còn dùng cho ô đổi tên bộ đề ở bảng 📦
+  // (ô nhập tên là chữ chính, phải giữ 17px/500). Chỉ hai ô của bảng trộn hạ cỡ.
+  h += `<input id="mixTotal" type="number" min="1" max="${Math.max(1, totalQuestions())}" class="quiz-input" style="width:62px;text-align:center;font-size:var(--fs-sub)" value="${mixTotalValue()}" oninput="onMixInput()">`;
+  // Chữ đơn vị "câu" đứng SAU ô số (29/9/2026 — "đổi thành Tổng 100 câu"), đối xứng với "phút"
+  // của nửa phải. Nghĩa đầy đủ ("Tổng số câu của bài trộn…") vẫn nằm ở `title` của nhãn "Tổng".
+  h += '<span class="total-unit">câu</span>';
+  h += '</div>';          // đóng nhóm "Tổng … câu"
+  h += timeLimitHtml();   // nhóm "🕐 Tính giờ [..] phút" — cùng hàng, tự đẩy về mép phải
+  h += '</div>';          // đóng hàng hai-cài-đặt
   h += '<div id="mixWarn" style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--text);margin-top:4px"></div>';
   h += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">';
   // NHÃN THEO TÊN CHẾ ĐỘ MỚI (28/9/2026 — "đồng bộ tên chế độ ở bảng Trộn đề theo tỷ lệ với các tab
