@@ -2303,15 +2303,21 @@ body.light-mode .mix-lock.on {
   /* -5px = ĐÚNG `padding` của `.quiz-card` (5px, lượt siết thứ tư) → cạnh dọc của khung nằm ngay
      mép trong của thẻ. Hai con số này là MỘT CẶP: đổi lề trong của thẻ thì phải đổi ở đây, nếu
      không khung sẽ thò ra đè lên viền thẻ (đã xảy ra ở lượt siết trước: padding 8, margin -10).
-     ⚠ 29/9/2026 — CẶP NÀY GIỜ LÀ (0, 0) Ở TRANG CHỦ: thẻ chứa bảng ở đó là thẻ LỒNG trong thẻ, và
-     thẻ lồng đã bị bỏ lề NGANG (xem khối `.home-card > .quiz-card` ngay dưới) để các hàng trong nó
-     rộng bằng hàng chip phía trên. Bề mặt thẻ lồng KHÔNG đổi, nên 5px lề dọc vẫn còn, còn hai
-     dòng dưới đây chỉ áp cho những chỗ bảng nằm trực tiếp trong một `.quiz-card` CÓ lề ngang. */
+     ⚠ 29/9/2026 — CẶP (0, 0) Ở TRANG CHỦ ĐÃ BỎ: khi thẻ trộn còn LỒNG trong thẻ "Tài liệu ôn tập",
+     lề ngang của nó bị đặt về 0 (khối `.home-card > .quiz-card` ngay dưới, nay đã xoá) nên khung
+     bảng phải bỏ luôn `-5px`, nếu không khung thò ra đè viền thẻ. Từ lượt "tách bảng này ra khỏi
+     bảng tài liệu ôn tập", thẻ trộn là thẻ RIÊNG có đủ 5px lề ngang, nên luật `-5px` dưới đây áp
+     cho nó như mọi `.quiz-card` khác — và khung bảng RỘNG RA **12px**, đúng bằng phần lề ngang +
+     viền mà tầng lồng từng lấy đi. */
   margin: 0 -5px;
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
 }
+/* ══ [LỊCH SỬ — ĐỌC CHO BIẾT, ĐỪNG DỰNG LẠI LUẬT] TỪ 29/9/2026 TRANG CHỦ KHÔNG CÒN THẺ LỒNG NÀO:
+   thẻ "Thi thử & trộn câu theo tỷ lệ" đã được TÁCH thành thẻ riêng ngang hàng với thẻ "Tài liệu
+   ôn tập" (xem chỗ đóng `.home-card` trong `quizHomeHtml`). Khối dưới đây ghi lại cách chữa cho
+   tầng lồng cũ — giữ vì số đo và lối suy luận vẫn đúng cho chỗ khác, KHÔNG phải để khôi phục. ══ */
 /* ── THẺ LỒNG TRONG THẺ: KHÔNG TRẢ LỀ NGANG HAI LẦN (29/9/2026 — "cho các hàng này rộng hơn") ──
    Trang chủ có hai THẺ LỒNG trong thẻ: thẻ "Thi thử & trộn câu theo tỷ lệ" (`quizMixHtml`) và thẻ Cài đặt
    đều nằm BÊN TRONG thẻ "Chọn từng bộ đề" (xem `quizHomeHtml`) — nên mọi hàng trong đó chịu THÊM
@@ -2333,8 +2339,14 @@ body.light-mode .mix-lock.on {
    PHẠM VI: khoá bằng `.home-card` (chỉ thẻ ngoài của trang chủ mang lớp này) chứ KHÔNG viết
    `.quiz-card .quiz-card`: các màn làm bài / kết quả cũng dựng nhiều `.quiz-card` liền nhau, và
    một luật quét rộng có thể chạm vào chỗ không ai ngờ. */
-.home-card > .quiz-card { padding-left: 0; padding-right: 0; }
-.home-card > .quiz-card .mix-table { margin-left: 0; margin-right: 0; }
+/* ⛔ HAI LUẬT LỒNG-THẺ Ở ĐÂY ĐÃ XOÁ (cùng lượt tách thẻ — "tách bảng này ra khỏi bảng tài liệu
+   ôn tập"). Đừng dựng lại:
+     · không thẻ nào lồng trong thẻ "Tài liệu ôn tập" nữa, nên hai luật cũ vô hiệu;
+     · thẻ trộn giờ nhận ĐỦ 5px lề ngang của `.quiz-card`, nên chữ trong nó vẫn thẳng cột với chữ
+       của thẻ trên (hai thẻ cùng mép, cùng lề trong) mà không cần ép padding về 0;
+     · `.mix-table` trở lại luật gốc `margin: 0 -5px` — cặp (5, -5) đúng như ghi chú ở khối trên.
+   Nếu có lúc thẻ trộn bị đặt lại vào trong thẻ trên thì thứ cần chữa là chỗ LỒNG, không phải lề. */
+/* ══ [LỊCH SỬ — CÁCH TÍNH ĐÃ ĐỔI SAU KHI TÁCH THẺ, XEM LUẬT MỚI NGAY DƯỚI KHỐI NÀY] ══ */
 /* KHE GIỮA HÀNG CHIP VÀ THẺ "TRỘN CÂU THEO TỶ LỆ %" (29/9/2026 — "cho khoảng cách 2 hàng này xa
    nhau"): ĐÂY LÀ SỐ ĐO, đừng đoán lại. Hàng chip và thẻ trộn là HAI CON CÙNG MỘT THẺ (`.home-card`),
    nên giữa chúng không có cặp lề thẻ nào — chỉ có `margin-top` của thẻ trộn, mà `.quiz-card` chỉ
@@ -2350,7 +2362,19 @@ body.light-mode .mix-lock.on {
    `.quiz-card` gốc: 5 + 1 + 5 = 11px là nhịp chung của MỌI cặp thẻ, nới nó là nới cả những chỗ
    đang cố ý khít. Và ĐỪNG cộng vào lề của hàng chip: hàng đó dùng chung khe 3px với hàng chip
    trên nó và với hai hàng tab (xem `.set-acts`), đổi là các hàng lệch nhau ngay. */
-.home-card > .chip-row + .quiz-card { margin-top: 12px; }
+/* ── KHE GIỮA THẺ "TÀI LIỆU ÔN TẬP" VÀ THẺ "THI THỬ & TRỘN CÂU THEO TỶ LỆ" (29/9/2026 — "tách
+   bảng này ra khỏi bảng tài liệu ôn tập", GIỮ Ý của lượt trước "cho khoảng cách 2 hàng này xa
+   nhau") ──
+   Hai thẻ giờ NGANG HÀNG nhau nên đã có đủ cặp lề thẻ: `.quiz-card` để `margin: 1px 0` cho MỌI
+   thẻ, nên khe mặc định là 5 + 1 + 5 = **11px** — đúng nhịp chung của app. Nhưng lượt trước người
+   dùng đã yêu cầu khe NÀY xa hơn nhịp chung (khi đó khe chỉ ~6px và đọc ra là "dính liền"), nên
+   `margin-top` của ĐÚNG cặp này là **6px** ⇒ khe nhìn thấy **16px**.
+   ⚠ PHẠM VI hẹp là CỐ Ý: `.home-card + .quiz-card` là đúng một chỗ trên app — thẻ trộn là thẻ duy
+   nhất đứng NGAY SAU thẻ ngoài của trang chủ (hai thẻ giờ là anh em ruột, không phải cha con).
+   ĐỪNG sửa `margin` của `.quiz-card` gốc: 11px là nhịp chung của MỌI cặp thẻ, nới nó là nới cả
+   những chỗ đang cố ý khít. Và ĐỪNG cộng vào lề của hàng chip: hàng đó dùng chung khe 3px với
+   hàng chip trên nó và với hai hàng tab (xem `.set-acts`), đổi là các hàng lệch nhau ngay. */
+.home-card + .quiz-card { margin-top: 6px; }
 /* `.set-card` ĐÃ XOÁ 29/9/2026 cùng lúc với THẺ CÀI ĐẶT RIÊNG: nút "Cài đặt" giờ ở HÀNG THỨ HAI của
    `.chip-row` (xem ghi chú ở đó và ở `quizHomeHtml`), nên không còn thẻ nào để kéo lên nữa.
    Luật cũ chỉ có một dòng — `margin-top: -4px` — và lý do của nó (kéo thẻ Cài đặt lên 4px để khe
@@ -3579,10 +3603,12 @@ function quizHomeHtml() {
 
   // ── ChỌN từng bộ đề ── (dropdown thay vì list card) — thẻ này chỉ CHỌN bộ rồi mới bấm nút làm
   // bài; các nút bên trong vẫn là "Từng câu / Cả bộ / Học / Câu hỏi".
-  // Lớp `home-card` KHÔNG phải để tô màu: nó là mốc để CSS nhận ra "thẻ ngoài của trang chủ" —
-  // hai thẻ LỒNG bên trong nó (Trộn đề và Cài đặt) phải bỏ lề NGANG, nếu không các hàng của chúng
-  // hẹp hơn hàng chip phía trên 12px (29/9/2026 — "cho các hàng này rộng hơn"; xem khối
-  // `.home-card > .quiz-card` ở CSS). Bỏ lớp này là hai hàng đó thụt vào lại.
+  // THẺ NÀY GIỜ CHỈ CHỨA PHẦN "TÀI LIỆU ÔN TẬP" (29/9/2026 — "tách bảng này ra khỏi bảng tài liệu
+  // ôn tập"): tiêu đề + ô chọn bộ đề + hàng bốn tab + HAI hàng chip. Thẻ "Thi thử & trộn câu theo
+  // tỷ lệ" (`quizMixHtml`) từng LỒNG bên trong nó — xem chỗ đóng thẻ ở CUỐI hàm này, nơi dòng
+  // `</div>` được thêm vào; giờ nó là MỘT THẺ RIÊNG, đứng ngay sau, mang viền và nền của chính nó.
+  // Lớp `home-card` giữ lại làm MỐC ("thẻ ngoài của trang chủ") cho CSS — hiện không luật nào
+  // dùng; luật lồng-thẻ cũ (`.home-card > .quiz-card`) đã hết đối tượng, xem khối CSS đó.
   h += '<div class="quiz-card home-card">';
   // Dòng phụ "Chọn bộ đề trong dropdown rồi bấm nút thi bên dưới." đã XOÁ (19/9/2026 — "tôi muốn bỏ
   // những chữ này"): chính các nút bên dưới đã nói rõ phải làm gì.
@@ -3751,9 +3777,20 @@ function quizHomeHtml() {
   h += '<button type="button" class="big-upload-btn lib-act" onclick="openSettingsPanel()"'
     + ' title="Sáng/tối, ghi chú, xuất – chọn file, màu nền, cỡ chữ, độ sáng">'
     + '<span class="act-in">' + ico('sliders') + ' Cài đặt</span></button>';
+  h += '</div>';   // đóng `.chip-row` HÀNG DƯỚI
+
+  // ── ĐÓNG THẺ "TÀI LIỆU ÔN TẬP" (29/9/2026 — "tách bảng này ra khỏi bảng tài liệu ôn tập") ──
+  // Dòng `</div>` này TRƯỚC ĐÂY KHÔNG CÓ. Chuỗi HTML của trang chủ mở `.home-card` rồi không bao
+  // giờ đóng, nên TRÌNH DUYỆT tự đóng nó ở cuối khung — và vì thẻ trộn là thứ CUỐI CÙNG được thêm
+  // vào chuỗi đó, nó thành CON của thẻ ngoài. Đó đúng là thứ mà CSS `.home-card > .quiz-card`
+  // đang nhắm tới, nên lỗi ấy sống im lặng: cách làm cũ chỉ đúng vì thẻ trộn nằm cuối, thêm bất
+  // cứ gì SAU nó là thứ đó cũng bị nuốt vào thẻ "Tài liệu ôn tập".
+  // Từ đây thẻ đóng đúng chỗ, hai thẻ NGANG HÀNG nhau và mỗi thẻ tự có viền/nền.
+  // ⚠ ĐỪNG xoá dòng này "cho gọn": xoá là thẻ trộn lồng ngược vào thẻ trên trở lại, mà lần này
+  // lại đúng cái người dùng vừa yêu cầu tách ra.
   h += '</div>';
 
-  // ── Trộn đề ──
+  // ── Trộn đề ── (THẺ RIÊNG, không còn lồng trong thẻ "Tài liệu ôn tập")
   h += quizMixHtml();
   // THẺ CÀI ĐẶT RIÊNG ĐÃ BỎ (29/9/2026) — nút "Cài đặt" giờ là ô thứ tư của hàng chip ngay trên.
   // Nội dung panel CÀI ĐẶT không đổi một hàng nào: vẫn `settingsPanelHtml()` dựng trong hộp thoại
