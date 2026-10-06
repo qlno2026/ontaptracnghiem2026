@@ -3364,6 +3364,19 @@ const FIXED_SET_PCT = [
 // không nhận khi người dùng chỉnh các hàng khác (xem rebalanceAround).
 let _mix = { total: MIX_DEFAULT_TOTAL, pct: {}, locked: {} };   // pct[setId] = phần trăm của bộ đó trong đề trộn
 
+// ── CÂU NÀO ĐÃ DÙNG Ở LƯỢT TRỘN NÀO (6/10/2026) ──────────────────────────────────
+// Yêu cầu: "trộn đề theo tỷ lệ thi thử thì phải đổi câu liên tục". Muốn vậy thì mỗi lượt
+// trộn phải BIẾT lượt trước đã lấy câu nào — nên lịch sử này nằm trong máy, không chỉ trong
+// RAM: tắt app rồi mở lại vẫn không quay về đúng những câu vừa làm.
+//   round : số lượt trộn đã bắt đầu (mốc "vừa dùng" của một câu)
+//   sets  : { khoá-tên-bộ: { chỉ-số-câu: round đã dùng } }
+// Khoá theo TÊN bộ (quizKey) chứ không theo id, vì nạp lại thư viện là mọi id đổi mới — cùng
+// lý do `keyed` của file tỷ lệ ở saveMix() làm vậy. Chỉ số câu theo vị trí trong bộ: sửa/thêm
+// câu trong một bộ thì chỉ số xê dịch, khi đó cùng lắm là một vài câu bị coi như "đã dùng"
+// sớm hơn thực tế — không sai dữ liệu, chỉ lệch một lượt xoay vòng.
+const MIX_SEEN_KEY = 'qlno_mixseen';
+let _mixSeen = { round: 0, sets: {} };
+
 function quizNewId(prefix) { return (prefix || 'q') + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
 function normalizeQ(q) {
@@ -4393,6 +4406,18 @@ function saveMix() {
   } catch (e) {}
 }
 
+function loadMixSeen() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MIX_SEEN_KEY) || 'null');
+    if (saved && typeof saved === 'object' && saved.sets && typeof saved.sets === 'object') {
+      _mixSeen = { round: parseInt(saved.round, 10) || 0, sets: saved.sets };
+    }
+  } catch (e) {}
+}
+function saveMixSeen() {
+  try { localStorage.setItem(MIX_SEEN_KEY, JSON.stringify(_mixSeen)); } catch (e) {}
+}
+
 // Trả về true nếu đọc lại được tỷ lệ đã lưu (false = giữ nguyên mặc định).
 // LUÔN gọi SAU resetMixDefaults(), vì đường ghép theo tên dựa vào mặc định cho những bộ
 // không có trong file lưu.
@@ -5358,23 +5383,59 @@ function startSetExam(setId, mode) {
   startExam(s.questions, s.name, mode, setTimeMin() * 60000);   // tên đầy đủ — không còn rút gọn ở màn hẹp
 }
 
-function replayExam() { if (_exam) startExam(_exam.questions, _exam.title, _exam.mode, _exam.limitMs); }
+// "Làm lại" (màn kết quả). ĐỀ TRỘN thì phải TRỘN LẠI chứ không dùng lại danh sách câu cũ
+// (6/10/2026 — "trộn đề ... phải đổi câu liên tục"): dùng lại đúng danh sách cũ thì lượt sau
+// giống hệt lượt trước (đo được 100/100 câu), tức là bấm "Làm lại" bao nhiêu lần cũng chỉ làm
+// mãi một đề. Với đề của MỘT bộ thì giữ nguyên cách cũ — ở đó "làm lại" đúng nghĩa là làm lại
+// chính bài đó. Giới hạn thời gian của đề trộn đọc lại từ ô "Thời gian" (mixTimeLimitMs) nên
+// đổi số phút giữa hai lượt vẫn ăn ngay.
+function replayExam() {
+  if (!_exam) return;
+  if (_exam.mix) { mixExam(_exam.mode); return; }
+  startExam(_exam.questions, _exam.title, _exam.mode, _exam.limitMs);
+}
 
-// Trộn đề: lấy ngẫu nhiên đúng số câu mỗi bộ phải đóng góp rồi xáo lại toàn bộ
+// Lấy `got` câu của MỘT bộ, ưu tiên câu LÂU CHƯA ĐƯỢC DÙNG ở các lượt trộn trước.
+//
+// Trước 6/10/2026 chỗ này chỉ "xáo rồi cắt `got` câu" (lấy mẫu ngẫu nhiên độc lập), nên hai
+// lượt liền nhau vẫn trùng trung bình Σ(got²/cỡ bộ) câu — đo trên tỷ lệ mặc định là **39/100
+// câu**: người dùng đúng khi nói "đổi câu rất ít". Xoay vòng theo lịch sử thì bộ nào còn nhiều
+// câu hơn phần phải góp (got ≤ nửa cỡ bộ) sẽ KHÔNG trùng câu nào giữa hai lượt liền nhau, và
+// các câu được dùng đều tay nhau thay vì có câu lặp 5-6 lần mà có câu chưa từng gặp.
+//
+// XÁO TRƯỚC rồi mới sắp theo độ mới là cố ý: những câu CÙNG độ mới (đa số là "chưa dùng bao
+// giờ") giữ nguyên thứ tự ngẫu nhiên của lần xáo, nên phần câu lấy ra trong mỗi nhóm vẫn ngẫu
+// nhiên — không phải "cứ theo thứ tự trong file". `sort` của JS ổn định (từ ES2019) nên điều
+// này mới đứng vững; đừng thay bằng cách sắp khác không ổn định.
+function mixPickFromSet(set, got) {
+  const key = quizKey(set.name);
+  const seen = (_mixSeen.sets[key] && typeof _mixSeen.sets[key] === 'object') ? _mixSeen.sets[key] : {};
+  const pool = set.questions.map((q, i) => ({ q: q, i: i, last: (i in seen) ? seen[i] : -1 }));
+  shuffleArr(pool);
+  pool.sort((a, b) => a.last - b.last);
+  const picked = pool.slice(0, got);
+  picked.forEach(x => { seen[x.i] = _mixSeen.round; });
+  _mixSeen.sets[key] = seen;
+  return picked.map(x => x.q);
+}
+
+// Trộn đề: lấy đúng số câu mỗi bộ phải đóng góp (xoay vòng, xem mixPickFromSet) rồi xáo lại toàn bộ
 function mixExam(mode) {
   const rows = mixRows();
   const picked = [];
+  _mixSeen.round++;   // mọi bộ trong CÙNG một lượt mang cùng một mốc "vừa dùng"
   rows.forEach(r => {
     if (r.got <= 0) return;
-    const pool = r.set.questions.slice();
-    shuffleArr(pool);
-    pool.slice(0, r.got).forEach(q => picked.push(q));
+    mixPickFromSet(r.set, r.got).forEach(q => picked.push(q));
   });
   if (!picked.length) { alert('Tỷ lệ hiện tại không lấy được câu nào. Hãy tăng phần trăm cho ít nhất một bộ.'); return; }
+  saveMixSeen();      // lượt này đã dùng câu nào → lượt sau lấy câu khác
   shuffleArr(picked);
   // Tiêu đề này được `esc()` khi in ra (xem `quizPlayHtml`), nên KHÔNG đặt icon SVG vào đây được —icon sẽ bị thoát thành chữ. Đặt chữ không.
   // Đề trộn cũng tính giờ được — xem `mixTimeLimitMs()` ở khối THI THỬ CÓ ĐẾM NGƯỢC.
   startExam(picked, 'Trộn đề · ' + picked.length + ' câu', mode, mixTimeLimitMs());
+  // Đánh dấu đây là ĐỀ TRỘN để nút "↻ Làm lại" ở màn kết quả biết mà trộn lại (xem replayExam).
+  if (_exam) _exam.mix = true;
 }
 
 function answerQuiz(i) {
@@ -6542,7 +6603,8 @@ function doLogout() {
 // ── KHỞI ĐỘNG ──────────────────────────
 function bootApp() {
   loadLib();
-  refreshMix();   // = resetMixDefaults() + ghép lại tỷ lệ trộn đã lưu trong máy
+  refreshMix();     // = resetMixDefaults() + ghép lại tỷ lệ trộn đã lưu trong máy
+  loadMixSeen();    // lịch sử câu đã dùng ở các lượt trộn — để lượt đầu sau khi mở lại app vẫn là câu mới
   renderQuiz();
   // Nút ✕ của thanh tìm kiếm: khi tải lại trang, Chrome có thể KHÔI PHỤC nội dung ô tìm kiếm (khôi
   // phục trạng thái form) mà KHÔNG bắn sự kiện `input` — nên nếu chỉ dựa vào `onSearch()` thì chữ có
