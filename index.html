@@ -4085,6 +4085,14 @@ function cfgStepRow(kind, iconName, label, pct, min, max) {
 // nằm ở đầu hộp thoại, giữ thêm là hai lần cùng một chữ.
 // Dùng lại ĐÚNG `#modal` của panel Thư viện và Ghi chú nên không thêm lớp phủ nào mới; tiêu đề +
 // nút ✕ lặp lại nguyên khuôn của `renderNotesPanel()`.
+// ── NÚT "XOÁ DỮ LIỆU" TRONG PANEL CÀI ĐẶT (17/10/2026) ──────────────────────────────────────
+// Là cửa vào THỨ HAI của đúng một việc đã có trong panel Tài liệu ("Xoá tất cả bộ đề"): người
+// dùng đi tìm nó trong "Cài đặt" chứ không nghĩ tới "Tài liệu". Vì thế cờ xác nhận phải là biến
+// RIÊNG chứ không dùng chung `_libPending`: `_libPending` được `renderLibPanel()` đọc/ghi, mà hàm
+// đó vẽ vào CHÍNH `#modalBody` đang chứa panel Cài đặt — dùng chung là hai màn tranh nhau một ô.
+// Cờ này CHỈ sống trong RAM: đóng hộp thoại rồi mở lại phải về trạng thái chưa hỏi, nếu không thì
+// lần sau bấm nút là mất dữ liệu ngay mà không có bước "Xác nhận" nào.
+let _cfgClearArmed = false;
 function openSettingsPanel() {
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -4132,6 +4140,26 @@ function settingsPanelHtml() {
   // KHÔNG đóng: nó chỉ tải một file xuống, không rời trang, nên đóng panel là cắt ngang việc
   // người dùng đang làm.
   h += cfgMenuRow('folder', 'Chọn File', 'closeModalDirect(); pickSetFiles()', 'Nạp bộ đề từ file Excel / CSV / ZIP');
+  // Hàng "Xoá dữ liệu": bước 1 bấm hàng → hỏi lại; bước 2 mới xoá thật. HAI TRẠNG THÁI KHÁC
+  // NHAU VỀ LOẠI PHẦN TỬ, và đây không phải chuyện thẩm mỹ: trạng thái thường là `<button>`
+  // (`cfgMenuRow`) nên CẢ HÀNG bấm được; trạng thái hỏi phải là `<div>` vì bên trong nó có HAI
+  // nút — lồng button trong button là HTML sai, trình duyệt tự tách ra và nút "Hủy" sẽ văng ra
+  // ngoài hàng (đúng cái bẫy đã ghi ở ghi chú `.cfg-row` trong <style>).
+  // Thư viện trống thì nút vẫn hiện nhưng `askCfgClearData()` nói thẳng là chẳng có gì để xoá —
+  // GIẤU hàng đi thì hàng nhảy chỗ ngay khi nạp/xoá bộ, còn để bấm mà im lặng là app trông như lỗi.
+  if (!_cfgClearArmed) {
+    h += cfgMenuRow('trash', 'Xoá dữ liệu', 'askCfgClearData()', 'Xoá toàn bộ bộ đề trong thư viện trên máy này');
+  } else {
+    h += '<div class="cfg-row"><span class="cfg-ico">' + ico('trash') + '</span>';
+    h += '<span class="cfg-row-txt">Xoá dữ liệu</span></div>';
+    h += '<div style="padding:0 2px 8px 2px">';
+    h += '<div style="font-size:var(--fs-sub);font-weight:var(--fw-body);color:var(--red-text);line-height:1.5;padding-bottom:8px">'
+      + 'Xoá cả ' + quizLib.length + ' bộ đề trong thư viện. Không khôi phục được — nếu chưa có bản sao lưu thì bấm “Hủy” rồi sao lưu trước.</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    h += '<button class="quiz-btn danger" onclick="cfgClearData()">Xác nhận xoá ' + quizLib.length + ' bộ</button>';
+    h += '<button class="quiz-btn" onclick="cancelCfgClearData()">Hủy</button>';
+    h += '</div></div>';
+  }
   h += '</div>';
   h += '<div class="cfg-group">';
   // Icon hàng "Màu" đổi sang `palette` (28/9/2026): icon này sinh ra cho thẻ Tông nền ở trang
@@ -4163,6 +4191,33 @@ function settingsPanelHtml() {
   h += cfgStepRow('bright', 'sun', 'Độ sáng', _bright, BR_MIN, BR_MAX);
   h += '</div>';
   return h;
+}
+
+// ── XOÁ DỮ LIỆU TỪ PANEL CÀI ĐẶT ─────────────────────────────────────────────────────────────
+// Ba bước: bấm hàng → `askCfgClearData()` bật cờ hỏi rồi vẽ lại panel; "Hủy" tắt cờ (không đụng
+// tới thư viện); "Xác nhận" gọi `cfgClearData()` xoá thật.
+// Xoá dùng chung `wipeLibrary()` với panel Tài liệu để hai cửa vào KHÔNG THỂ lệch nhau về dữ
+// liệu, nhưng màn vẽ lại thì khác: chỗ này vẽ lại `#cfgPanel`, KHÔNG gọi `renderLibPanel()` —
+// hàm đó ghi vào `#modalBody` và sẽ thay luôn tấm Cài đặt đang mở bằng panel Thư viện.
+// Cờ tắt TRƯỚC khi vẽ: xong việc thì hàng phải trở về trạng thái `<button>` bình thường, không
+// giữ lại nút "Xác nhận" đỏ treo lửng trên thư viện vừa rỗng (bấm lần nữa là cảnh báo "0 bộ").
+function askCfgClearData() {
+  if (!quizLib.length) { alert('Thư viện đang trống, không có gì để xoá.'); return; }
+  _cfgClearArmed = true;
+  renderSettingsPanel();
+}
+function cancelCfgClearData() {
+  _cfgClearArmed = false;
+  renderSettingsPanel();
+}
+function cfgClearData() {
+  const n = quizLib.length;
+  wipeLibrary();
+  _cfgClearArmed = false;
+  renderSettingsPanel();
+  // Thư viện rỗng đổi cả trang chủ lẫn thẻ bộ đề, nên phải vẽ lại màn chính — y như `clearLibrary()`.
+  renderQuiz();
+  alert('Đã xoá ' + n + ' bộ đề trong thư viện.');
 }
 
 // ── GHI CHÚ (27/9/2026) ───────────────────────────────────────────────────────────────────────
@@ -6366,10 +6421,18 @@ function deleteSet(id) {
   renderLibPanel(); renderQuiz();
 }
 function askClearLibrary() { _libPending = { kind: 'all' }; renderLibPanel(); }
-function clearLibrary() {
+// Xoá SẠCH thư viện trong RAM LẪN trên máy, KHÔNG vẽ lại màn nào. Hai cửa vào cùng gọi hàm này
+// (panel Tài liệu → `clearLibrary()`, panel Cài đặt → `cfgClearData()`) nhưng mỗi chỗ phải vẽ
+// lại một màn KHÁC nhau — để việc vẽ cho chỗ gọi là cách duy nhất giữ hai đường không lệch nhau,
+// và cũng là lý do KHÔNG gọi `renderLibPanel()` ở đây: nó ghi vào `#modalBody`, gọi từ panel Cài
+// đặt là thay luôn tấm đang mở bằng panel Thư viện.
+function wipeLibrary() {
   quizLib = []; _libSetId = null;
   _libPending = null; _renamingSetId = null;
   saveLib(); refreshMix();
+}
+function clearLibrary() {
+  wipeLibrary();
   renderLibPanel(); renderQuiz();
 }
 
