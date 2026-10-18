@@ -1272,12 +1272,16 @@ body.light-mode .set-dd-item.on { background: var(--accent); color: var(--on-acc
 .res-bub {
   /* `max-width` là BẮT BUỘC: ở cửa sổ rộng, ô lưới `1fr` rộng tới ~160px nên `aspect-ratio: 1`
      một mình sẽ cho ra vòng tròn khổng lồ. Chặn ở 40px để lưới luôn là các chấm số nhỏ như mẫu;
-     ở cửa sổ hẹp (ô < 40px) thì `width: 100%` cho vòng co theo ô. Căn giữa bằng `margin: 0 auto`. */
+     ở cửa sổ hẹp (ô < 40px) thì `width: 100%` cho vòng co theo ô. Căn giữa bằng `margin: 0 auto`.
+     Vòng là MỘT NÚT (chạm để mở câu đó — xem `openResultQ`): con trỏ bàn tay và `:active` thu nhẹ
+     cho biết đã chạm. */
   width: 100%; max-width: 40px; aspect-ratio: 1; margin: 0 auto; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid var(--border); background: transparent;
   font-size: var(--fs-sub); font-weight: 700; line-height: 1;
+  cursor: pointer; user-select: none;
 }
+.res-bub:active { transform: scale(0.92); }
 .quiz-all-head {
   position: sticky; z-index: 5;
   top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
@@ -5461,6 +5465,38 @@ function finishQuiz() {
 }
 function quitQuiz() { stopExamTimer(); _quizState = null; _quizMode = 'home'; renderQuiz(); window.scrollTo(0, 0); }
 
+// ── CHẠM MỘT VÒNG SỐ Ở MÀN KẾT QUẢ → mở lại ĐÚNG CÂU ĐÓ để xem / chọn lại ──
+// Không dựng "màn xem riêng": ba màn làm bài đã vẽ sẵn trạng thái của từng câu (câu đã trả lời
+// thì khoá ô lại kèm dấu đúng/sai), nên mở lại CHÍNH màn cũ rồi cuộn tới câu là đủ — và câu còn
+// bỏ trống vẫn chọn được. Bấm "Xem kết quả" lần nữa để trở về bảng điểm (khi đó bảng tự tính lại).
+// `n` là SỐ THỨ TỰ câu (1-based) — đúng con số trên vòng tròn.
+function openResultQ(n) {
+  const st = _quizState;
+  if (!st) return;
+  const idx = n - 1;
+  if (idx < 0 || idx >= st.items.length) return;
+  const mode = _exam ? _exam.mode : 'single';
+  if (mode === 'single') {
+    // Màn "từng câu" chỉ vẽ MỘT câu theo `st.idx`/`st.chosen`, nên phải đặt đúng câu rồi mới vẽ.
+    st.idx = idx;
+    st.chosen = st.items[idx].chosen !== undefined ? st.items[idx].chosen : null;
+    _quizMode = 'play';
+    renderQuiz(); window.scrollTo(0, 0);
+    return;
+  }
+  _quizMode = mode === 'study' ? 'study' : 'playAll';
+  renderQuiz();
+  // Cuộn tới câu vừa chạm. KHÔNG dùng `scrollIntoView` + `scroll-margin`: thanh DÍNH ở đầu màn
+  // (`.quiz-all-head` — chứa tiêu đề, dòng điểm và thanh thời gian) CAO HƠN `--header-h`, nên chỉ
+  // chừa `--header-h` là câu vẫn bị che mất dòng đầu. Đo thẳng chiều cao thật của hai thanh rồi trừ.
+  const el = document.getElementById('qb-' + idx);
+  if (!el) { window.scrollTo(0, 0); return; }
+  const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+  const head = document.querySelector('.quiz-all-head');
+  const headH = head ? head.getBoundingClientRect().height : 0;
+  window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - headerH - headH - 10));
+}
+
 // Nút về trang chủ ở đầu mọi màn làm bài — để không phải cuộn xuống đáy mới thoát
 // được (đề 30-60 câu thì nút “Thoát” ở đáy rất xa).
 // Chữ câu hỏi kèm SỐ CÂU trong vòng tròn xanh ở đầu — dùng cho BA màn làm bài
@@ -5718,8 +5754,9 @@ function quizResultHtml() {
   h += statBox('Đúng', rightNos.length, 'var(--green)', 'rgba(16,185,129,0.12)');
   h += statBox('Sai (hiện tại)', wrongNos.length, 'var(--red-text)', 'rgba(239,68,68,0.12)');
   h += '</div>';
-  // Lưới vòng tròn: một vòng cho MỖI câu, tô theo kết quả. Dùng SET để tra O(1) thay vì `indexOf`
-  // trong vòng lặp (bài trộn có thể tới hàng trăm câu). Khung lưới ở CSS `.res-grid` / `.res-bub`.
+  // Lưới vòng tròn: một vòng cho MỖI câu, tô theo kết quả, và CHẠM ĐƯỢC (mở lại câu đó —
+  // `openResultQ`). Dùng SET để tra O(1) thay vì `indexOf` trong vòng lặp (bài trộn có thể tới
+  // hàng trăm câu). Khung lưới + kiểu vòng ở CSS `.res-grid` / `.res-bub`.
   const rightSet = new Set(rightNos);
   const wrongSet = new Set(wrongNos);
   h += '<div class="res-grid">';
@@ -5729,7 +5766,7 @@ function quizResultHtml() {
       : (wrongSet.has(n)
         ? 'border-color:var(--red);color:var(--red-text);background:rgba(239,68,68,0.12)'
         : 'border-color:var(--border);color:var(--text-dim)');
-    h += '<div class="res-bub" style="' + st2 + '">' + n + '</div>';
+    h += '<div class="res-bub" role="button" tabindex="0" title="Xem câu ' + n + '" onclick="openResultQ(' + n + ')" style="' + st2 + '">' + n + '</div>';
   }
   h += '</div>';
   if (blankNos.length) h += '<div style="margin-top:8px;font-size:var(--fs-note);color:var(--text-dim)">Vòng xám = chưa trả lời (' + blankNos.length + ')</div>';
